@@ -5,5 +5,5 @@ Sistema de Gestión de Proyectos desarrollado con el objetivo de estudiar el len
 Integrantes:
 
 - Axel Itzcovitz - padron
-- Marcelo Origoni - padron
+- Marcelo Origoni - 109903
 - Nicolás Garófalo - 100952
