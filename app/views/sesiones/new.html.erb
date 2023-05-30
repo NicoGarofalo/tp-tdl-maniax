@@ -1,0 +1,27 @@
+<h1>Iniciar sesión</h1>
+
+<% if flash[:notice] %>
+  <div class="notice"><%= flash[:notice] %></div>
+<% end %>
+
+<% if flash[:alert] %>
+  <div class="alert"><%= flash[:alert] %></div>
+<% end %>
+
+<%= form_tag iniciar_sesion_path, method: :post do %>
+  <div>
+    <%= label_tag :email %>
+    <%= email_field_tag :email %>
+  </div>
+
+  <div>
+    <%= label_tag :password %>
+    <%= password_field_tag :password %>
+  </div>
+
+  <div>
+    <%= submit_tag "Iniciar sesión" %>
+  </div>
+<% end %>
+
+<p>¿No tienes una cuenta? <%= link_to 'Crear usuario', registro_path %></p>
