@@ -1,0 +1,39 @@
+<h1>Registro de Usuario</h1>
+
+<%= form_for @usuario, url: registro_path, method: :post do |f| %>
+  <div>
+    <%= f.label :usuario_tipo %>
+    <%= f.select :usuario_tipo, options_for_select(['Gerente', 'Líder', 'Revisor', 'Integrante']) %>
+  </div>
+
+  <div>
+    <%= f.label :nombre %>
+    <%= f.text_field :nombre %>
+  </div>
+
+  <div>
+    <%= f.label :apellido %>
+    <%= f.text_field :apellido %>
+  </div>
+
+  <div>
+    <%= f.label :email %>
+    <%= f.email_field :email %>
+  </div>
+
+  <div>
+    <%= f.label :password %>
+    <%= f.password_field :password %>
+  </div>
+
+  <div>
+    <%= f.label :password_confirmation %>
+    <%= f.password_field :password_confirmation %>
+  </div>
+
+  <div>
+    <%= f.submit "Registrarse" %>
+  </div>
+<% end %>
+
+<p><%= link_to 'Volver a iniciar sesión', iniciar_sesion_path %></p>

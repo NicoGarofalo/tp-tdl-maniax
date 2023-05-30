@@ -1,0 +1,28 @@
+<h1>Crear Proyecto</h1>
+
+<%= form_for @proyecto, url: proyectos_path, method: :post do |f| %>
+
+  <div>
+    <%= f.label :lider_id %>
+    <%= f.collection_select :lider_id, @lideres, :id, :nombre %>
+  </div>
+
+  <div>
+    <%= f.label :fecha_vencimiento %>
+    <%= f.date_field :fecha_vencimiento %>
+  </div>
+
+  <div>
+    <%= f.label :nombre %>
+    <%= f.text_field :nombre %>
+  </div>
+
+  <div>
+    <%= f.label :descripcion %>
+    <%= f.text_area :descripcion %>
+  </div>
+
+  <div>
+    <%= f.submit "Crear Proyecto" %>
+  </div>
+<% end %>
