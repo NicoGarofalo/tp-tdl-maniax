@@ -1,24 +1,9 @@
-# README
+# Equipo Maniax - Teoría de Lenguaje
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Sistema de Gestión de Proyectos desarrollado con el objetivo de estudiar el lenguaje Ruby, sus pros y contras, y su framework más famoso Ruby on Rails.
 
-Things you may want to cover:
+Integrantes:
 
-* Ruby version
-
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+- Axel Itzcovitz - 100742
+- Marcelo Origoni - 109903
+- Nicolás Garófalo - 100952
