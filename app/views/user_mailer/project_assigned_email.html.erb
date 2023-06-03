@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+</head>
+<body>
+<h1>Project Assigned to You</h1>
+<p>Hello <%= @user.nombre %>,</p>
+<p>A new project has been assigned to you:</p>
+<ul>
+  <li>Name: <%= @project.nombre %></li>
+  <li>Description: <%= @project.descripcion %></li>
+  <li>Deadline: <%= @project.fecha_vencimiento %></li>
+</ul>
+<p>Please log in to your account for more details.</p>
+<p>Thank you!</p>
+</body>
+</html>
