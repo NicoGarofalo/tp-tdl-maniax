@@ -15,20 +15,27 @@ class UsuariosController < ApplicationController
   end
 
   def gerente_home
+    @proyectos = Proyecto.where(gerente_id: @usuario.id)
+    render :gerente_home
   end
 
+  def admin
+    @usuarios = Usuario.all
+  end
+
+
   def lider_home
+      @proyectos = Proyecto.where(lider_id: @usuario.id)
+      render :lider_home
   end  
 
   def home
     @usuario = Usuario.find_by(id: session[:usuario_id])
 
     if @usuario.usuario_tipo == 'Gerente'
-      @proyectos = Proyecto.where(gerente_id: @usuario.id)
-      render :gerente_home
+      gerente_home()
     elsif @usuario.usuario_tipo == 'Líder'
-      @proyectos = Proyecto.where(lider_id: @usuario.id)
-      render :lider_home
+      lider_home()
     end
   end
 

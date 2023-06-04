@@ -1,4 +1,5 @@
 Rails.application.routes.draw do
+  
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Defines the root path route ("/")
@@ -16,6 +17,9 @@ Rails.application.routes.draw do
   
   get '/home', to: 'usuarios#home', as: 'user_home'
   get '/proyecto', to: 'proyectos#view', as: 'proyecto_view'
+
+  get '/stats/week', to: 'stats#week', as: 'weekly_stats' 
+  get '/adm', to: 'usuarios#admin', as: 'admin_view' 
 
   resources :proyectos, only: [:new, :create]
   resources :metas, only: [:new, :create]
