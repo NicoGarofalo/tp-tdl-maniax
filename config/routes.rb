@@ -10,6 +10,12 @@ Rails.application.routes.draw do
   post '/iniciar_sesion', to: 'sesiones#create'
   delete '/cerrar_sesion', to: 'sesiones#destroy', as: 'cerrar_sesion'
   get '/success', to: 'sesiones#success', as: 'success'
+  
+  get '/meta', to: 'metas#show', as: 'meta_show'
+  post '/meta', to: 'metas#add', as: 'meta_add'
+  
+  get '/home', to: 'usuarios#home', as: 'user_home'
+  get '/proyecto', to: 'proyectos#view', as: 'proyecto_view'
 
   resources :proyectos, only: [:new, :create]
   resources :metas, only: [:new, :create]

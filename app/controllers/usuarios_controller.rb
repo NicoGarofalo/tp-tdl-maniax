@@ -6,11 +6,29 @@ class UsuariosController < ApplicationController
   def create
     @usuario = Usuario.new(usuario_params)
     if @usuario.save
-      UserMailer.welcome_email(@usuario).deliver_now
+      #UserMailer.with(user: @usuario).welcome_email.deliver_now
       redirect_to iniciar_sesion_path, notice: "¡Registro exitoso! Inicia sesión con tu cuenta."
     else
       puts @usuario.errors.full_messages
       render :new
+    end
+  end
+
+  def gerente_home
+  end
+
+  def lider_home
+  end  
+
+  def home
+    @usuario = Usuario.find_by(id: session[:usuario_id])
+
+    if @usuario.usuario_tipo == 'Gerente'
+      @proyectos = Proyecto.where(gerente_id: @usuario.id)
+      render :gerente_home
+    elsif @usuario.usuario_tipo == 'Líder'
+      @proyectos = Proyecto.where(lider_id: @usuario.id)
+      render :lider_home
     end
   end
 

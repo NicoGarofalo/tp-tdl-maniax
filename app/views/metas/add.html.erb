@@ -1,0 +1,24 @@
+<%= form_for @meta, url: metas_path, method: :post do |f| %>
+
+	<%= hidden_field_tag :proyecto_id , @idProyecto %>
+
+  <div>
+    <%= f.label :nombre %>
+    <%= f.text_field :nombre %>
+  </div>
+
+
+  <div>
+    <%= f.label :descripcion %>
+    <%= f.text_area :descripcion %>
+  </div>
+
+  <div>
+    <%= f.label :fecha_vencimiento %>
+    <%= f.date_field :fecha_vencimiento %>
+  </div>
+
+  <div>
+    <%= f.submit "Agregar Meta" %>
+  </div>
+<% end %>

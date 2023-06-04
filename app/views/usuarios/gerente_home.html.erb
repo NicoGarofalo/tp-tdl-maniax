@@ -1,0 +1,26 @@
+
+<h1> Home de : <%= @usuario.nombre %></h1>
+
+<%= link_to 'Crear Proyecto', new_proyecto_path %>
+
+<div>
+
+	<h1>Proyectos: </h1>
+
+	<% if @proyectos == nil || @proyectos.size == 0%>
+
+	<h3>Sin proyectos</h3>
+
+	<% else %>
+	<% @proyectos.each do |proyecto| %>
+	<div style="background-color: #e9e9e9">
+		<p>proyecto: <%= proyecto.nombre%></p>
+		<p>lider: <%= proyecto.lider_id%></p>
+
+	  <%= link_to 'view', controller: "proyectos", action: "view", id: proyecto.id%>
+
+	</div>
+
+	<% end %>
+	<% end %>
+</div>
