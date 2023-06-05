@@ -29,6 +29,12 @@ class UsuariosController < ApplicationController
       render :lider_home
   end  
 
+  def revisor_integrante_home
+    # Dsp ver si es revisor o integrante con pundit para hacer select tareas
+    @tareas = Tarea.where(integrante_id: @usuario.id)
+    render :revisor_integrante_home
+  end  
+
   def home
     @usuario = Usuario.find_by(id: session[:usuario_id])
 
@@ -36,6 +42,8 @@ class UsuariosController < ApplicationController
       gerente_home()
     elsif @usuario.usuario_tipo == 'Líder'
       lider_home()
+    elsif  @usuario.usuario_tipo == 'Revisor' ||  @usuario.usuario_tipo == 'Integrante'
+      revisor_integrante_home()
     end
   end
 

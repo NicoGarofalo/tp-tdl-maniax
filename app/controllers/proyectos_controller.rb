@@ -1,14 +1,18 @@
 class ProyectosController < ApplicationController
+  include Pundit
+
   def new
     @proyecto = Proyecto.new
     @lideres = Usuario.where(usuario_tipo: 'Líder')
   end
 
+
   def create
     @proyecto = Proyecto.new(proyecto_params)
     @proyecto.gerente_id = session[:usuario_id]
     @proyecto.estado = "Pendiente"
-
+    authorize @proyecto
+    
     if @proyecto.save
       @usuario = Usuario.find_by(id: session[:usuario_id])
       #UserMailer.project_created_email(@usuario, @proyecto).deliver_now
@@ -43,5 +47,10 @@ class ProyectosController < ApplicationController
 
   def proyecto_params
     params.require(:proyecto).permit(:gerente_id, :lider_id, :fecha_vencimiento, :nombre, :descripcion, :estado)
+  end
+
+  def current_user
+    @usuario_act ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]
+    @usuario_act
   end
 end
