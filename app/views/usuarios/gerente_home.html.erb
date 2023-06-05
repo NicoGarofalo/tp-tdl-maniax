@@ -13,13 +13,8 @@
 
 	<% else %>
 	<% @proyectos.each do |proyecto| %>
-	<div style="background-color: #e9e9e9">
-		<p>proyecto: <%= proyecto.nombre%></p>
-		<p>lider: <%= proyecto.lider_id%></p>
 
-	  <%= link_to 'view', controller: "proyectos", action: "view", id: proyecto.id%>
-
-	</div>
+	<%= render template: "proyectos/item", locals: {:proyecto => proyecto}%>
 
 	<% end %>
 	<% end %>

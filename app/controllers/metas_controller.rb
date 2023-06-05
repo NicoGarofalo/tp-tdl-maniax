@@ -5,7 +5,13 @@ class MetasController < ApplicationController
   end
 
   def show
-    @meta = Meta.find_by(id: meta_show_params)
+    @idUsuario = session[:usuario_id]
+    @idMeta = meta_show_params
+    @meta = Meta.find_by(id: @idMeta)
+    @lider_id = Proyecto.find_by(id: @meta.proyecto_id).lider_id
+
+
+    @tareas = Tarea.where(meta_id: @idMeta)
   end
 
   def add
@@ -13,16 +19,15 @@ class MetasController < ApplicationController
   end
 
   def create
-    @dataMeta = meta_params
-
-    @dataMeta["proyecto_id"] = params["proyecto_id"]
-    @meta = Meta.new(@dataMeta)
+    @meta = Meta.new(meta_params)
     @meta.estado = "Pendiente" # Establecer el estado como "Pendiente"
 
     if @meta.save
+      puts "Meta guardada exitosamente"
       flash[:notice] = "Meta creada exitosamente."
     else
       flash[:notice] = "Meta fallo en creacion."
+      puts "Meta fallo al guardarse"
     end
   end
 
@@ -37,6 +42,6 @@ class MetasController < ApplicationController
   end
 
   def meta_params
-    params.require(:meta).permit(:fecha_vencimiento, :nombre, :descripcion, :estado)
+    params.require(:meta).permit(:proyecto_id,:fecha_vencimiento, :nombre, :descripcion, :estado)
   end
 end

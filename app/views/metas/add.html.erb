@@ -1,6 +1,6 @@
-<%= form_for @meta, url: metas_path, method: :post do |f| %>
+<%= form_for meta, url: metas_path, method: :post do |f| %>
 
-	<%= hidden_field_tag :proyecto_id , @idProyecto %>
+	<%= hidden_field_tag "meta[proyecto_id]" , idProyecto %>
 
   <div>
     <%= f.label :nombre %>

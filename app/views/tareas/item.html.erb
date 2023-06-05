@@ -1,0 +1,14 @@
+<div name ="tarea_<%= tarea.id%>" style="background-color: #e9e9e9">
+	<h4><%= tarea.nombre %></h4>
+	<p>revisor: <%= tarea.revisor_id%></p>
+
+	<p>estado <%= tarea.estado%></p>
+	
+
+	<% if @idUsuario == tarea.integrante_id %>
+	
+	<input type="button" value="Terminar"
+	/>
+	
+	<% end %>
+</div>

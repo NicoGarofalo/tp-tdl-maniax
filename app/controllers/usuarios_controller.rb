@@ -29,13 +29,23 @@ class UsuariosController < ApplicationController
       render :lider_home
   end  
 
+  def integrante_home
+    @tareas = Tarea.where(integrante_id: @usuario.id)
+    render :integrante_home
+  end
+
   def home
-    @usuario = Usuario.find_by(id: session[:usuario_id])
+    @idUsuario = session[:usuario_id]
+    @usuario = Usuario.find_by(id: @idUsuario)
 
     if @usuario.usuario_tipo == 'Gerente'
       gerente_home()
     elsif @usuario.usuario_tipo == 'Líder'
       lider_home()
+    elsif @usuario.usuario_tipo == 'Integrante'
+      integrante_home()
+
+
     end
   end
 

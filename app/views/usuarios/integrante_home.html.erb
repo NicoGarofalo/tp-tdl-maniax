@@ -1,0 +1,22 @@
+<h1> Home de : <%= @usuario.nombre %></h1>
+
+
+<div>
+	<h2>Tareas Asignadas</h2>
+
+
+	<% if @tareas == nil || @tareas.size == 0%>
+
+	<h3>No fuiste asignado a niguna tarea</h3>
+
+	<% else %>
+	<% @tareas.each do |tarea| %>
+	<div style="background-color: #e9e9e9">
+
+		<%= render template: 'tareas/item', :locals=> {:tarea => tarea}
+		%>
+	</div>
+
+	<% end %>
+	<% end %>
+</div>

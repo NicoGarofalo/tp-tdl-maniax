@@ -6,32 +6,7 @@
 
 <% if @idUsuario == @proyecto.gerente_id %>
 
-<script type="text/javascript">
-	
-	function toggleAddMeta(){
-		console.log("TOGGLE");
-		let add_view = document.getElementById("addMeta");
-
-		if (add_view.style.display == "block"){
-			add_view.style.display = "none";
-		} else{			
-			add_view.style.display = "block";
-		}
-
-		if(add_view.getAttribute("name") == "placeholder"){
-			add_view.innerHTML = `<%= 
-			@meta = Meta.new
-			render template: 'metas/add' %>`
-
-			add_view.setAttribute("name","add_meta_view")
-			console.log("Loaded..");
-		}
-	}
-</script>
-
-
-<input type="button" value="add meta" onclick="toggleAddMeta()" />
-<div id="addMeta" name = "placeholder" style="display: none;"></div>
+<%= render template: "proyectos/add_meta",locals: {:idProyecto => @idProyecto} %>
 
 <% end%>
 
@@ -50,13 +25,8 @@
 <% else %>
 
 <% @metas.each do |meta| %>
-	<div style="background-color: #e9e9e9">
-		<p>meta: <%= meta.nombre%></p>
-		<p>id: <%= meta.id%></p>
-	
-	  <%= link_to 'view', controller: "metas", action: "show", id: meta.id%>
+	<%= render template: "metas/item", locals: {:meta => meta}%>
 
-	</div>
 <% end %>
 <% end %>
 
