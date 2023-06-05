@@ -10,10 +10,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_29_051627) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_04_161212) do
   create_table "logs", force: :cascade do |t|
     t.string "tipo_log"
     t.integer "proyecto_id", null: false
+    t.integer "subject_id", null: false
     t.text "mensaje"
     t.datetime "fecha_hora"
     t.datetime "created_at", null: false
