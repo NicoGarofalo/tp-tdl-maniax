@@ -6,11 +6,14 @@ class TareaPolicy
       @usuario_act = usuario_act
     end
 
-    def crear_tarea?
+    def create?
         @usuario_act.usuario_tipo == "Líder"
     end
     
-    def cambiar_estado_tarea?
-        @tarea. == usuario_act.lider
+    def update?
+        es_revisor = @tarea.revisor_id == @usuario_act.id && @usuario_act.usuario_tipo == "Revisor"
+        es_integrante = @tarea.integrante_id == @usuario_act.id && @usuario_act.usuario_tipo == "Integrante"
+
+        es_revisor || es_integrante
       end
   end
