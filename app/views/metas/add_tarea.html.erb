@@ -13,7 +13,7 @@
 		if(add_view.getAttribute("name") == "placeholder"){
 			add_view.innerHTML = `<%= 
 			
-			render template: 'tareas/add', locals: {:tarea : Tarea.new, :meta_id=> meta_id} %>`
+			render template: 'tareas/add', locals: {:tarea => Tarea.new, :meta_id=> meta_id} %>`
 
 			add_view.setAttribute("name","add_tarea_view")
 			console.log("Loaded..");
