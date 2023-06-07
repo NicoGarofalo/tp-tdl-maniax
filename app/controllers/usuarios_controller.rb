@@ -38,7 +38,7 @@ class UsuariosController < ApplicationController
     render :revisor_integrante_home
   end  
 
-  def revisor_integrante_home
+  def gerente_lider_home
     if @usuario.usuario_tipo == 'Gerente'
      @proyectos = Proyecto.where(gerente_id: @usuario.id)
     else
@@ -51,7 +51,7 @@ class UsuariosController < ApplicationController
     @usuario = Usuario.find_by(id: session[:usuario_id])
 
     if @usuario.usuario_tipo == 'Gerente' || @usuario.usuario_tipo == 'Líder'
-      revisor_integrante_home()
+      gerente_lider_home()
     elsif  @usuario.usuario_tipo == 'Revisor' ||  @usuario.usuario_tipo == 'Integrante'
       revisor_integrante_home()
     end
@@ -61,5 +61,10 @@ class UsuariosController < ApplicationController
 
   def usuario_params
     params.require(:usuario).permit(:usuario_tipo, :nombre, :apellido, :email, :password, :password_confirmation)
+  end
+
+  def current_user
+    @usuario_act ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]
+    @usuario_act
   end
 end
