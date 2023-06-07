@@ -61,6 +61,30 @@
     <div class="content">
       <!-- Aca va  el contenido  principal -->
       <h1>Mis Tareas</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Tarea</th>
+            <th>Fecha de entrega</th>
+            <th>Proyecto</th>
+            <th>Estado</th>
+            <th>Revisor</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @tareas.each do |tarea| %>
+            <tr>
+              <td><%= tarea.id %></td>
+              <td><%= tarea.nombre %></td>
+              <td><%= tarea.fecha_vencimiento %></td>
+              <td>Proyecto 1</td>
+              <td><%= tarea.estado %></td>
+              <td><%= tarea.revisor %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
     </div>
   </div>
 
