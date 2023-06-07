@@ -10,7 +10,7 @@ class SesionesController < ApplicationController
       session[:usuario_id] = usuario.id
       session[:current_user] = usuario
       flash[:notice] = "Inicio de sesión exitoso"
-      redirect_to success_path
+      redirect_to user_home_path
       puts "Inicio de sesión exitoso"
     else
       # Autenticación fallida

@@ -10,15 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_29_051627) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_04_161212) do
   create_table "logs", force: :cascade do |t|
     t.string "tipo_log"
-    t.integer "proyecto_id", null: false
-    t.text "mensaje"
-    t.datetime "fecha_hora"
+    t.string "proyecto_id"
+    t.string "subject_id"
+    t.string "mensaje"
+    t.string "fecha_hora"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["proyecto_id"], name: "index_logs_on_proyecto_id"
   end
 
   create_table "meta", force: :cascade do |t|
@@ -91,7 +91,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_051627) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "logs", "proyectos"
   add_foreign_key "meta", "proyectos"
   add_foreign_key "metas", "proyectos"
   add_foreign_key "notificaciones", "usuarios"
