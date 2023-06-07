@@ -1,12 +1,9 @@
-<p>Stats meta</p>
-
-<%= render template: "metas/item", locals: {:meta => @meta}%>
-
+<p>Stats <%= meta %></p>
 <div>
 
-<p>Has <%= @stats[:total] %> tasks</p>
-<p><%= @stats[:done] %> done, <%= @stats[:finished] %> finished</p>
+<p>Has <%= stats[:total] %> tasks</p>
+<p><%= stats[:done] %> done, <%= stats[:finished] %> finished</p>
 	
 
 </div>
-<%= render template: "stats/progress_bar", locals: {:progress => @stats[:progress]}%>
+<%= render template: "stats/progress_bar", locals: {:progress => stats[:progress]}%>

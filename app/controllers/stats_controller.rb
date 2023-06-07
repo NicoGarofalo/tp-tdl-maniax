@@ -6,34 +6,45 @@ class StatsController < ApplicationController
   end
 
   def meta
-  	@idMeta = item_stats_params
-    @meta = Meta.find_by(id: @idMeta)
+  	idMeta = item_stats_params
+    nombre = Meta.find_by(id: idMeta).nombre
 
-    @stats = load_stat_progress_meta
+    stats = load_stat_progress_meta idMeta
+
+	render template: "stats/meta", locals: {:meta => nombre, :stats => stats}
 
   end
 
   def proyecto
-  	@idProyecto = item_stats_params
-    @proyecto = Proyecto.find_by(id: @idProyecto)
+  	idProyecto = item_stats_params
+    nombre = Proyecto.find_by(id: idProyecto).nombre
 
-    @stats = load_stats_progress_proyecto @idProyecto
+    stats = load_stats_progress_proyecto idProyecto
 
+	render template: "stats/proyecto", locals: {:proyecto => nombre, :stats => stats}
+	
   end
-
 
   def load_stats_progress_proyecto(id)
-  	#metas = Meta.where(proyecto_id: @idProyecto)
+  	metas = Meta.where(proyecto_id: id)
+  	res = {:metas => {}}
 
-  	{:total => 112,
-  	 :done => 23,
-  	 :finished => 11,
-  	 :progress => (34.3)
-  	 }
+  	progress = 0
+  	metas.each do |meta|
+  		res[:metas][meta.nombre] = load_stat_progress_meta(meta.id)
+
+  		progress += res[:metas][meta.nombre][:progress]
+  	end
+
+  	res[:progress] = 0
+  	if metas.count > 0
+	  	res[:progress] = progress/metas.count
+	end
+  	res
   end
 
-  def load_stat_progress_meta
-  	tasks = Tarea.where(meta_id: @idMeta)
+  def load_stat_progress_meta(id)
+  	tasks = Tarea.where(meta_id: id)
   	qTasks = tasks.count
   	qFinished = 0
   	qDone = 0
