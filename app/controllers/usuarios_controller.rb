@@ -6,7 +6,7 @@ class UsuariosController < ApplicationController
   def create
     @usuario = Usuario.new(usuario_params)
     if @usuario.save
-      #UserMailer.with(user: @usuario).welcome_email.deliver_now
+      UserMailer.welcome_email(@usuario).deliver_now
       redirect_to iniciar_sesion_path, notice: "¡Registro exitoso! Inicia sesión con tu cuenta."
     else
       puts @usuario.errors.full_messages

@@ -79,6 +79,7 @@
     <div class="content">
       <!-- Aca va  el contenido  principal -->
       	<h1>Mis Proyectos</h1>
+        <%= link_to 'Crear Proyecto', new_proyecto_path %>
 
         <% if @proyectos == nil || @proyectos.size == 0%>
             <h3>No participas de ningún proyecto</h3>
