@@ -25,6 +25,23 @@ class StatsController < ApplicationController
 	
   end
 
+  def progress_proyecto(id)
+  	metas = Meta.where(proyecto_id: id)
+
+  	progress = 0
+  	metas.each do |meta|
+  		res[:metas][meta.nombre] = load_stat_progress_meta(meta.id)
+
+  		progress += res[:metas][meta.nombre][:progress]
+  	end
+
+  	if metas.count > 0
+	  	progress = progress/metas.count
+	end
+	progress
+
+  end
+
   def load_stats_progress_proyecto(id)
   	metas = Meta.where(proyecto_id: id)
   	res = {:metas => {}}
@@ -41,6 +58,27 @@ class StatsController < ApplicationController
 	  	res[:progress] = progress/metas.count
 	end
   	res
+  end
+
+
+
+  def progress_meta(id)
+  	tasks = Tarea.where(meta_id: id)
+  	qTasks = tasks.count
+  	qFinished = 0
+
+  	tasks.each do |task|
+  		if task.estado == "Finalizada"
+  			qFinished += 1
+  		end
+  	end
+
+  	progress = 0
+  	if qTasks >0
+  		progress = (100*(qFinished.to_f/qTasks)).round(2)
+  	end
+
+  	progress
   end
 
   def load_stat_progress_meta(id)
