@@ -1,5 +1,11 @@
 class SesionesController < ApplicationController
   def new
+
+    if session[:usuario_id] != nil
+      puts "Ya existia una sesion"
+      redirect_to user_home_path      
+    end
+
   end
 
   def create
