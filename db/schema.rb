@@ -19,7 +19,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_04_161212) do
     t.datetime "fecha_hora"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["proyecto_id"], name: "index_logs_on_proyecto_id"
   end
 
   create_table "meta", force: :cascade do |t|
@@ -92,7 +91,6 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_04_161212) do
     t.datetime "updated_at", null: false
   end
 
-  add_foreign_key "logs", "proyectos"
   add_foreign_key "meta", "proyectos"
   add_foreign_key "metas", "proyectos"
   add_foreign_key "notificaciones", "usuarios"

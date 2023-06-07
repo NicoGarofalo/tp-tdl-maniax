@@ -1,24 +1,26 @@
-<h1>Bienvenido <%= @usuario.nombre %>!</h1>
-<p>Tipo de usuario: <%= @usuario.usuario_tipo %></p>
+<div class="container">
+  <h1>Bienvenido <%= @usuario.nombre %>!</h1>
+  <p>Tipo de usuario: <%= @usuario.usuario_tipo %></p>
 
-<div>
-  <% if @usuario.usuario_tipo == 'Gerente' %>
-    <%= link_to 'Crear Proyecto', new_proyecto_path %>
+  <div class="mt-4">
+    <% if @usuario.usuario_tipo == 'Gerente' %>
+      <%= link_to 'Crear Proyecto', new_proyecto_path, class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+
+  <div class="mt-4">
+    <% if @usuario.usuario_tipo == 'Gerente' %>
+      <%= link_to 'Crear Meta', new_meta_path, class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+
+  <div class="mt-4">
+    <% if @usuario.usuario_tipo == 'Líder' %>
+      <%= link_to 'Crear Tarea', new_tarea_path, class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+
+  <%= form_tag cerrar_sesion_path, method: :delete do %>
+    <%= submit_tag 'Cerrar sesión', class: 'btn btn-danger mt-4' %>
   <% end %>
 </div>
-
-<div>
-  <% if @usuario.usuario_tipo == 'Gerente' %>
-    <%= link_to 'Crear Meta', new_meta_path %>
-  <% end %>
-</div>
-
-<div>
-  <% if @usuario.usuario_tipo == 'Líder' %>
-    <%= link_to 'Crear Tarea', new_tarea_path %>
-  <% end %>
-</div>
-
-<%= form_tag cerrar_sesion_path, method: :delete do %>
-  <%= submit_tag 'Cerrar sesión' %>
-<% end %>
