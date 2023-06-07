@@ -11,7 +11,7 @@ class StatsController < ApplicationController
 
     stats = load_stat_progress_meta idMeta
 
-	render template: "stats/meta", locals: {:meta => nombre, :stats => stats}
+  	render template: "stats/meta", locals: {:meta => nombre, :stats => stats}
 
   end
 
@@ -25,21 +25,15 @@ class StatsController < ApplicationController
 	
   end
 
-  def progress_proyecto(id)
-  	metas = Meta.where(proyecto_id: id)
+  def stats_proyecto
+    id = item_stats_params
+    render json: {:progress => progress_proyecto id,
+                  :countMembers => member_count_proyecto id}
+  end
 
-  	progress = 0
-  	metas.each do |meta|
-  		res[:metas][meta.nombre] = load_stat_progress_meta(meta.id)
-
-  		progress += res[:metas][meta.nombre][:progress]
-  	end
-
-  	if metas.count > 0
-	  	progress = progress/metas.count
-	end
-	progress
-
+  def stats_meta
+    id = item_stats_params
+    render json: {:progress => progress_meta id}
   end
 
   def load_stats_progress_proyecto(id)
@@ -56,29 +50,9 @@ class StatsController < ApplicationController
   	res[:progress] = 0
   	if metas.count > 0
 	  	res[:progress] = progress/metas.count
-	end
-  	res
-  end
-
-
-
-  def progress_meta(id)
-  	tasks = Tarea.where(meta_id: id)
-  	qTasks = tasks.count
-  	qFinished = 0
-
-  	tasks.each do |task|
-  		if task.estado == "Finalizada"
-  			qFinished += 1
-  		end
-  	end
-
-  	progress = 0
-  	if qTasks >0
-  		progress = (100*(qFinished.to_f/qTasks)).round(2)
-  	end
-
-  	progress
+    end
+  	
+    res
   end
 
   def load_stat_progress_meta(id)
@@ -116,6 +90,51 @@ class StatsController < ApplicationController
   end
 
   private
+
+  def progress_proyecto(id)
+    metas = Meta.where(proyecto_id: id)
+
+    progress = 0
+    metas.each do |meta|
+      res[:metas][meta.nombre] = load_stat_progress_meta(meta.id)
+
+      progress += res[:metas][meta.nombre][:progress]
+    end
+
+    if metas.count > 0
+      progress = progress/metas.count
+    end
+  progress
+
+  end
+
+  def progress_meta(id)
+    tasks = Tarea.where(meta_id: id)
+    qTasks = tasks.count
+    qFinished = 0
+
+    tasks.each do |task|
+      if task.estado == "Finalizada"
+        qFinished += 1
+      end
+    end
+
+    progress = 0
+    if qTasks >0
+      progress = (100*(qFinished.to_f/qTasks)).round(2)
+    end
+
+    progress
+  end
+
+
+  def member_count_proyecto(id)
+    1
+  end
+
+
+
+
 
   def item_stats_params
     params.require(:id)
