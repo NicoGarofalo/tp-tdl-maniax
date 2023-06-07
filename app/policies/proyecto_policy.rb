@@ -11,8 +11,11 @@ class ProyectoPolicy
     end
 
     # El estado cumplido != finalizado para proyecto? Para que lo usariamos?
-    # No veo el attribute estado en proyecto, faltaria migration?
     def update?
         @usuario.usuario_tipo == "Gerente" && @proyecto.estado == "Finalizado"
+    end
+
+    def show?
+        @usuario.usuario_tipo == "Gerente" || @usuario.usuario_tipo == "Lider"
     end
   end

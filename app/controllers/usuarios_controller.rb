@@ -68,4 +68,9 @@ class UsuariosController < ApplicationController
   def usuario_params
     params.require(:usuario).permit(:usuario_tipo, :nombre, :apellido, :email, :password, :password_confirmation)
   end
+
+  def current_user
+    @usuario_act ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]
+    @usuario_act
+  end
 end

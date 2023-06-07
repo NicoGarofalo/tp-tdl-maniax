@@ -1,13 +1,17 @@
 class TareaPolicy
     attr_reader :tarea, :usuario_act
   
-    def initialize(tarea, usuario_act)
+    def initialize(usuario_act, tarea)
       @tarea = tarea
       @usuario_act = usuario_act
     end
 
     def create?
         @usuario_act.usuario_tipo == "Líder"
+    end
+
+    def show?
+      @usuario_act.usuario_tipo == "Revisor" || @usuario_act.usuario_tipo == "Integrante"
     end
     
     def update?
