@@ -68,6 +68,8 @@
             <h3>No fuiste asignado a ningun proyecto</h3>
         <% else %>
             <% @proyectos.each do |proyecto| %>
+
+                <% progress = 20 %>
                 <div class="card" style="padding-inline: 5vh; margin-block: 5vh">
                     <div class="card-body">
                         <div class="row justify-content-between align-items-center">
@@ -84,9 +86,9 @@
                         </div>
                         <div style="width:15%; margin-left: -12px">
                             <div class="progress">
-                                <div class="progress-bar" role="progressbar" style="width: <%= 50 %>%;" aria-valuenow="<%= 50 %>" aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar" role="progressbar" style="width: <%= progress %>%;" aria-valuenow="<%= progress %>" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>       
-                            <p>Progreso: <%= 50%>%</p>
+                            <p>Progreso: <%= progress%>%</p>
                         </div>
                         <div class="row">
                             <%= link_to 'Ver detalles', {controller: "proyectos", action: "view", id: proyecto.id}, class:"btn btn-info"%>
