@@ -39,12 +39,15 @@ class UsuariosController < ApplicationController
     render :revisor_integrante_home
   end  
 
-  def revisor_integrante_home
+  def gerente_lider_home
+
     if @usuario.usuario_tipo == 'Gerente'
-     @proyectos = Proyecto.where(gerente_id: @usuario.id)
+      @proyectos = Proyecto.where(gerente_id: @usuario.id)
+
     else
      @proyectos = Proyecto.where(lider_id: @usuario.id)
     end
+
     render :gerente_lider_home
   end
 
@@ -54,7 +57,7 @@ class UsuariosController < ApplicationController
 
 
     if @usuario.usuario_tipo == 'Gerente' || @usuario.usuario_tipo == 'Líder'
-      revisor_integrante_home()
+      gerente_lider_home()
     elsif  @usuario.usuario_tipo == 'Revisor' ||  @usuario.usuario_tipo == 'Integrante'
       revisor_integrante_home()
     end
