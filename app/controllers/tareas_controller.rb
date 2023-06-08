@@ -9,6 +9,7 @@ class TareasController < ApplicationController
 
     if @tarea.save
       flash[:notice] = "Tarea creada exitosamente."
+      redirect_to success_path
     else
       puts @tarea.errors.full_messages # Imprimir los errores en la consola
       render :new
