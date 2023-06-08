@@ -22,6 +22,7 @@ class ProyectosController < ApplicationController
       UserMailer.project_assigned_email(@lider, @proyecto).deliver_now
 
       create_log_entry(@proyecto) # Crear entrada en la tabla "logs"
+      create_notifications(@proyecto) # Crear notificaciones
 
       flash[:notice] = "Proyecto creado exitosamente"
       redirect_to controller: "proyectos",action: "view" , id: @proyecto.id
@@ -54,14 +55,14 @@ class ProyectosController < ApplicationController
   end
 
   def create_notifications(proyecto)
-    gerente_notification = Notification.create(
+    gerente_notification = Notificacion.create(
       usuario_id: proyecto.gerente_id,
       notificacion_tipo: "Proyecto Creado",
       mensaje: "Has creado el proyecto #{proyecto.nombre}",
       fecha_hora: Time.now
     )
 
-    lider_notification = Notification.create(
+    lider_notification = Notificacion.create(
       usuario_id: proyecto.lider_id,
       notificacion_tipo: "Proyecto Asignado",
       mensaje: "Has sido asignado como líder del proyecto #{proyecto.nombre}",
