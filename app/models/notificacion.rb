@@ -1,4 +1,4 @@
 # app/models/notificacion.rb
 class Notificacion < ApplicationRecord
-  # Atributos y relaciones de la tabla notificaciones
+  self.table_name = 'notificaciones'
 end

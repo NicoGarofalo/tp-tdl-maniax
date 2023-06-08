@@ -53,6 +53,22 @@ class ProyectosController < ApplicationController
     )
   end
 
+  def create_notifications(proyecto)
+    gerente_notification = Notification.create(
+      usuario_id: proyecto.gerente_id,
+      notificacion_tipo: "Proyecto Creado",
+      mensaje: "Has creado el proyecto #{proyecto.nombre}",
+      fecha_hora: Time.now
+    )
+
+    lider_notification = Notification.create(
+      usuario_id: proyecto.lider_id,
+      notificacion_tipo: "Proyecto Asignado",
+      mensaje: "Has sido asignado como líder del proyecto #{proyecto.nombre}",
+      fecha_hora: Time.now
+    )
+  end
+
   def proyecto_view_id
     params.require(:id)
   end
