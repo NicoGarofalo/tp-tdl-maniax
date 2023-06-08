@@ -21,6 +21,8 @@ class ProyectosController < ApplicationController
       @lider = Usuario.find(@proyecto.lider_id)
       UserMailer.project_assigned_email(@lider, @proyecto).deliver_now
 
+      create_log_entry(@proyecto) # Crear entrada en la tabla "logs"
+
       flash[:notice] = "Proyecto creado exitosamente"
       redirect_to controller: "proyectos",action: "view" , id: @proyecto.id
     else
@@ -40,6 +42,16 @@ class ProyectosController < ApplicationController
   end
 
   private
+
+  def create_log_entry(proyecto)
+    log = Log.create(
+      tipo_log: "Creación de Proyecto",
+      subject_id: proyecto.id.to_s,
+      mensaje: "#{current_user.nombre} creó el proyecto #{proyecto.nombre} y asignó a #{Usuario.find(proyecto.lider_id).nombre} como líder",
+      obligatorio_id: proyecto.gerente_id,
+      opcional_id: proyecto.lider_id
+    )
+  end
 
   def proyecto_view_id
     params.require(:id)
