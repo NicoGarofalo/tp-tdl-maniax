@@ -2,9 +2,6 @@ class UserMailer < ApplicationMailer
   def welcome_email(usuario)
     @usuario = usuario
     mail(to: @usuario.email, subject: "¡Bienvenido a nuestro sitio web!")
-
-    # Crear notificación para el usuario
-    # Notificacion.create(usuario_id: @usuario.id, notificacion_tipo: 'Bienvenida', mensaje: '¡Bienvenido a nuestro sitio web!', fecha_hora: DateTime.now)
   end
 
   def project_created_email(user, project)

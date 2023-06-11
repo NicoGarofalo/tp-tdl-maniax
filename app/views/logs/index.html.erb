@@ -1,0 +1,30 @@
+<h1>Logs</h1>
+
+<table>
+  <thead>
+  <tr>
+    <th>Tipo Log</th>
+    <th>Subject ID</th>
+    <th>Mensaje</th>
+    <th>Fecha y Hora</th>
+    <th>Obigatorio ID</th>
+    <th>Opcional ID</th>
+    <th>Created At</th>
+    <th>Updated At</th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @logs.each do |log| %>
+    <tr>
+      <td><%= log.tipo_log %></td>
+      <td><%= log.subject_id %></td>
+      <td><%= log.mensaje %></td>
+      <td><%= log.fecha_hora %></td>
+      <td><%= log.obligatorio_id %></td>
+      <td><%= log.opcional_id %></td>
+      <td><%= log.created_at %></td>
+      <td><%= log.updated_at %></td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>

@@ -18,6 +18,7 @@ class TareasController < ApplicationController
     if @tarea.save
       puts "exitosamente creada la tarea"
       flash[:notice] = "Tarea creada exitosamente."
+      redirect_to success_path
     else
       flash[:notice] = "Creacion Tarea fallo."
       puts @tarea.errors.full_messages # Imprimir los errores en la consola

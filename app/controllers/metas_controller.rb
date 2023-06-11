@@ -1,6 +1,5 @@
 class MetasController < ApplicationController
   def new
-    @id_proyecto = meta_new_params
     @meta = Meta.new
   end
 
@@ -17,7 +16,7 @@ class MetasController < ApplicationController
   def add
     @id_proyecto = meta_new_params
   end
-
+  
   def create
     @meta = Meta.new(meta_params)
     @meta.estado = "Pendiente" # Establecer el estado como "Pendiente"
@@ -25,23 +24,17 @@ class MetasController < ApplicationController
     if @meta.save
       puts "Meta guardada exitosamente"
       flash[:notice] = "Meta creada exitosamente."
+      redirect_to success_path
     else
       flash[:notice] = "Meta fallo en creacion."
       puts "Meta fallo al guardarse"
+      render :new
     end
   end
 
   private
 
-  def meta_new_params
-    params.require(:proyecto_id)
-  end
-
-  def meta_show_params
-    params.require(:id)
-  end
-
   def meta_params
-    params.require(:meta).permit(:proyecto_id,:fecha_vencimiento, :nombre, :descripcion, :estado)
+    params.require(:meta).permit(:proyecto_id, :fecha_vencimiento, :nombre, :descripcion, :estado)
   end
 end

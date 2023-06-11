@@ -31,6 +31,8 @@ Rails.application.routes.draw do
   resources :proyectos, only: [:new, :create]
   resources :metas, only: [:new, :create]
   resources :tareas, only: [:new, :create]
+  resources :logs, only: [:index]
+  resources :notificaciones, only: [:index]
 
   root 'sesiones#new' # Define the root path route to the login page
 end
