@@ -15,11 +15,11 @@ class ProyectosController < ApplicationController
     
     if @proyecto.save
       @usuario = Usuario.find_by(id: session[:usuario_id])
-      #UserMailer.project_created_email(@usuario, @proyecto).deliver_now
+      UserMailer.project_created_email(@usuario, @proyecto).deliver_now
 
       # Obtener al líder del proyecto
       @lider = Usuario.find(@proyecto.lider_id)
-      #UserMailer.project_assigned_email(@lider, @proyecto).deliver_now
+      UserMailer.project_assigned_email(@lider, @proyecto).deliver_now
 
       flash[:notice] = "Proyecto creado exitosamente"
       redirect_to controller: "proyectos",action: "view" , id: @proyecto.id
