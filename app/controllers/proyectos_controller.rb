@@ -24,6 +24,8 @@ class ProyectosController < ApplicationController
       create_log_entry(@proyecto) # Crear entrada en la tabla "logs"
       create_notifications(@proyecto) # Crear notificaciones
 
+      schedule_email_notifications(@proyecto) # Programar notificaciones por correo electrónico
+
       flash[:notice] = "Proyecto creado exitosamente"
       redirect_to controller: "proyectos",action: "view" , id: @proyecto.id
     else
@@ -81,5 +83,32 @@ class ProyectosController < ApplicationController
   def current_user
     @usuario_act ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]
     @usuario_act
+  end
+
+  def schedule_email_notifications(proyecto)
+    vencimiento_date = proyecto.fecha_vencimiento.to_date
+
+    # Notificar al gerente una semana antes del vencimiento
+    una_semana_antes = vencimiento_date - 1.week
+    enviar_notificacion_por_correo(una_semana_antes, proyecto.gerente_id, proyecto)
+
+    # Notificar al gerente el día del vencimiento
+    enviar_notificacion_por_correo(vencimiento_date, proyecto.gerente_id, proyecto)
+
+    # Notificar al líder una semana antes del vencimiento
+    enviar_notificacion_por_correo(una_semana_antes, proyecto.lider_id, proyecto)
+
+    # Notificar al líder el día del vencimiento
+    enviar_notificacion_por_correo(vencimiento_date, proyecto.lider_id, proyecto)
+  end
+
+  def enviar_notificacion_por_correo(fecha, usuario_id, proyecto)
+    if fecha == Date.today
+      usuario = Usuario.find(usuario_id)
+      UserMailer.project_due_today_email(usuario, proyecto).deliver_now
+    elsif fecha == 1.week.from_now.to_date
+      usuario = Usuario.find(usuario_id)
+      UserMailer.project_due_soon_email(usuario, proyecto).deliver_now
+    end
   end
 end
