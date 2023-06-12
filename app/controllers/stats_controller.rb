@@ -1,4 +1,9 @@
 class StatsController < ApplicationController
+
+  layout "layout_stats"
+
+  # views
+
   def week
   	# cargar logs semana
   	@logs = Log.all
@@ -9,117 +14,120 @@ class StatsController < ApplicationController
   	idMeta = item_stats_params
     nombre = Meta.find_by(id: idMeta).nombre
 
-    stats = load_stat_progress_meta idMeta
+    stats = stats_meta idMeta
 
   	render template: "stats/meta", locals: {:meta => nombre, :stats => stats}
-
   end
 
   def proyecto
-  	idProyecto = item_stats_params
+    idProyecto = item_stats_params
     nombre = Proyecto.find_by(id: idProyecto).nombre
 
-    stats = load_stats_progress_proyecto idProyecto
+    stats = stats_proyecto idProyecto
 
-	render template: "stats/proyecto", locals: {:proyecto => nombre, :stats => stats}
-	
+    render template: "stats/proyecto", locals: {:proyecto => nombre, :stats => stats} 
   end
 
-  def stats_proyecto
-    id = item_stats_params
-    render json: {:progress => progress_proyecto id,
-                  :countMembers => member_count_proyecto id}
+  def usuario
+    @idUsuario = item_stats_params
+
   end
 
-  def stats_meta
-    id = item_stats_params
-    render json: {:progress => progress_meta id}
-  end
 
-  def load_stats_progress_proyecto(id)
-  	metas = Meta.where(proyecto_id: id)
-  	res = {:metas => {}}
+  # stats getters requests
 
-  	progress = 0
-  	metas.each do |meta|
-  		res[:metas][meta.nombre] = load_stat_progress_meta(meta.id)
+  def stats_for
+    params_stats_info 
 
-  		progress += res[:metas][meta.nombre][:progress]
-  	end
 
-  	res[:progress] = 0
-  	if metas.count > 0
-	  	res[:progress] = progress/metas.count
+    info = {}
+    if params[:tipo] == "proyecto"
+      info[:stats] = stats_proyecto(params[:id])
+    elsif params[:tipo] == "meta"
+      info[:stats] = stats_meta(params[:id])
     end
-  	
-    res
-  end
 
-  def load_stat_progress_meta(id)
-  	tasks = Tarea.where(meta_id: id)
-  	qTasks = tasks.count
-  	qFinished = 0
-  	qDone = 0
-
-  	tasks.each do |task|
-  		if task.estado == "Hecha"
-  			qDone += 1
-  		elsif task.estado == "Finalizada"
-  			qFinished += 1
-  		end
-  	end
-
-  	progress = 0
-  	if qTasks >0
-  		progress = (100*(qFinished.to_f/qTasks)).round(2)
-  	end
-
-  	{:total => qTasks,
-  	 :done => qDone,
-  	 :finished => qFinished,
-  	 :progress => progress
-  	 }
-  end
-
-  def load_stat_progress_proyecto
+    render json: info
   end
 
 
-  def load_stats
+  def stats_proyecto(id)
 
+    stats = {}
+    stats[:progress] = progress_proyecto id 
+
+    stats[:countMembers] = member_count_proyecto id
+
+    stats
   end
+
+  def stats_meta(id)
+
+    stats = {}
+
+    stats[:progress] = progress_meta id
+    stats[:countMembers] = member_count_meta id
+
+
+
+    stats
+    #render json: {:progress => progress_meta id}
+  end
+
+  def stats_usuario
+  end
+
 
   private
 
   def progress_proyecto(id)
     metas = Meta.where(proyecto_id: id)
+    total = metas.count
+    metas.select(:id)
 
     progress = 0
+
     metas.each do |meta|
-      res[:metas][meta.nombre] = load_stat_progress_meta(meta.id)
-
-      progress += res[:metas][meta.nombre][:progress]
+      res = progress_meta(meta.id)
+      #yield( meta.id )
+      progress += res
     end
 
-    if metas.count > 0
-      progress = progress/metas.count
+    if total > 0
+      progress = (progress/total).round(2)
     end
-  progress
 
+    progress
   end
+
 
   def progress_meta(id)
     tasks = Tarea.where(meta_id: id)
     qTasks = tasks.count
-    qFinished = 0
+    
 
     tasks.each do |task|
-      if task.estado == "Finalizada"
-        qFinished += 1
-      end
+      puts "GOT STATE "+task.estado
     end
 
+    
+
+    qFinished = tasks.where(estado: "Finalizada").count
+
     progress = 0
+
+
+    puts "HADDDD ---"
+    puts qTasks
+    puts "metas"
+    puts "finished"
+    puts qFinished
+
+
+
+
+
+
     if qTasks >0
       progress = (100*(qFinished.to_f/qTasks)).round(2)
     end
@@ -128,15 +136,70 @@ class StatsController < ApplicationController
   end
 
 
+
+  def gerente_stats(datos, id)
+
+  end
+
+  def lider_stats(datos, id)
+
+  end
+
+  def revisor_stats(datos, id)
+
+  end
+
+  def integrante_stats(datos, id)
+  end
+
+
+  def usuario_stats (id, tipo)
+
+    datos= {}
+    if tipo == "Gerente"
+      gerente_stats datos, id
+    elsif tipo == "Lider"
+      lider_stats datos, id
+    elsif tipo == "Revisor"
+      revisor_stats datos, id
+    else
+      integrante_stats datos, id
+    end
+
+    datos
+  end
+
+
   def member_count_proyecto(id)
-    1
+    tareas = Meta.where(proyecto_id: id).select(:id)
+    .joins("INNER JOIN tareas ON tareas.meta_id == meta.id")
+    .joins("INNER JOIN usuarios ON usuarios.id == tareas.integrante_id OR usuarios.id == tareas.revisor_id")
+    
+    tareas.distinct.count("usuarios.id")
+  end
+
+
+  def member_count_meta(id)
+    tareas = Tarea.where(meta_id: id).select(:id)
+    .joins("INNER JOIN usuarios ON usuarios.id == tareas.integrante_id OR usuarios.id == tareas.revisor_id")
+    
+    tareas.distinct.count("usuarios.id")
   end
 
 
 
 
+
+
+  # params getter
 
   def item_stats_params
     params.require(:id)
   end
+
+  def params_stats_info
+    params.require(:tipo)
+    params.require(:id)
+  end
+
 end

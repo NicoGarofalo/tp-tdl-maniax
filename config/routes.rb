@@ -23,9 +23,15 @@ Rails.application.routes.draw do
   get '/adm', to: 'usuarios#admin', as: 'admin_view' 
 
   # stats
+  # stat views
   get '/stats/week', to: 'stats#week', as: 'weekly_stats' 
   get '/stats/meta', to: 'stats#meta', as: 'meta_stats' 
-  get '/stats/proyecto', to: 'stats#proyecto', as: 'proyecto_stats' 
+  get '/stats/proyecto', to: 'stats#proyecto', as: 'proyecto_stats_view' 
+  get '/stats/usuario', to: 'stats#usuario', as: 'usuario_stats_view' 
+  
+
+  # stat getters, info for other views.
+  get '/stats/stat', to: 'stats#stats_for', as: 'stat_getter' 
 
 
   resources :proyectos, only: [:new, :create]
