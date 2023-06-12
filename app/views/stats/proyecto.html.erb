@@ -1,21 +1,15 @@
-<p>Stats proyecto: <%= proyecto %></p>
+<div class="card" style="padding-inline: 5vh; margin-block: 5vh; max-width:80%">
+	<div class="card-body">
 
-<div>
+		<div class="row justify-content-between align-items-center">
+			<h3 class="card-title"><%= proyecto %></h3>
+			<span class="badge badge-primary" style="padding:8px; font-size: 13pt"><%= "Pendiente"%></span>
+		</div>
 
-<% stats[:metas].map do |nombre, statMeta|%>
-
-<div style="background-color: #e9e9e9">
-
-<%= render template: "stats/meta", locals: {:meta => nombre, :stats => statMeta}%>
-	
-</div>
+<%= render partial: "stats/member_count", locals: {:countMembers => stats[:countMembers]}%>
+<%= render partial: "stats/progress_bar", locals: {:progress => stats[:progress]}%>
 
 
-<% end %>
 
-</div>
-
-<div>
-	<p>proyecto done: </p>
-<%= render template: "stats/progress_bar", locals: {:progress => stats[:progress]}%>
+	</div>
 </div>

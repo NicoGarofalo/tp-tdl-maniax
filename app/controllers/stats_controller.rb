@@ -71,7 +71,6 @@ class StatsController < ApplicationController
 
 
     stats
-    #render json: {:progress => progress_meta id}
   end
 
   def stats_usuario
@@ -89,7 +88,6 @@ class StatsController < ApplicationController
 
     metas.each do |meta|
       res = progress_meta(meta.id)
-      #yield( meta.id )
       progress += res
     end
 
@@ -106,25 +104,9 @@ class StatsController < ApplicationController
     qTasks = tasks.count
     
 
-    tasks.each do |task|
-      puts "GOT STATE "+task.estado
-    end
-
-    
-
     qFinished = tasks.where(estado: "Finalizada").count
 
     progress = 0
-
-
-    puts "HADDDD ---"
-    puts qTasks
-    puts "metas"
-    puts "finished"
-    puts qFinished
-
-
-
 
 
 
