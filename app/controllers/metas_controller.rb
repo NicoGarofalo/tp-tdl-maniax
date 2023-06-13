@@ -4,11 +4,13 @@ class MetasController < ApplicationController
   end
 
   def show
-    @idUsuario = session[:usuario_id]
+    @usuario  = current_user
+
     @idMeta = meta_show_params
     @meta = Meta.find_by(id: @idMeta)
     @lider_id = Proyecto.find_by(id: @meta.proyecto_id).lider_id
 
+    
 
     @tareas = Tarea.where(meta_id: @idMeta)
   end
@@ -16,7 +18,7 @@ class MetasController < ApplicationController
   def add
     @id_proyecto = meta_new_params
   end
-  
+
   def create
     @meta = Meta.new(meta_params)
     @meta.estado = "Pendiente" # Establecer el estado como "Pendiente"
@@ -33,6 +35,19 @@ class MetasController < ApplicationController
   end
 
   private
+
+  def current_user
+    if session[:usuario_id]
+      Usuario.find_by(id: session[:usuario_id]) 
+    else 
+      nil
+    end
+  end
+
+
+  def meta_show_params
+    params.require(:id)
+  end
 
   def meta_params
     params.require(:meta).permit(:proyecto_id, :fecha_vencimiento, :nombre, :descripcion, :estado)

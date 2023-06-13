@@ -4,6 +4,8 @@ class UsuariosController < ApplicationController
 
   def new
     @usuario = Usuario.new
+
+    render "usuarios/new", layout: 'layouts/layout_general'
   end
 
   def create
@@ -24,6 +26,8 @@ class UsuariosController < ApplicationController
 
   def admin
     @usuarios = Usuario.all
+    @usuario = current_user
+
   end
 
 
@@ -57,7 +61,7 @@ class UsuariosController < ApplicationController
     
     param[:stats] = stats_proyecto proyecto.id
     param[:proyecto] = proyecto
-    param[:nombre_lider] = Usuario.find_by(id: proyecto.lider_id).nombre
+    param[:nombre_lider] = proyecto.lider.nombre
 
     param
   end
@@ -77,8 +81,7 @@ class UsuariosController < ApplicationController
   end
 
   def home
-    @idUsuario = session[:usuario_id]
-    @usuario = Usuario.find_by(id: @idUsuario)
+    @usuario = current_user
 
 
     if @usuario.usuario_tipo == 'Gerente' || @usuario.usuario_tipo == 'Líder'
@@ -95,7 +98,10 @@ class UsuariosController < ApplicationController
   end
 
   def current_user
-    @usuario_act ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]
-    @usuario_act
+    if session[:usuario_id]
+      Usuario.find_by(id: session[:usuario_id]) 
+    else 
+      nil
+    end
   end
 end

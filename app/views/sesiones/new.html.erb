@@ -1,41 +1,35 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
+
+<% content_for :title do %>
   <title>Iniciar sesión</title>
-  <style>
-  </style>
-</head>
-<body>
-  <div class="container" style="width:25%; margin-top:5%">
-    <h1 class="text-center">Iniciar sesión</h1>
+<% end %>
+    
 
-    <% if flash[:notice] %>
-      <div class="alert alert-success"><%= flash[:notice] %></div>
-    <% end %>
 
-    <% if flash[:alert] %>
-      <div class="alert alert-danger"><%= flash[:alert] %></div>
-    <% end %>
 
-    <%= form_tag iniciar_sesion_path, method: :post do %>
-      <div class="form-group">
-        <%= label_tag :email %>
-        <%= email_field_tag :email, nil, class: 'form-control' %>
-      </div>
+<h1 class="text-center">Iniciar sesión</h1>
 
-      <div class="form-group">
-        <%= label_tag :password %>
-        <%= password_field_tag :password, nil, class: 'form-control' %>
-      </div>
+<% if flash[:notice] %>
+  <div class="alert alert-success"><%= flash[:notice] %></div>
+<% end %>
 
-      <div class="form-group d-flex justify-content-center">
-        <%= submit_tag "Iniciar sesión", class: 'btn btn-primary' %>
-      </div>
-    <% end %>
+<% if flash[:alert] %>
+  <div class="alert alert-danger"><%= flash[:alert] %></div>
+<% end %>
 
-    <p class="text-center">¿No tienes una cuenta? <%= link_to 'Crear usuario', registro_path %></p>
+<%= form_tag iniciar_sesion_path, method: :post do %>
+  <div class="form-group">
+    <%= label_tag :email %>
+    <%= email_field_tag :email, nil, class: 'form-control' %>
   </div>
 
-</body>
-</html>
+  <div class="form-group">
+    <%= label_tag :password %>
+    <%= password_field_tag :password, nil, class: 'form-control' %>
+  </div>
+
+  <div class="form-group d-flex justify-content-center">
+    <%= submit_tag "Iniciar sesión", class: 'btn btn-primary' %>
+  </div>
+<% end %>
+
+<p class="text-center">¿No tienes una cuenta? <%= link_to 'Crear usuario', registro_path %></p>

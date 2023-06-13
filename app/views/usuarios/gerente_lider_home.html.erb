@@ -5,7 +5,10 @@
 
 
 <h1>Mis Proyectos</h1>
+
+<% if @usuario.esGerente %>
 <%= link_to 'Crear Proyecto', new_proyecto_path %>
+<% end %>
 
 <% if @proyectos == nil || @proyectos.size == 0%>
   <h3>No participas de ningún proyecto</h3>

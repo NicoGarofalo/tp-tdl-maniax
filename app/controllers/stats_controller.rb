@@ -1,6 +1,6 @@
 class StatsController < ApplicationController
 
-  layout "layout_stats"
+  layout "layout_general"
 
   # views
 

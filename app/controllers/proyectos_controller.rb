@@ -32,14 +32,34 @@ class ProyectosController < ApplicationController
     end
   end
 
-  def view
-    @idProyecto = proyecto_view_id
-    @proyecto = Proyecto.find_by(id: @idProyecto)
-    @nombreGerente = Usuario.find_by(id: @proyecto.gerente_id).nombre
-    @nombreLider = Usuario.find_by(id: @proyecto.lider_id).nombre
+  def stats_meta(id)
+    stats = {}
+    
+    stats[:progress] = Meta.progress_of id
+    stats[:countMembers] = Meta.member_count id
 
-    @idUsuario = session[:usuario_id]
-    @metas = Meta.where(proyecto_id: @idProyecto)
+    stats
+  end
+
+
+  def params_meta(meta)
+    param = {}
+    
+    param[:stats] = stats_meta meta.id
+    param[:meta] = meta
+    
+    param
+  end
+
+
+  def view
+
+
+    idProyecto = proyecto_view_id
+    @proyecto = Proyecto.find_by(id: idProyecto)
+    @usuario  = current_user
+
+    @metas = Meta.where(proyecto_id: idProyecto).map{ |m| params_meta m }
   end
 
   private
@@ -78,8 +98,13 @@ class ProyectosController < ApplicationController
     params.require(:proyecto).permit(:gerente_id, :lider_id, :fecha_vencimiento, :nombre, :descripcion, :estado)
   end
 
+
   def current_user
-    @usuario_act ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]
-    @usuario_act
+    if session[:usuario_id]
+      Usuario.find_by(id: session[:usuario_id]) 
+    else 
+      nil
+    end
   end
+
 end

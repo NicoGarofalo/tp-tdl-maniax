@@ -1,4 +1,7 @@
 class SesionesController < ApplicationController
+
+  layout "layout_general"
+
   def new
 
     if session[:usuario_id] != nil

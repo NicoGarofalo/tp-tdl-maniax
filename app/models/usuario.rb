@@ -6,4 +6,10 @@ class Usuario < ApplicationRecord
   has_many :proyectos, foreign_key: :lider_id, dependent: :nullify
   has_many :tareas, foreign_key: :revisor_id, dependent: :nullify
   has_many :tareas, foreign_key: :integrante_id, dependent: :nullify
+
+
+
+  def esGerente
+  	return usuario_tipo == "Gerente"
+  end
 end
