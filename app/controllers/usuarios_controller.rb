@@ -1,4 +1,7 @@
 class UsuariosController < ApplicationController
+  layout "layout_base_nav"
+
+
   def new
     @usuario = Usuario.new
   end
@@ -39,15 +42,37 @@ class UsuariosController < ApplicationController
     render :revisor_integrante_home
   end  
 
+  def stats_proyecto(id)
+    stats = {}
+    
+    stats[:progress] = Proyecto.progress_of id
+    stats[:countMembers] = Proyecto.member_count id
+
+    stats
+  end
+
+
+  def params_proyecto(proyecto)
+    param = {}
+    
+    param[:stats] = stats_proyecto proyecto.id
+    param[:proyecto] = proyecto
+    param[:nombre_lider] = Usuario.find_by(id: proyecto.lider_id).nombre
+
+    param
+  end
+
+
   def gerente_lider_home
 
     if @usuario.usuario_tipo == 'Gerente'
-      @proyectos = Proyecto.where(gerente_id: @usuario.id)
+      proyectosList = Proyecto.where(gerente_id: @usuario.id)
 
     else
-     @proyectos = Proyecto.where(lider_id: @usuario.id)
+      proyectosList = Proyecto.where(lider_id: @usuario.id)
     end
 
+    @proyectos = proyectosList.map{ |p| params_proyecto p }
     render :gerente_lider_home
   end
 
