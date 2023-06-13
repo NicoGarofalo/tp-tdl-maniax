@@ -11,21 +11,29 @@ class StatsController < ApplicationController
   end
 
   def meta
-  	idMeta = item_stats_params
-    nombre = Meta.find_by(id: idMeta).nombre
+    meta = Meta.find_by(id: item_stats_params)
 
-    stats = stats_meta idMeta
+    stats = stats_meta meta
 
-  	render template: "stats/meta", locals: {:meta => nombre, :stats => stats}
+  	render partial: "stats/meta", locals: {:meta => meta, :stats => stats} 
   end
 
   def proyecto
     idProyecto = item_stats_params
-    nombre = Proyecto.find_by(id: idProyecto).nombre
+    proyecto = Proyecto.find_by(id: idProyecto)
 
-    stats = stats_proyecto idProyecto
 
-    render template: "stats/proyecto", locals: {:proyecto => nombre, :stats => stats} 
+    nombre_lider = Usuario.find_by(id: proyecto.lider_id).nombre
+
+    stats = stats_proyecto proyecto
+    
+    datos = {
+      :stats => stats,
+      :proyecto => proyecto,
+      :nombre_lider => nombre_lider
+    }
+
+    render partial: "stats/proyecto", locals: datos
   end
 
   def usuario
@@ -52,23 +60,19 @@ class StatsController < ApplicationController
 
 
   def stats_proyecto(id)
-
     stats = {}
-    stats[:progress] = progress_proyecto id 
-
-    stats[:countMembers] = member_count_proyecto id
+    
+    stats[:progress] = progress_proyecto id
+    stats[:countMembers] = Proyecto.member_count id
 
     stats
   end
 
   def stats_meta(id)
-
     stats = {}
-
+    
     stats[:progress] = progress_meta id
-    stats[:countMembers] = member_count_meta id
-
-
+    stats[:countMembers] = Meta.member_count id
 
     stats
   end
@@ -150,28 +154,6 @@ class StatsController < ApplicationController
 
     datos
   end
-
-
-  def member_count_proyecto(id)
-    tareas = Meta.where(proyecto_id: id).select(:id)
-    .joins("INNER JOIN tareas ON tareas.meta_id == meta.id")
-    .joins("INNER JOIN usuarios ON usuarios.id == tareas.integrante_id OR usuarios.id == tareas.revisor_id")
-    
-    tareas.distinct.count("usuarios.id")
-  end
-
-
-  def member_count_meta(id)
-    tareas = Tarea.where(meta_id: id).select(:id)
-    .joins("INNER JOIN usuarios ON usuarios.id == tareas.integrante_id OR usuarios.id == tareas.revisor_id")
-    
-    tareas.distinct.count("usuarios.id")
-  end
-
-
-
-
-
 
   # params getter
 
