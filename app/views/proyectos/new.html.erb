@@ -1,3 +1,7 @@
+<% content_for :title do %>
+  <title>Nuevo proyecto</title>
+<% end %>
+
 <h1>Crear Proyecto</h1>
 
 <%= form_for @proyecto, url: proyectos_path, method: :post do |f| %>

@@ -2,7 +2,13 @@ class ProyectosController < ApplicationController
   include Pundit
 
   def new
+    @usuario  = current_user
+    if !@usuario.esGerente
+      redirect_to "/home"
+    end
+
     @proyecto = Proyecto.new
+
     @lideres = Usuario.where(usuario_tipo: 'Líder')
   end
 
