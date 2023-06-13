@@ -3,6 +3,8 @@ class Proyecto < ApplicationRecord
   belongs_to :lider, class_name: 'Usuario'
   has_many :metas, class_name: 'Meta', dependent: :destroy
 
+
+  # count members
   def count_members
     tareas = Meta.where(proyecto_id: id).select(:id)
     .joins("INNER JOIN tareas ON tareas.meta_id == meta.id")
@@ -18,5 +20,29 @@ class Proyecto < ApplicationRecord
     
     tareas.distinct.count("usuarios.id")+1# el lider?
   end
+
+
+
+  #progress
+  def self.progress_of(id)
+    metas = Meta.where(proyecto_id: id)
+    total = metas.count
+    metas.select(:id)
+
+    progress = 0
+
+    metas.each do |meta|
+      res = Meta.progress_of(meta.id)
+      progress += res
+    end
+
+    if total > 0
+      progress = (progress/total).round(2)
+    end
+
+    progress
+  end
+
+
 
 end

@@ -2,11 +2,9 @@ class Meta < ApplicationRecord
   belongs_to :proyecto
 
 
+  # member counting
   def count_members
-    tareas = Tarea.where(meta_id: id).select(:id)
-    .joins("INNER JOIN usuarios ON usuarios.id == tareas.integrante_id OR usuarios.id == tareas.revisor_id")
-    
-    tareas.distinct.count("usuarios.id")
+    Meta.member_count(id)
   end
 
   def self.member_count(id)
@@ -16,5 +14,21 @@ class Meta < ApplicationRecord
     tareas.distinct.count("usuarios.id")
   end
 
+
+  def self.progress_of(id)
+    tasks = Tarea.where(meta_id: id)
+    qTasks = tasks.count
+    
+
+    qFinished = tasks.where(estado: "Finalizada").count
+
+    progress = 0
+
+    if qTasks >0
+      progress = (100*(qFinished.to_f/qTasks)).round(2)
+    end
+
+    progress
+  end
 
 end

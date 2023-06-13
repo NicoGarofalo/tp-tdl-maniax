@@ -43,7 +43,6 @@ class StatsController < ApplicationController
 
 
   # stats getters requests
-
   def stats_for
     params_stats_info 
 
@@ -62,7 +61,7 @@ class StatsController < ApplicationController
   def stats_proyecto(id)
     stats = {}
     
-    stats[:progress] = progress_proyecto id
+    stats[:progress] = Proyecto.progress_of id
     stats[:countMembers] = Proyecto.member_count id
 
     stats
@@ -71,7 +70,7 @@ class StatsController < ApplicationController
   def stats_meta(id)
     stats = {}
     
-    stats[:progress] = progress_meta id
+    stats[:progress] = Meta.progress_of id
     stats[:countMembers] = Meta.member_count id
 
     stats
@@ -82,46 +81,6 @@ class StatsController < ApplicationController
 
 
   private
-
-  def progress_proyecto(id)
-    metas = Meta.where(proyecto_id: id)
-    total = metas.count
-    metas.select(:id)
-
-    progress = 0
-
-    metas.each do |meta|
-      res = progress_meta(meta.id)
-      progress += res
-    end
-
-    if total > 0
-      progress = (progress/total).round(2)
-    end
-
-    progress
-  end
-
-
-  def progress_meta(id)
-    tasks = Tarea.where(meta_id: id)
-    qTasks = tasks.count
-    
-
-    qFinished = tasks.where(estado: "Finalizada").count
-
-    progress = 0
-
-
-
-    if qTasks >0
-      progress = (100*(qFinished.to_f/qTasks)).round(2)
-    end
-
-    progress
-  end
-
-
 
   def gerente_stats(datos, id)
 
