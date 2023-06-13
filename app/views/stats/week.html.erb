@@ -26,7 +26,7 @@ function send(){
 	let http = new XMLHttpRequest();
 	//const url = "/stats/"+ document.getElementById("url").value+"?"+document.getElementById("id").value;
 	//const url = "/stats/stat?stats_info[tipo]="+ document.getElementById("url").value+"&stats_info[id]="+document.getElementById("id").value;
-	const url = "/stats/stat?tipo="+ document.getElementById("url").value+"&id="+document.getElementById("id_edit").value;
+	const url = "/stats/"+ document.getElementById("url").value+"?id="+document.getElementById("id_edit").value;
 
 	http.open("GET", url);
 	http.send();
@@ -41,6 +41,6 @@ function send(){
 </script>
 
 <input type="button" value = "Test" onclick="send()">
-<div id="stats_div">	
+<div id="stats_div">
 	<p>No stats could be loaded</p>
 </div>

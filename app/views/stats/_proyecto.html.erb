@@ -1,0 +1,16 @@
+
+
+<%= render layout: "shared/base_item", locals: {title: proyecto.nombre, estado: "Pendiente"} do %>
+
+	<%= render layout: "shared/item_to_view", locals: {:progress => stats[:progress], verData: {controller: "proyectos", action: "view", id: proyecto.id}} do %>
+
+		<%= render template: "shared/basic_descripcion", locals: {:descripcion => "Líder: "+nombre_lider,
+															:integrantes => stats[:countMembers],
+															:venc => proyecto.fecha_vencimiento}%>
+
+
+	<% end %>
+<% end %>
+
+
+

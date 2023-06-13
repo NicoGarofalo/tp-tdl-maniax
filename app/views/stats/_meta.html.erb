@@ -1,0 +1,12 @@
+<%= render layout: "shared/base_item", locals: {title: meta.nombre, estado: meta.estado} do %>
+
+	<%= render layout: "shared/item_to_view", locals: {:progress => stats[:progress], verData: {controller: "metas", action: "show", id: meta.id}} do %>
+
+		<%= render template: "shared/basic_descripcion", locals: {:descripcion => meta.descripcion,
+															:integrantes => stats[:countMembers],
+															:venc => meta.fecha_vencimiento}%>
+
+	<% end %>
+<% end %>
+
+
