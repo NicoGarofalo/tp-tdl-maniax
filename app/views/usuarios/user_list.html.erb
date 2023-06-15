@@ -1,0 +1,40 @@
+	<h1>Listado de usuarios</h1>
+
+	<% if @usuarios == nil || @usuarios.size == 0%>
+
+		<h3>No hay usuarios en la plataforma.</h3>
+
+	<% else %>
+		<%
+=begin%>
+ <% @usuarios.each do |usuario| %>
+			<div style="background-color: #e9e9e9">
+				<p>nombre: <%= usuario.nombre%></p>
+				<p>id: <%= usuario.id%></p>
+				<p>tipo: <%= usuario.usuario_tipo%></p>
+				<p>email: <%= usuario.email%></p>
+			</div>
+		<% end %> 
+<%
+=end%>
+		<table class="table table-bordered mt-5">
+      <thead>
+        <tr>
+          <th class="col-1">ID</th>
+          <th class="col-4">Usuario</th>
+          <th class="col-2">Rol</th>
+          <th class="col-5">Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%  @usuarios.each do |usuario| %>
+          <tr>
+            <td><%= usuario.id %></td>
+            <td><%= usuario.nombre%></td>
+            <td><%= usuario.usuario_tipo %></td>
+            <td><%= usuario.email %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+	<% end %>

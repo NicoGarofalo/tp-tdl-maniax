@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Usuario < ApplicationRecord
   has_secure_password
   validates :usuario_tipo, :nombre, :apellido, :email, :password_digest, presence: true
@@ -10,6 +12,6 @@ class Usuario < ApplicationRecord
 
 
   def esGerente
-  	return usuario_tipo == "Gerente"
+    usuario_tipo == 'Gerente'
   end
 end

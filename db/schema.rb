@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
 # incrementally modify your database, and then regenerate this schema definition.
@@ -10,98 +12,98 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_08_034942) do
-  create_table "logs", force: :cascade do |t|
-    t.string "tipo_log"
-    t.string "subject_id"
-    t.string "mensaje"
-    t.string "fecha_hora"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "obligatorio_id"
-    t.integer "opcional_id"
-    t.index ["obligatorio_id"], name: "index_logs_on_obligatorio_id"
-    t.index ["opcional_id"], name: "index_logs_on_opcional_id"
+ActiveRecord::Schema[7.0].define(version: 20_230_608_034_942) do
+  create_table 'logs', force: :cascade do |t|
+    t.string 'tipo_log'
+    t.string 'subject_id'
+    t.string 'mensaje'
+    t.string 'fecha_hora'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.integer 'obligatorio_id'
+    t.integer 'opcional_id'
+    t.index ['obligatorio_id'], name: 'index_logs_on_obligatorio_id'
+    t.index ['opcional_id'], name: 'index_logs_on_opcional_id'
   end
 
-  create_table "meta", force: :cascade do |t|
-    t.integer "proyecto_id", null: false
-    t.date "fecha_vencimiento"
-    t.string "nombre"
-    t.text "descripcion"
-    t.string "estado"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["proyecto_id"], name: "index_meta_on_proyecto_id"
+  create_table 'meta', force: :cascade do |t|
+    t.integer 'proyecto_id', null: false
+    t.date 'fecha_vencimiento'
+    t.string 'nombre'
+    t.text 'descripcion'
+    t.string 'estado'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['proyecto_id'], name: 'index_meta_on_proyecto_id'
   end
 
-  create_table "metas", force: :cascade do |t|
-    t.integer "proyecto_id", null: false
-    t.date "fecha_vencimiento"
-    t.string "nombre"
-    t.text "descripcion"
-    t.string "estado"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["proyecto_id"], name: "index_metas_on_proyecto_id"
+  create_table 'metas', force: :cascade do |t|
+    t.integer 'proyecto_id', null: false
+    t.date 'fecha_vencimiento'
+    t.string 'nombre'
+    t.text 'descripcion'
+    t.string 'estado'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['proyecto_id'], name: 'index_metas_on_proyecto_id'
   end
 
-  create_table "notificaciones", force: :cascade do |t|
-    t.integer "usuario_id", null: false
-    t.string "notificacion_tipo"
-    t.text "mensaje"
-    t.datetime "fecha_hora"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["usuario_id"], name: "index_notificaciones_on_usuario_id"
+  create_table 'notificaciones', force: :cascade do |t|
+    t.integer 'usuario_id', null: false
+    t.string 'notificacion_tipo'
+    t.text 'mensaje'
+    t.datetime 'fecha_hora'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['usuario_id'], name: 'index_notificaciones_on_usuario_id'
   end
 
-  create_table "proyectos", force: :cascade do |t|
-    t.integer "gerente_id", null: false
-    t.integer "lider_id", null: false
-    t.date "fecha_vencimiento"
-    t.string "nombre"
-    t.text "descripcion"
-    t.string "estado"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["gerente_id"], name: "index_proyectos_on_gerente_id"
-    t.index ["lider_id"], name: "index_proyectos_on_lider_id"
+  create_table 'proyectos', force: :cascade do |t|
+    t.integer 'gerente_id', null: false
+    t.integer 'lider_id', null: false
+    t.date 'fecha_vencimiento'
+    t.string 'nombre'
+    t.text 'descripcion'
+    t.string 'estado'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['gerente_id'], name: 'index_proyectos_on_gerente_id'
+    t.index ['lider_id'], name: 'index_proyectos_on_lider_id'
   end
 
-  create_table "tareas", force: :cascade do |t|
-    t.integer "meta_id", null: false
-    t.integer "revisor_id", null: false
-    t.integer "integrante_id", null: false
-    t.date "fecha_vencimiento"
-    t.string "nombre"
-    t.text "descripcion"
-    t.string "estado"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["integrante_id"], name: "index_tareas_on_integrante_id"
-    t.index ["meta_id"], name: "index_tareas_on_meta_id"
-    t.index ["revisor_id"], name: "index_tareas_on_revisor_id"
+  create_table 'tareas', force: :cascade do |t|
+    t.integer 'meta_id', null: false
+    t.integer 'revisor_id', null: false
+    t.integer 'integrante_id', null: false
+    t.date 'fecha_vencimiento'
+    t.string 'nombre'
+    t.text 'descripcion'
+    t.string 'estado'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.index ['integrante_id'], name: 'index_tareas_on_integrante_id'
+    t.index ['meta_id'], name: 'index_tareas_on_meta_id'
+    t.index ['revisor_id'], name: 'index_tareas_on_revisor_id'
   end
 
-  create_table "usuarios", force: :cascade do |t|
-    t.string "usuario_tipo"
-    t.string "nombre"
-    t.string "apellido"
-    t.string "email"
-    t.string "password_digest"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table 'usuarios', force: :cascade do |t|
+    t.string 'usuario_tipo'
+    t.string 'nombre'
+    t.string 'apellido'
+    t.string 'email'
+    t.string 'password_digest'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
   end
 
-  add_foreign_key "logs", "usuarios", column: "obligatorio_id"
-  add_foreign_key "logs", "usuarios", column: "opcional_id"
-  add_foreign_key "meta", "proyectos"
-  add_foreign_key "metas", "proyectos"
-  add_foreign_key "notificaciones", "usuarios"
-  add_foreign_key "proyectos", "usuarios", column: "gerente_id"
-  add_foreign_key "proyectos", "usuarios", column: "lider_id"
-  add_foreign_key "tareas", "meta", column: "meta_id"
-  add_foreign_key "tareas", "usuarios", column: "integrante_id"
-  add_foreign_key "tareas", "usuarios", column: "revisor_id"
+  add_foreign_key 'logs', 'usuarios', column: 'obligatorio_id'
+  add_foreign_key 'logs', 'usuarios', column: 'opcional_id'
+  add_foreign_key 'meta', 'proyectos'
+  add_foreign_key 'metas', 'proyectos'
+  add_foreign_key 'notificaciones', 'usuarios'
+  add_foreign_key 'proyectos', 'usuarios', column: 'gerente_id'
+  add_foreign_key 'proyectos', 'usuarios', column: 'lider_id'
+  add_foreign_key 'tareas', 'meta', column: 'meta_id'
+  add_foreign_key 'tareas', 'usuarios', column: 'integrante_id'
+  add_foreign_key 'tareas', 'usuarios', column: 'revisor_id'
 end
