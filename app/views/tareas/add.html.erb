@@ -1,6 +1,5 @@
-<h1>Crear Tarea</h1>
-
 <%= form_for @tarea, url: tareas_path, method: :post do |f| %>
+
   <div>
     <%= f.label :meta_id %>
     <%= f.collection_select :meta_id, Meta.all, :id, :nombre %>
@@ -31,8 +30,7 @@
     <%= f.text_area :descripcion %>
   </div>
 
-  <%= form.hidden_field :meta_id, value: @meta_id %>
   <div>
-    <%= f.submit "Crear Tarea" %>
+    <%= f.submit "Agregar Tarea" %>
   </div>
 <% end %>

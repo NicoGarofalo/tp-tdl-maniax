@@ -6,7 +6,6 @@ class ProyectosController < ApplicationController
     @lideres = Usuario.where(usuario_tipo: 'Líder')
   end
 
-
   def create
     @proyecto = Proyecto.new(proyecto_params)
     @proyecto.gerente_id = session[:usuario_id]
@@ -35,12 +34,13 @@ class ProyectosController < ApplicationController
   end
 
   def view
-    @idProyecto = proyecto_view_id
-    @proyecto = Proyecto.find_by(id: @idProyecto)
+    @proyecto = Proyecto.find_by(id: params[:id])
     @nombreGerente = Usuario.find_by(id: @proyecto.gerente_id).nombre
     @nombreLider = Usuario.find_by(id: @proyecto.lider_id).nombre
 
     @idUsuario = session[:usuario_id]
+    @idProyecto = @proyecto.id
+
     @metas = Meta.where(proyecto_id: @idProyecto)
   end
 

@@ -1,9 +1,4 @@
 Rails.application.routes.draw do
-  
-  # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
-
-  # Defines the root path route ("/")
-  # root "articles#index"
 
   get '/registro', to: 'usuarios#new', as: 'registro'
   post '/registro', to: 'usuarios#create'
@@ -23,7 +18,7 @@ Rails.application.routes.draw do
 
   resources :proyectos, only: [:new, :create]
   resources :metas, only: [:new, :create]
-  resources :tareas, only: [:new, :create]
+  resources :tareas, only: [:new, :create, :show]
   resources :logs, only: [:index]
   resources :notificaciones, only: [:index]
 

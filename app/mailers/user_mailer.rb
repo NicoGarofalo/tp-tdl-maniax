@@ -28,23 +28,22 @@ class UserMailer < ApplicationMailer
   def meta_created_email(user, meta)
     @user = user
     @meta = meta
+    @proyecto = meta.proyecto
     mail(to: @user.email, subject: "Meta creada exitosamente")
 
     # Crear notificación para el usuario
     Notificacion.create(usuario_id: @user.id, notificacion_tipo: 'Meta Creada', mensaje: 'Has recibido un correo de creación de meta', fecha_hora: DateTime.now)
   end
 
-  def tarea_created_email(lider, integrante, tarea)
-    @lider = lider
-    @integrante = integrante
+  def tarea_created_email(usuario, tarea)
+    @usuario = usuario
     @tarea = tarea
-    mail(to: [@lider.email, @integrante.email], subject: "Tarea creada exitosamente")
+    @meta = tarea.meta
+    @proyecto = tarea.meta.proyecto
+    mail(to: @usuario.email, subject: "Nueva tarea creada")
 
-    # Crear notificación para el líder
-    Notificacion.create(usuario_id: @lider.id, notificacion_tipo: 'Tarea Creada', mensaje: 'Has recibido un correo de creación de tarea', fecha_hora: DateTime.now)
-
-    # Crear notificación para el integrante
-    Notificacion.create(usuario_id: @integrante.id, notificacion_tipo: 'Tarea Creada', mensaje: 'Has recibido un correo de creación de tarea', fecha_hora: DateTime.now)
+    # Crear notificación para el usuario
+    Notificacion.create(usuario_id: @usuario.id, notificacion_tipo: 'Tarea Creada', mensaje: 'Has recibido un correo de creación de tarea', fecha_hora: DateTime.now)
   end
 
   def project_due_today_email(user, project)

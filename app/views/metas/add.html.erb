@@ -1,12 +1,14 @@
 <%= form_for @meta, url: metas_path, method: :post do |f| %>
 
-	<%= hidden_field_tag :proyecto_id , @idProyecto %>
+  <div>
+    <%= f.label :proyecto_id %>
+    <%= f.collection_select :proyecto_id, Proyecto.all, :id, :nombre, selected: @idProyecto %>
+  </div>
 
   <div>
     <%= f.label :nombre %>
     <%= f.text_field :nombre %>
   </div>
-
 
   <div>
     <%= f.label :descripcion %>

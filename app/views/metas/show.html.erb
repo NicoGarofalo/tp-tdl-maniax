@@ -1,16 +1,48 @@
-<h1>Meta:<%= @meta.nombre%></h1>
-<p><%= @meta.descripcion%></p>
+<h1><%= @proyecto.nombre %></h1>
 
-<% if @tareas == nil || @tareas.size == 0%>
-
-	<h3>Sin tareas</h3>
-
-<% else %>
-
-<% @tareas.each do |tarea| %>
-	<div style="background-color: #e9e9e9">
-		<p>tarea: <%= tarea.nombre%></p>
-		<p>id: <%= tarea.id%></p>
-	</div>
+<% if @proyecto.gerente.present? && @proyecto.lider.present? %>
+	<h2>gerente: <%= @proyecto.gerente.nombre %>, líder: <%= @proyecto.lider.nombre %></h2>
 <% end %>
+
+<% if @idUsuario == @proyecto.lider_id %>
+	<script type="text/javascript">
+
+		function toggleAddTarea(){
+			console.log("TOGGLE");
+			let add_view = document.getElementById("addTarea");
+
+			if (add_view.style.display == "block"){
+				add_view.style.display = "none";
+			} else{
+				add_view.style.display = "block";
+			}
+
+			if(add_view.getAttribute("name") == "placeholder"){
+				add_view.innerHTML = `<%=
+			@tarea = Tarea.new
+			render template: 'tareas/add' %>`
+
+				add_view.setAttribute("name","add_tarea_view")
+				console.log("Loaded..");
+			}
+		}
+	</script>
+
+
+	<input type="button" value="add tarea" onclick="toggleAddTarea()" />
+	<div id="addTarea" name = "placeholder" style="display: none;"></div>
+
+<% end %>
+
+<% if @meta.tareas.nil? || @meta.tareas.empty? %>
+	<h3>Sin tareas</h3>
+<% else %>
+	<% @meta.tareas.each do |tarea| %>
+		<div style="background-color: #e9e9e9">
+			<p>tarea: <%= tarea.nombre %></p>
+			<p>id: <%= tarea.id %></p>
+
+			<%= link_to 'view', controller: "tareas", action: "show", id: tarea.id %>
+		</div>
+	<% end %>
 <% end %>
