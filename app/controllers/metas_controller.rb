@@ -28,11 +28,11 @@ class MetasController < ApplicationController
     if @meta.save
       puts 'Meta guardada exitosamente'
       flash[:notice] = 'Meta creada exitosamente.'
-      redirect_to success_path
+      #redirect_to success_path
     else
       flash[:notice] = 'Meta fallo en creacion.'
       puts 'Meta fallo al guardarse'
-      render :new
+      #render :new
     end
   end
 

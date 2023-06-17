@@ -10,7 +10,7 @@
 
 <% if @usuario.id == @proyecto.gerente_id %>
 
-<%= render template: "proyectos/add_meta",locals: {:idProyecto => @idProyecto} %>
+<%= render template: "proyectos/add_meta",locals: {:idProyecto => @proyecto.id} %>
 
 <% end%>
 
