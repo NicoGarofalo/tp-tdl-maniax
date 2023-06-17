@@ -1,18 +1,20 @@
+# frozen_string_literal: true
+
 class UsuariosController < ApplicationController
-  layout "layout_base_nav"
+  layout 'layout_base_nav'
 
 
   def new
     @usuario = Usuario.new
 
-    render "usuarios/new", layout: 'layouts/layout_general'
+    render 'usuarios/new', layout: 'layouts/layout_general'
   end
 
   def create
     @usuario = Usuario.new(usuario_params)
     if @usuario.save
       UserMailer.welcome_email(@usuario).deliver_now
-      redirect_to iniciar_sesion_path, notice: "¡Registro exitoso! Inicia sesión con tu cuenta."
+      redirect_to iniciar_sesion_path, notice: '¡Registro exitoso! Inicia sesión con tu cuenta.'
     else
       puts @usuario.errors.full_messages
       render :new
@@ -24,41 +26,37 @@ class UsuariosController < ApplicationController
     render :gerente_home
   end
 
-  def admin
+  def user_list
     @usuarios = Usuario.all
     @usuario = current_user
-
   end
 
-
   def lider_home
-      @proyectos = Proyecto.where(lider_id: @usuario.id)
-      render :lider_home
-  end  
-
+    @proyectos = Proyecto.where(lider_id: @usuario.id)
+    render :lider_home
+  end
 
   def revisor_integrante_home
-    if @usuario.usuario_tipo == 'Revisor'
-     @tareas = Tarea.where(revisor_id: @usuario.id)
-    else
-     @tareas = Tarea.where(integrante_id: @usuario.id)
-    end
+    @tareas = if @usuario.usuario_tipo == 'Revisor'
+                Tarea.where(revisor_id: @usuario.id)
+              else
+                Tarea.where(integrante_id: @usuario.id)
+              end
     render :revisor_integrante_home
-  end  
+  end
 
   def stats_proyecto(id)
     stats = {}
-    
+
     stats[:progress] = Proyecto.progress_of id
     stats[:countMembers] = Proyecto.member_count id
 
     stats
   end
 
-
   def params_proyecto(proyecto)
     param = {}
-    
+
     param[:stats] = stats_proyecto proyecto.id
     param[:proyecto] = proyecto
     param[:nombre_lider] = proyecto.lider.nombre
@@ -66,17 +64,15 @@ class UsuariosController < ApplicationController
     param
   end
 
-
   def gerente_lider_home
+    proyectosList = if @usuario.usuario_tipo == 'Gerente'
+                      Proyecto.where(gerente_id: @usuario.id)
 
-    if @usuario.usuario_tipo == 'Gerente'
-      proyectosList = Proyecto.where(gerente_id: @usuario.id)
+                    else
+                      Proyecto.where(lider_id: @usuario.id)
+                    end
 
-    else
-      proyectosList = Proyecto.where(lider_id: @usuario.id)
-    end
-
-    @proyectos = proyectosList.map{ |p| params_proyecto p }
+    @proyectos = proyectosList.map { |p| params_proyecto p }
     render :gerente_lider_home
   end
 
@@ -85,9 +81,9 @@ class UsuariosController < ApplicationController
 
 
     if @usuario.usuario_tipo == 'Gerente' || @usuario.usuario_tipo == 'Líder'
-      gerente_lider_home()
-    elsif  @usuario.usuario_tipo == 'Revisor' ||  @usuario.usuario_tipo == 'Integrante'
-      revisor_integrante_home()
+      gerente_lider_home
+    elsif @usuario.usuario_tipo == 'Revisor' || @usuario.usuario_tipo == 'Integrante'
+      revisor_integrante_home
     end
   end
 
@@ -98,10 +94,8 @@ class UsuariosController < ApplicationController
   end
 
   def current_user
-    if session[:usuario_id]
-      Usuario.find_by(id: session[:usuario_id]) 
-    else 
-      nil
-    end
+    return unless session[:usuario_id]
+
+    Usuario.find_by(id: session[:usuario_id])
   end
 end

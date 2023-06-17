@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class MetasController < ApplicationController
   def new
     @meta = Meta.new
@@ -10,7 +12,7 @@ class MetasController < ApplicationController
     @meta = Meta.find_by(id: @idMeta)
     @lider_id = Proyecto.find_by(id: @meta.proyecto_id).lider_id
 
-    
+
 
     @tareas = Tarea.where(meta_id: @idMeta)
   end
@@ -21,15 +23,15 @@ class MetasController < ApplicationController
 
   def create
     @meta = Meta.new(meta_params)
-    @meta.estado = "Pendiente" # Establecer el estado como "Pendiente"
+    @meta.estado = 'Pendiente' # Establecer el estado como "Pendiente"
 
     if @meta.save
-      puts "Meta guardada exitosamente"
-      flash[:notice] = "Meta creada exitosamente."
+      puts 'Meta guardada exitosamente'
+      flash[:notice] = 'Meta creada exitosamente.'
       redirect_to success_path
     else
-      flash[:notice] = "Meta fallo en creacion."
-      puts "Meta fallo al guardarse"
+      flash[:notice] = 'Meta fallo en creacion.'
+      puts 'Meta fallo al guardarse'
       render :new
     end
   end
@@ -37,13 +39,10 @@ class MetasController < ApplicationController
   private
 
   def current_user
-    if session[:usuario_id]
-      Usuario.find_by(id: session[:usuario_id]) 
-    else 
-      nil
-    end
-  end
+    return unless session[:usuario_id]
 
+    Usuario.find_by(id: session[:usuario_id])
+  end
 
   def meta_show_params
     params.require(:id)

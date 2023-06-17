@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class NotificacionesController < ApplicationController
   def new
     @notificacion = Notificacion.new

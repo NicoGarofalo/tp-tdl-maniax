@@ -1,16 +1,18 @@
+# frozen_string_literal: true
+
 class MetasPolicy
-    attr_reader :meta, :usuario
-  
-    def initialize(meta, usuario)
-        @meta = meta
-        @usuario = usuario
-    end
+  attr_reader :meta, :usuario
 
-    def create?
-        @usuario_act.usuario_tipo == "Gerente"
-    end
-
-    def update?
-        @usuario_act.usuario_tipo == "Gerente"
-    end
+  def initialize(meta, usuario)
+    @meta = meta
+    @usuario = usuario
   end
+
+  def create?
+    @usuario_act.usuario_tipo == 'Gerente'
+  end
+
+  def update?
+    @usuario_act.usuario_tipo == 'Gerente'
+  end
+end
