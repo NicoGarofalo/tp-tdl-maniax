@@ -10,6 +10,6 @@ class LogPolicy
 
   # Aca meter scopes para saber cuales logs traer en base a rol
   def show?
-    @usuario_act.usuario_tipo == 'Lider' || @usuario_act.usuario_tipo == 'Gerente'
+    @usuario_act.esLider || @usuario_act.esGerente
   end
 end

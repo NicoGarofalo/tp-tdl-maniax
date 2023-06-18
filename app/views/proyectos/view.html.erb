@@ -2,27 +2,34 @@
   <title><%= @proyecto.nombre%></title>
 <% end %>
 
-<h1><%= @proyecto.nombre%></h1>
 
 
-<h2>gerente : <%= @proyecto.gerente.nombre%>, lider: <%= @proyecto.lider.nombre%></h2>
+<h1><%= @proyecto.nombre %></h1>
 
 
 <% if @usuario.id == @proyecto.gerente_id %>
-
-<%= render template: "proyectos/add_meta",locals: {:idProyecto => @idProyecto} %>
-
-<% end%>
+  <%= render template: "proyectos/add_meta", locals: { idProyecto: @idProyecto }, :class => 'btn btn-primary'%>
+<% end %>
 
 
-<% if @usuario.id == @proyecto.lider_id %>
-<p>Buenas lider</p>
+<div class="container " style='margin-block:3vh'>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-text" style="font-size: 16pt;"><b>Gerente</b>: <%= @proyecto.gerente.nombre + " " + @proyecto.gerente.apellido %></p>
+          <p class="card-text" style="font-size: 16pt;"><b>Líder</b>: <%= @proyecto.lider.nombre + " " + @proyecto.lider.apellido %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
-<% end%>
 
 
+<h3>Metas</h3>
 <% if @metas == nil || @metas.size == 0%>
-  <h3>Proyecto no tiene metas</h3>
+  <p>El proyecto aún no tiene metas</p>
 <% else %>
   <% @metas.each do |metaParams| %>
   <%= render partial: "stats/meta", locals: metaParams %>

@@ -14,4 +14,16 @@ class Usuario < ApplicationRecord
   def esGerente
     usuario_tipo == 'Gerente'
   end
+
+  def esLider
+    usuario_tipo == 'Lider'
+  end
+
+  def esIntegrante
+    usuario_tipo == 'Integrante'
+  end
+
+  def esRevisor
+    usuario_tipo == 'Revisor'
+  end
 end

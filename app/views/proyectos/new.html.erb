@@ -6,27 +6,28 @@
 
 <%= form_for @proyecto, url: proyectos_path, method: :post do |f| %>
 
-  <div>
-    <%= f.label :lider_id %>
-    <%= f.collection_select :lider_id, @lideres, :id, :nombre %>
-  </div>
+<div class="form-group">
+  <%= f.label :lider_id %>
+  <%= f.collection_select :lider_id, @lideres, :id, :nombre, {}, class: "form-control" %>
+</div>
 
-  <div>
-    <%= f.label :fecha_vencimiento %>
-    <%= f.date_field :fecha_vencimiento %>
-  </div>
+<div class="form-group">
+  <%= f.label :fecha_vencimiento %>
+  <%= f.date_field :fecha_vencimiento, class: "form-control" %>
+</div>
 
-  <div>
-    <%= f.label :nombre %>
-    <%= f.text_field :nombre %>
-  </div>
+<div class="form-group">
+  <%= f.label :nombre %>
+  <%= f.text_field :nombre, class: "form-control" %>
+</div>
 
-  <div>
-    <%= f.label :descripcion %>
-    <%= f.text_area :descripcion %>
-  </div>
+<div class="form-group">
+  <%= f.label :descripcion %>
+  <%= f.text_area :descripcion, class: "form-control" %>
+</div>
 
-  <div>
-    <%= f.submit "Crear Proyecto" %>
-  </div>
+<div class="form-group">
+  <%= f.submit "Crear Proyecto", class: "btn btn-primary" %>
+</div>
+
 <% end %>

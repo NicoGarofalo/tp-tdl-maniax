@@ -9,15 +9,15 @@ class ProyectoPolicy
   end
 
   def create?
-    @usuario.usuario_tipo == 'Gerente'
+    @usuario.esGerente
   end
 
   # El estado cumplido != finalizado para proyecto? Para que lo usariamos?
   def update?
-    @usuario.usuario_tipo == 'Gerente' && @proyecto.estado == 'Finalizado'
+    @usuario.esGerente && @proyecto.estado == 'Finalizado'
   end
 
   def show?
-    @usuario.usuario_tipo == 'Gerente' || @usuario.usuario_tipo == 'Lider'
+    @usuario.esGerente || @usuario.esLider
   end
 end

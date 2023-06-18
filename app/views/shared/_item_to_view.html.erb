@@ -2,12 +2,10 @@
 <% progress ||= 0 %>
 <% verLabel ||= 'Ver detalles'%>
 
-                        <div class="row justify-content-between" style="margin-bottom: 1.5vh; margin-top: 1.5vh">
-                            <%= yield %>
-                        </div>
+<%= yield %>
 
-                        <%= render partial: "shared/progress_bar", locals: {:progress => progress}%>
+<%= render partial: "shared/progress_bar", locals: {:progress => progress}%>
 
-                        <div class="row">
-                            <%= link_to verLabel, verData, class:"btn btn-info"%>
-                        </div>
+<div class="row">
+    <%= link_to verLabel, verData, class:"btn btn-info"%>
+</div>

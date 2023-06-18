@@ -22,18 +22,19 @@ class MetasController < ApplicationController
   end
 
   def create
+    @usuario = current_user
+    puts meta_params
     @meta = Meta.new(meta_params)
     @meta.estado = 'Pendiente' # Establecer el estado como "Pendiente"
 
     if @meta.save
-      puts 'Meta guardada exitosamente'
       flash[:notice] = 'Meta creada exitosamente.'
-      redirect_to success_path
+      puts 'Meta guardada exitosamente'
     else
       flash[:notice] = 'Meta fallo en creacion.'
       puts 'Meta fallo al guardarse'
-      render :new
     end
+    redirect_to proyecto_view_path(meta_params.proyecto_id)
   end
 
   private

@@ -9,14 +9,14 @@ class UsuariosPolicy
   end
 
   def create?
-    @usuario_act.usuario_tipo == 'Gerente'
+    @usuario_act.esGerente
   end
 
   def show_all?
-    @usuario_act.usuario_tipo == 'Gerente' || @usuario_act.usuario_tipo == 'Lider'
+    @usuario_act.esGerente || @usuario_act.esLider
   end
 
   def update?
-    @usuario == @usuario_act || @usuario_act.usuario_tipo == 'Gerente'
+    @usuario == @usuario_act || @usuario_act.esGerente
   end
 end

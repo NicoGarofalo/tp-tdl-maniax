@@ -9,10 +9,10 @@ class MetasPolicy
   end
 
   def create?
-    @usuario_act.usuario_tipo == 'Gerente'
+    @usuario_act.esGerente
   end
 
   def update?
-    @usuario_act.usuario_tipo == 'Gerente'
+    @usuario_act.esGerente
   end
 end

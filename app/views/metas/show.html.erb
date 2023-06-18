@@ -2,14 +2,12 @@
   <title><%= @meta.nombre%></title>
 <% end %>
 
-<h1>Meta:<%= @meta.nombre%></h1>
+<h1>Meta: <%= @meta.nombre%></h1>
 <p><%= @meta.descripcion%></p>
-
-
+<p><%= @lider_id%></p>
+<p><%= @idUsuario%></p>
 <% if @idUsuario == @lider_id %>
-
 	<%= render template: "metas/add_tarea",  locals: {:meta_id=> @idMeta}%>
-
 <% end %>
 
 

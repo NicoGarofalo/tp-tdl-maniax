@@ -2,6 +2,7 @@
 
 class ProyectosController < ApplicationController
   include Pundit
+  layout 'layout_base_nav'
 
   def new
     @usuario = current_user
