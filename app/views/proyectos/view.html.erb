@@ -8,7 +8,7 @@
 
 
 <% if @usuario.id == @proyecto.gerente_id %>
-  <%= render template: "proyectos/add_meta", locals: { idProyecto: @idProyecto }, :class => 'btn btn-primary'%>
+  <%= render template: "proyectos/add_meta", locals: {:idProyecto => @proyecto.id}, :class => 'btn btn-primary'%>
 <% end %>
 
 
