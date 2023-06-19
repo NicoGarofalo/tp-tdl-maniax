@@ -4,20 +4,15 @@
 
 <h1>Meta: <%= @meta.nombre%></h1>
 <p><%= @meta.descripcion%></p>
-<p><%= @lider_id%></p>
-<p><%= @idUsuario%></p>
 <% if @idUsuario == @lider_id %>
 	<%= render template: "metas/add_tarea",  locals: {:meta_id=> @idMeta}%>
 <% end %>
-
-
 
 <% if @tareas == nil || @tareas.size == 0%>
 
 	<h3>Sin tareas</h3>
 
 <% else %>
-
 
 <%= render partial:"tareas/item", collection: @tareas%>
 

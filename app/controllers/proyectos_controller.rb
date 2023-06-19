@@ -141,3 +141,4 @@ class ProyectosController < ApplicationController
       UserMailer.project_due_soon_email(usuario, proyecto).deliver_now
     end
   end
+end

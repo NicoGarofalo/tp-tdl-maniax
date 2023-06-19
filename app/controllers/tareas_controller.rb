@@ -11,17 +11,19 @@ class TareasController < ApplicationController
   def add
     @idUsuario = session[:usuario_id]
     @idMeta = tarea_new_params
+    @meta_id = params[:meta_id] # Asignar el valor de params[:meta_id] a @meta_id
+    puts "meta_id: #{@meta_id}" # o logger.debug("meta_id: #{@meta_id}")
   end
 
   def create
     @tarea = Tarea.new(tarea_params)
-    @tarea.estado = 'Pendiente' # Establecer el estado como "Pendiente"
+    @tarea.estado = 'Pendiente'
 
     if @tarea.save
       puts 'exitosamente creada la tarea'
       flash[:notice] = 'Tarea creada exitosamente.'
       # redirect_to success_path
-      create_log_entry(@tarea) # Llamada a la función create_log_entry para registrar la creación de la tarea en el registro de logs
+      create_log_entry(@tarea) # Llamada a la función create_log_entry para registrar la creación de la tarea en el registro de logs"
       create_notifications(@tarea) # Llamada a la función create_notifications para crear notificaciones relacionadas con la creación de la tarea
       send_email_notifications(@tarea) # Llamada a la función send_email_notifications para enviar notificaciones por correo relacionadas con la tarea
       redirect_to meta_show_path(id: @tarea.meta_id)
@@ -80,10 +82,16 @@ class TareasController < ApplicationController
   end
 
   def send_email_notifications(tarea)
-    UserMailer.tarea_created_email(tarea.meta.proyecto.lider, tarea).deliver_now
-    UserMailer.tarea_created_email(tarea.revisor, tarea).deliver_now
-    UserMailer.tarea_created_email(tarea.integrante, tarea).deliver_now
+    proyecto = tarea.meta.proyecto
+    lider = proyecto.lider
+    revisor = Usuario.find(tarea.revisor_id)
+    integrante = Usuario.find(tarea.integrante_id)
+
+    UserMailer.tarea_created_email_lider(lider, tarea).deliver_now
+    UserMailer.tarea_created_email_revisor(revisor, tarea).deliver_now
+    UserMailer.tarea_created_email_integrante(integrante, tarea).deliver_now
   end
+
 
   def current_user
     @current_user ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]

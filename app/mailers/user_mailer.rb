@@ -30,25 +30,50 @@ class UserMailer < ApplicationMailer
                         mensaje: 'Has recibido un correo de asignación de proyecto', fecha_hora: DateTime.now)
   end
 
-  def meta_created_email(user, meta)
-    @user = user
+  def meta_created_email(gerente, meta)
+    @gerente = gerente
     @meta = meta
-    mail(to: @user.email, subject: 'Meta creada exitosamente')
+    mail(to: @gerente.email, subject: 'Meta creada exitosamente')
 
     # Crear notificación para el usuario
-    Notificacion.create(usuario_id: @user.id, notificacion_tipo: 'Meta Creada',
+    Notificacion.create(usuario_id: @gerente.id, notificacion_tipo: 'Meta Creada',
                         mensaje: 'Has recibido un correo de creación de meta', fecha_hora: DateTime.now)
   end
 
-  def tarea_created_email(lider, integrante, tarea)
+  def meta_created_email_lider(lider, meta)
     @lider = lider
-    @integrante = integrante
+    @meta = meta
+    mail(to: @lider.email, subject: '¡Se ha creado una nueva meta!')
+
+    # Crear notificación para el usuario
+    Notificacion.create(usuario_id: @lider.id, notificacion_tipo: 'Meta Creada',
+                        mensaje: 'Has recibido un correo de creación de meta', fecha_hora: DateTime.now)
+  end
+
+  def tarea_created_email_lider(lider, tarea)
+    @lider = lider
     @tarea = tarea
-    mail(to: [@lider.email, @integrante.email], subject: 'Tarea creada exitosamente')
+    mail(to: @lider.email, subject: 'Tarea creada exitosamente para el líder')
 
     # Crear notificación para el líder
     Notificacion.create(usuario_id: @lider.id, notificacion_tipo: 'Tarea Creada',
                         mensaje: 'Has recibido un correo de creación de tarea', fecha_hora: DateTime.now)
+  end
+
+  def tarea_created_email_revisor(revisor, tarea)
+    @revisor = revisor
+    @tarea = tarea
+    mail(to: @revisor.email, subject: 'Tarea creada exitosamente para el revisor')
+
+    # Crear notificación para el revisor
+    Notificacion.create(usuario_id: @revisor.id, notificacion_tipo: 'Tarea Creada',
+                        mensaje: 'Has recibido un correo de creación de tarea', fecha_hora: DateTime.now)
+  end
+
+  def tarea_created_email_integrante(integrante, tarea)
+    @integrante = integrante
+    @tarea = tarea
+    mail(to: @integrante.email, subject: 'Tarea creada exitosamente para el integrante')
 
     # Crear notificación para el integrante
     Notificacion.create(usuario_id: @integrante.id, notificacion_tipo: 'Tarea Creada',

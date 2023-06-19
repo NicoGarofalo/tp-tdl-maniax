@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+</head>
+<body>
+<h1>¡Nueva tarea creada para el revisor!</h1>
+<p>Hola <%= @revisor.nombre %>,</p>
+<p>Has sido asignado como revisor de la tarea titulada "<%= @tarea.nombre %>" en la meta "<%= @tarea.meta.nombre %>" del proyecto "<%= @tarea.meta.proyecto.nombre %>".</p>
+<p>¡Revisa la tarea y proporciona tus comentarios y aprobación según corresponda!</p>
+<p>Saludos,</p>
+<p>El equipo de tu aplicación</p>
+</body>
+</html>

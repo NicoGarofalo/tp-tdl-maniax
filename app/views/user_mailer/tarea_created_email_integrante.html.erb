@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta content="text/html; charset=UTF-8" http-equiv="Content-Type" />
+</head>
+<body>
+<h1>¡Nueva tarea creada para el integrante!</h1>
+<p>Hola <%= @integrante.nombre %>,</p>
+<p>Has sido asignado como integrante de la tarea titulada "<%= @tarea.nombre %>" en la meta "<%= @tarea.meta.nombre %>" del proyecto "<%= @tarea.meta.proyecto.nombre %>".</p>
+<p>¡Comienza a trabajar en ella cuanto antes!</p>
+<p>Saludos,</p>
+<p>El equipo de tu aplicación</p>
+</body>
+</html>

@@ -32,7 +32,6 @@ class MetasController < ApplicationController
       flash[:notice] = 'Meta fallo en creacion.'
       puts 'Meta fallo al guardarse'
     end
-    redirect_to proyecto_view_path(meta_params.proyecto_id)
   end
 
   def show
@@ -40,6 +39,8 @@ class MetasController < ApplicationController
     @tareas = @meta.tareas
     @proyecto = @meta.proyecto
     @idUsuario = current_user.id
+    @usuario = current_user
+    @lider_id = @meta.proyecto.lider.id
 
     if @tareas.nil? || @tareas.empty?
       flash.now[:notice] = "Sin tareas"
@@ -120,7 +121,7 @@ class MetasController < ApplicationController
     lider = Usuario.find(meta.proyecto.lider_id)
 
     UserMailer.meta_created_email(gerente, meta).deliver_now
-    UserMailer.meta_created_email(lider, meta).deliver_now
+    UserMailer.meta_created_email_lider(lider, meta).deliver_now
   end
 
   def current_user

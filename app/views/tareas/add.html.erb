@@ -1,6 +1,9 @@
 <%= form_for tarea, url: tareas_path, method: :post do |f| %>
 
-  <%= hidden_field_tag "tarea[meta_id]" , meta_id %>
+  <div>
+    <%= f.label :meta_id, style: 'display: none;' %>
+    <%= f.hidden_field :meta_id, value: @meta.id %>
+  </div>
 
   <div>
     <%= f.label :revisor_id %>
