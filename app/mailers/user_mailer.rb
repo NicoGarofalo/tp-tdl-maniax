@@ -21,8 +21,8 @@ class UserMailer < ApplicationMailer
   end
 
   def project_assigned_email(lider, proyecto)
-    @lider = user
-    @proyecto = project
+    @lider = lider
+    @proyecto = proyecto
     mail(to: @lider.email, subject: 'Proyecto asignado a ti')
 
     # Crear notificación para el usuario
