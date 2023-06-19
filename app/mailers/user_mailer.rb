@@ -10,23 +10,23 @@ class UserMailer < ApplicationMailer
                         mensaje: 'Has recibido un correo de bienvenida', fecha_hora: DateTime.now)
   end
 
-  def project_created_email(user, project)
-    @user = user
-    @project = project
-    mail(to: @user.email, subject: 'Proyecto creado exitosamente')
+  def project_created_email(gerente, proyecto)
+    @gerente = gerente
+    @proyecto = proyecto
+    mail(to: @gerente.email, subject: 'Proyecto creado exitosamente')
 
     # Crear notificación para el usuario
-    Notificacion.create(usuario_id: @user.id, notificacion_tipo: 'Proyecto Creado',
+    Notificacion.create(usuario_id: @gerente.id, notificacion_tipo: 'Proyecto Creado',
                         mensaje: 'Has recibido un correo de creación de proyecto', fecha_hora: DateTime.now)
   end
 
-  def project_assigned_email(user, project)
-    @user = user
-    @project = project
-    mail(to: @user.email, subject: 'Proyecto asignado a ti')
+  def project_assigned_email(lider, proyecto)
+    @lider = user
+    @proyecto = project
+    mail(to: @lider.email, subject: 'Proyecto asignado a ti')
 
     # Crear notificación para el usuario
-    Notificacion.create(usuario_id: @user.id, notificacion_tipo: 'Proyecto Asignado',
+    Notificacion.create(usuario_id: @lider.id, notificacion_tipo: 'Proyecto Asignado',
                         mensaje: 'Has recibido un correo de asignación de proyecto', fecha_hora: DateTime.now)
   end
 
