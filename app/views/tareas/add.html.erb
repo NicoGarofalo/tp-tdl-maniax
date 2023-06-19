@@ -1,9 +1,6 @@
-<%= form_for @tarea, url: tareas_path, method: :post do |f| %>
+<%= form_for tarea, url: tareas_path, method: :post do |f| %>
 
-  <div>
-    <%= f.label :meta_id %>
-    <%= f.collection_select :meta_id, Meta.all, :id, :nombre %>
-  </div>
+  <%= hidden_field_tag "tarea[meta_id]" , meta_id %>
 
   <div>
     <%= f.label :revisor_id %>
@@ -31,6 +28,6 @@
   </div>
 
   <div>
-    <%= f.submit "Agregar Tarea" %>
+    <%= f.submit "Crear Tarea" %>
   </div>
 <% end %>

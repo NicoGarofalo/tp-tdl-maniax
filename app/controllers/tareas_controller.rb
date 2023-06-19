@@ -1,22 +1,34 @@
+# frozen_string_literal: true
+
 class TareasController < ApplicationController
   def new
+    @idUsuario = session[:usuario_id]
+    @idMeta = tarea_new_params
     @tarea = Tarea.new
     @meta_id = params[:meta_id]
   end
 
+  def add
+    @idUsuario = session[:usuario_id]
+    @idMeta = tarea_new_params
+  end
+
   def create
     @tarea = Tarea.new(tarea_params)
-    @tarea.estado = "Pendiente" # Establecer el estado como "Pendiente"
+    @tarea.estado = 'Pendiente' # Establecer el estado como "Pendiente"
 
     if @tarea.save
-      flash[:notice] = "Tarea agregada exitosamente."
+      puts 'exitosamente creada la tarea'
+      flash[:notice] = 'Tarea creada exitosamente.'
+      # redirect_to success_path
       create_log_entry(@tarea) # Llamada a la función create_log_entry para registrar la creación de la tarea en el registro de logs
       create_notifications(@tarea) # Llamada a la función create_notifications para crear notificaciones relacionadas con la creación de la tarea
       send_email_notifications(@tarea) # Llamada a la función send_email_notifications para enviar notificaciones por correo relacionadas con la tarea
       redirect_to meta_show_path(id: @tarea.meta_id)
     else
+      flash[:notice] = 'Creacion Tarea fallo.'
       puts @tarea.errors.full_messages # Imprimir los errores en la consola
-      render :new
+      # render :new
     end
   end
 
@@ -25,6 +37,10 @@ class TareasController < ApplicationController
   end
 
   private
+
+  def tarea_new_params
+    params.require(:meta_id)
+  end
 
   def tarea_params
     params.require(:tarea).permit(:meta_id, :revisor_id, :integrante_id, :fecha_vencimiento, :nombre, :descripcion, :estado)

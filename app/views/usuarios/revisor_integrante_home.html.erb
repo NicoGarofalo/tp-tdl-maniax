@@ -1,108 +1,25 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Menú Lateral Izquierdo con Navbar</title>
-  <style>
-    .sidebar {
-      position: fixed;
-      top: 0;
-      bottom: 0;
-      left: 0;
-      z-index: 100;
-      padding: 10px 0;
-      overflow-x: hidden;
-      overflow-y: auto;
-      background-color: #f8f9fa;
-    }
-
-    .sidebar .nav-link {
-      padding: 10px 40px;
-    }
-
-    .content {
-      margin-left: 230px;
-      padding: 30px;
-    }
-  </style>
-</head>
-<body>
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <div class="row mr-2 align-items-center">
-          <div class="mr-3" style="margin-top:15px">
-            <p style="color: white" class="text-right">¡Hola, <%= @usuario.nombre %>!<br/><%= @usuario.usuario_tipo %></p>
-          </div>
-          <img src="user-img.jpg" width="50px" height="50px" class="rounded">
-        </div>
-      </div>
-  </nav>
-
-  <div class="d-flex">
-    <div class="sidebar">
-    <div class="row align-items-center" style="margin-left: 10px; margin-top:15px">
-      <img src="logo.png" width='50px' height='40px'>
-      <a class="nav-link" style="margin-left: -30px">Software System</a>
-    </div>
-      <ul class="nav flex-column" style="margin-top:25%">
-      <% if policy(:tarea).show? %>
-        <li class="nav-item nav-link">
-          <i class="bi bi-list-check"></i>
-          <%= link_to 'Mis Tareas', {controller: "usuarios", action: "home"},style:"padding-left:5px"%>
-        </li>
-      <% end %>
-      <% if policy(:proyecto).show? %>
-        <li class="nav-item nav-link">
-          <i class="bi bi-list-check"></i>
-          <%= link_to 'Mis Proyectos', {controller: "usuarios", action: "home"},style:"padding-left:5px"%>
-        </li>
-      <% end %>
-      <% if policy(:log).show? %>
-        <li class="nav-item nav-link">
-          <i class="bi bi-clock-history"></i>
-          <%= link_to 'Registros', {controller: "usuarios", action: "admin"}, style:"padding-left:10px"%>
-        </li>
-      <% end %>
-        <li class="nav-item nav-link">
-          <%= form_tag cerrar_sesion_path, method: :delete do %>
-            <i class="bi bi-box-arrow-in-left"></i>
-            <%= submit_tag 'Cerrar sesión', style:"background-color: #f8f9fa; border-width: 0px; color: #007BFF" %>
-          <% end %>
-        </li>
-      </ul>
-    </div>
-
-    <div class="content">
-      <!-- Aca va  el contenido  principal -->
-      <h1>Mis Tareas</h1>
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Tarea</th>
-            <th>Fecha de entrega</th>
-            <th>Proyecto</th>
-            <th>Estado</th>
-            <th>Revisor</th>
-          </tr>
-        </thead>
-        <tbody>
-          <% @tareas.each do |tarea| %>
-            <tr>
-              <td><%= tarea.id %></td>
-              <td><%= tarea.nombre %></td>
-              <td><%= tarea.fecha_vencimiento %></td>
-              <td>Proyecto 1</td>
-              <td><%= tarea.estado %></td>
-              <td><%= tarea.revisor %></td>
-            </tr>
-          <% end %>
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-</body>
-</html>
+<h1>Mis Tareas</h1>
+<table class="table table-bordered mt-5">
+  <thead>
+    <tr>
+      <th class="col-1">ID</th>
+      <th class="col-3">Tarea</th>
+      <th class="col-2">Fecha de entrega</th>
+      <th class="col-3">Proyecto</th>
+      <th class="col-2">Estado</th>
+      <th class="col-1">Revisor</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tareas.each do |tarea| %>
+      <tr>
+        <td><%= tarea.id %></td>
+        <td><%= tarea.nombre %></td>
+        <td><%= tarea.fecha_vencimiento %></td>
+        <td>Proyecto 1</td>
+        <td><%= tarea.estado %></td>
+        <td><%= tarea.revisor.nombre %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

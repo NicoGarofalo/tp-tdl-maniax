@@ -1,0 +1,24 @@
+<script type="text/javascript">
+	
+	function toggleAddMeta(){
+		let add_view = document.getElementById("addMeta");
+
+		if (add_view.style.display == "block"){
+			add_view.style.display = "none";
+		} else{			
+			add_view.style.display = "block";
+		}
+
+		if(add_view.getAttribute("name") == "placeholder"){
+			add_view.innerHTML = `<%= 
+			render template: 'metas/add',locals: {:meta => Meta.new, :idProyecto => idProyecto} %>`
+
+			add_view.setAttribute("name","add_meta_view")
+			console.log("Loaded..");
+		}
+	}
+</script>
+
+
+<input type="button" value="+ Agregar meta" onclick="toggleAddMeta()" class="btn btn-primary"/>
+<div id="addMeta" name = "placeholder" style="display: none;"></div>

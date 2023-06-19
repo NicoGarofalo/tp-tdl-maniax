@@ -1,0 +1,27 @@
+<script type="text/javascript">
+	
+	function toggleAddTarea(){
+		console.log("TOGGLE");
+		let add_view = document.getElementById("addTarea");
+
+		if (add_view.style.display == "block"){
+			add_view.style.display = "none";
+		} else{			
+			add_view.style.display = "block";
+		}
+
+		if(add_view.getAttribute("name") == "placeholder"){
+			add_view.innerHTML = `<%= 
+			
+			render template: 'tareas/add', locals: {:tarea => Tarea.new, :meta_id=> meta_id} %>`
+
+			add_view.setAttribute("name","add_tarea_view")
+			console.log("Loaded..");
+		}
+	}
+</script>
+
+
+<input type="button" value="add tarea" onclick="toggleAddTarea()" />
+
+<div id="addTarea" name = "placeholder" style="display: none;"></div>

@@ -1,4 +1,12 @@
-<h1>Registro de Usuario</h1>
+
+<% content_for :title do %>
+  <title>Registrarse</title>
+<% end %>
+    
+
+
+
+<h3>Registro de Usuario</h3>
 
 <%= form_for @usuario, url: registro_path, method: :post do |f| %>
   <div>
@@ -6,34 +14,34 @@
     <%= f.select :usuario_tipo, options_for_select(['Gerente', 'Líder', 'Revisor', 'Integrante']) %>
   </div>
 
-  <div>
+  <div class="form-group">
     <%= f.label :nombre %>
-    <%= f.text_field :nombre %>
+    <%= f.text_field :nombre , class: 'form-control'%>
   </div>
 
-  <div>
+  <div class="form-group">
     <%= f.label :apellido %>
-    <%= f.text_field :apellido %>
+    <%= f.text_field :apellido, class: 'form-control' %>
   </div>
 
-  <div>
+  <div class="form-group">
     <%= f.label :email %>
-    <%= f.email_field :email %>
+    <%= f.email_field :email, class: 'form-control' %>
   </div>
 
-  <div>
+  <div class="form-group">
     <%= f.label :password %>
-    <%= f.password_field :password %>
+    <%= f.password_field :password, class: 'form-control' %>
   </div>
 
-  <div>
+  <div class="form-group">
     <%= f.label :password_confirmation %>
-    <%= f.password_field :password_confirmation %>
+    <%= f.password_field :password_confirmation, class: 'form-control' %>
   </div>
 
-  <div>
-    <%= f.submit "Registrarse" %>
+  <div class="form-group d-flex justify-content-center">
+    <%= f.submit "Registrarse", class: 'btn btn-primary' %>
   </div>
 <% end %>
 
-<p><%= link_to 'Volver a iniciar sesión', iniciar_sesion_path %></p>
+<p class="text-center"><%= link_to 'Volver a iniciar sesión', iniciar_sesion_path %></p>

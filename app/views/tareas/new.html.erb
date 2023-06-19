@@ -1,38 +1,4 @@
 <h1>Crear Tarea</h1>
 
-<%= form_for @tarea, url: tareas_path, method: :post do |f| %>
-  <div>
-    <%= f.label :meta_id %>
-    <%= f.collection_select :meta_id, Meta.all, :id, :nombre %>
-  </div>
 
-  <div>
-    <%= f.label :revisor_id %>
-    <%= f.collection_select :revisor_id, Usuario.where(usuario_tipo: 'Revisor'), :id, :nombre %>
-  </div>
-
-  <div>
-    <%= f.label :integrante_id %>
-    <%= f.collection_select :integrante_id, Usuario.where(usuario_tipo: 'Integrante'), :id, :nombre %>
-  </div>
-
-  <div>
-    <%= f.label :fecha_vencimiento %>
-    <%= f.date_field :fecha_vencimiento %>
-  </div>
-
-  <div>
-    <%= f.label :nombre %>
-    <%= f.text_field :nombre %>
-  </div>
-
-  <div>
-    <%= f.label :descripcion %>
-    <%= f.text_area :descripcion %>
-  </div>
-
-  <%= form.hidden_field :meta_id, value: @meta_id %>
-  <div>
-    <%= f.submit "Crear Tarea" %>
-  </div>
-<% end %>
+<%= render template: 'tareas/add',locals: {:tarea => @tarea, :meta_id => @idMeta}%>

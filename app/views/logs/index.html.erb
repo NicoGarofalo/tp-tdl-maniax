@@ -1,30 +1,50 @@
-<h1>Logs</h1>
+<h1>Registros del sistema</h1>
 
-<table>
-  <thead>
-  <tr>
-    <th>Tipo Log</th>
-    <th>Subject ID</th>
-    <th>Mensaje</th>
-    <th>Fecha y Hora</th>
-    <th>Obigatorio ID</th>
-    <th>Opcional ID</th>
-    <th>Created At</th>
-    <th>Updated At</th>
-  </tr>
-  </thead>
-  <tbody>
-  <% @logs.each do |log| %>
-    <tr>
-      <td><%= log.tipo_log %></td>
-      <td><%= log.subject_id %></td>
-      <td><%= log.mensaje %></td>
-      <td><%= log.fecha_hora %></td>
-      <td><%= log.obligatorio_id %></td>
-      <td><%= log.opcional_id %></td>
-      <td><%= log.created_at %></td>
-      <td><%= log.updated_at %></td>
-    </tr>
-  <% end %>
-  </tbody>
-</table>
+<%  if @logs == nil || @logs.size == 0  %>
+  <h3 class='mt-5'>No hay registros en la plataforma.</h3>
+<% else %>
+  <table class="table table-bordered mt-5">
+    <thead>
+      <tr>
+        <th>Evento</th>
+        <th>ID Usuario</th>
+        <th>Mensaje</th>
+        <%
+=begin%>
+ <th>Fecha y Hora</th> 
+<%
+=end%>
+        <th>ID Obigatorio</th>
+        <th>ID Opcional</th>
+        <th>Fecha y hora</th>
+        <%
+=begin%>
+ <th>Updated At</th> 
+<%
+=end%>
+      </tr>
+    </thead>
+    <tbody>
+      <% @logs.each do |log| %>
+        <tr>
+          <td><%= log.tipo_log %></td>
+          <td><%= log.subject_id %></td>
+          <td><%= log.mensaje %></td>
+          <%
+=begin%>
+ <td><%= log.fecha_hora %></td> 
+<%
+=end%>
+          <td><%= log.obligatorio_id %></td>
+          <td><%= log.opcional_id %></td>
+          <td><%= log.created_at %></td>
+          <%
+=begin%>
+ <td><%= log.updated_at %></td> 
+<%
+=end%>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

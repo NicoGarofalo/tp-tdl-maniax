@@ -1,0 +1,11 @@
+<% verData ||= {} %>
+<% progress ||= 0 %>
+<% verLabel ||= 'Ver detalles'%>
+
+<%= yield %>
+
+<%= render partial: "shared/progress_bar", locals: {:progress => progress}%>
+
+<div class="row">
+    <%= link_to verLabel, verData, class:"btn btn-info"%>
+</div>

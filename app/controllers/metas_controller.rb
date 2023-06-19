@@ -1,14 +1,24 @@
+# frozen_string_literal: true
+
 class MetasController < ApplicationController
   def new
     @meta = Meta.new
     @idProyecto = params[:proyecto_id] # Asignar el valor de proyecto_id a @idProyecto
   end
 
+  def add
+    @id_proyecto = meta_new_params
+  end
+
   def create
+    @usuario = current_user
+    puts meta_params
     @meta = Meta.new(meta_params)
-    @meta.estado = "Pendiente" # Establecer el estado como "Pendiente"
+    @meta.estado = 'Pendiente' # Establecer el estado como "Pendiente"
 
     if @meta.save
+      flash[:notice] = 'Meta creada exitosamente.'
+      puts 'Meta guardada exitosamente'
       flash[:notice] = "Meta creada exitosamente."
       create_log_entry(@meta) # Llamada a la función create_log_entry para registrar la creación de la meta en el registro de logs
       create_notifications(@meta) # Llamada a la función create_notifications para crear notificaciones relacionadas con la creación de la meta
@@ -19,8 +29,10 @@ class MetasController < ApplicationController
 
       redirect_to proyecto_view_path(id: @meta.proyecto_id)
     else
-      render :new
+      flash[:notice] = 'Meta fallo en creacion.'
+      puts 'Meta fallo al guardarse'
     end
+    redirect_to proyecto_view_path(meta_params.proyecto_id)
   end
 
   def show
@@ -35,6 +47,16 @@ class MetasController < ApplicationController
   end
 
   private
+
+  def current_user
+    return unless session[:usuario_id]
+
+    Usuario.find_by(id: session[:usuario_id])
+  end
+
+  def meta_show_params
+    params.require(:id)
+  end
 
   def meta_params
     params.require(:meta).permit(:proyecto_id, :fecha_vencimiento, :nombre, :descripcion, :estado)
