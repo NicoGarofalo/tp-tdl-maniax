@@ -73,18 +73,6 @@ class ProyectosController < ApplicationController
     @metas = Meta.where(proyecto_id: idProyecto).map { |m| params_meta m }
   end
 
-  def schedule_email_notifications(proyecto)
-    vencimiento_date = proyecto.fecha_vencimiento.to_date
-
-    # Notificar al gerente una semana antes del vencimiento
-    una_semana_antes = vencimiento_date - 1.week
-    puts(una_semana_antes)
-    enviar_notificacion_por_correo(una_semana_antes, proyecto.gerente_id, proyecto)
-
-    # Notificar al gerente el día del vencimiento
-    enviar_notificacion_por_correo(vencimiento_date, proyecto.gerente_id, proyecto)
-  end
-
   def finalizar
     @proyecto = Proyecto.find(params[:id])
     @proyecto.estado = 'Finalizado'
@@ -105,6 +93,21 @@ class ProyectosController < ApplicationController
       opcional_id: @proyecto.lider_id
     )
     redirect_to user_home_path
+  end
+
+  def enviar_notificacion_por_correo
+    Proyecto.find_each do |proyecto|
+      fecha = proyecto.fecha_vencimiento.to_date
+      gerente = proyecto.gerente
+      if fecha == Date.today
+        puts "Enviando correo de que vence hoy a #{gerente.nombre} para el proyecto #{proyecto.nombre}"
+        UserMailer.project_due_today_email(gerente, proyecto).deliver_now
+      end
+      if fecha == 1.week.from_now.to_date
+        puts "Enviando correo de que vence en una semana a #{gerente.nombre} para el proyecto #{proyecto.nombre}"
+        UserMailer.project_due_soon_email(gerente, proyecto).deliver_now
+      end
+    end
   end
 
   private
@@ -145,20 +148,6 @@ class ProyectosController < ApplicationController
 
   def current_user
     return unless session[:usuario_id]
-
     Usuario.find_by(id: session[:usuario_id])
-  end
-
-  def enviar_notificacion_por_correo(fecha, usuario_id, proyecto)
-    if fecha == Date.today
-      usuario = Usuario.find(usuario_id)
-      puts "Enviando correo al usuario #{usuario.nombre} para el proyecto #{proyecto.nombre}"
-      UserMailer.project_due_today_email(usuario, proyecto).deliver_now
-    elsif fecha == 1.week.from_now.to_date
-      puts 1.week.from_now.to_date
-      usuario = Usuario.find(usuario_id)
-      puts "Enviando correo al usuario #{usuario.nombre} para el proyecto #{proyecto.nombre}"
-      UserMailer.project_due_soon_email(usuario, proyecto).deliver_now
-    end
   end
 end

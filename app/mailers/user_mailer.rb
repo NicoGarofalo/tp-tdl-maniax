@@ -225,4 +225,40 @@ class UserMailer < ApplicationMailer
       fecha_hora: DateTime.now
     )
   end
+
+  def meta_vence_pronto_email(lider, meta)
+    @lider = lider
+    @meta = meta
+    mail(to: @lider.email, subject: '¡La meta vence pronto!')
+
+    Notificacion.create(usuario_id: @lider.id, notificacion_tipo: 'Meta Vencimiento',
+                        mensaje: 'Has recibido un correo de vencimiento próximo de meta', fecha_hora: DateTime.now)
+  end
+
+  def meta_vence_hoy_email(lider, meta)
+    @lider = lider
+    @meta = meta
+    mail(to: @lider.email, subject: '¡La meta vence hoy!')
+
+    Notificacion.create(usuario_id: @lider.id, notificacion_tipo: 'Meta Vencimiento',
+                        mensaje: 'Has recibido un correo de vencimiento de meta (hoy)', fecha_hora: DateTime.now)
+  end
+
+  def tarea_vence_pronto_email(usuario, tarea)
+    @usuario = usuario
+    @tarea = tarea
+    mail(to: @usuario.email, subject: '¡La tarea vence pronto!')
+
+    Notificacion.create(usuario_id: @usuario.id, notificacion_tipo: 'Tarea Vencimiento',
+                        mensaje: 'Has recibido un correo de vencimiento próximo de tarea', fecha_hora: DateTime.now)
+  end
+
+  def tarea_vence_hoy_email(usuario, tarea)
+    @usuario = usuario
+    @tarea = tarea
+    mail(to: @usuario.email, subject: '¡La tarea vence hoy!')
+
+    Notificacion.create(usuario_id: @usuario.id, notificacion_tipo: 'Tarea Vencimiento',
+                        mensaje: 'Has recibido un correo de vencimiento de tarea (hoy)', fecha_hora: DateTime.now)
+  end
 end

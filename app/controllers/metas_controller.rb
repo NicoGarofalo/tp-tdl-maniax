@@ -28,10 +28,7 @@ class MetasController < ApplicationController
 
       create_log_entry(@meta) # Llamada a la función create_log_entry para registrar la creación de la meta en el registro de logs
       create_notifications(@meta) # Llamada a la función create_notifications para crear notificaciones relacionadas con la creación de la meta
-      schedule_email_notifications(@meta) # Llamada a la función schedule_email_notifications para programar notificaciones por correo relacionadas con la fecha de vencimiento de la meta
-
-      # Enviar correos electrónicos de creación al gerente y al líder
-      send_meta_created_emails(@meta)
+      send_meta_created_emails(@meta) # Enviar correos electrónicos de creación al gerente y al líder
 
       redirect_to proyecto_view_path(id: @meta.proyecto_id)
     else
@@ -94,6 +91,21 @@ class MetasController < ApplicationController
     redirect_to user_home_path
   end
 
+  def enviar_notificacion_por_correo
+    Meta.find_each do |meta|
+      fecha = meta.fecha_vencimiento.to_date
+      lider = meta.proyecto.lider
+      if fecha == Date.today
+        puts "Enviando correo de que vence hoy a #{lider.nombre} para la meta #{meta.nombre}"
+        UserMailer.meta_vence_hoy_email(lider, meta).deliver_now
+      end
+      if fecha == 1.week.from_now.to_date
+        puts "Enviando correo de que vence en una semana a #{lider.nombre} para la meta #{meta.nombre}"
+        UserMailer.meta_vence_pronto_email(lider, meta).deliver_now
+      end
+    end
+  end
+
   private
 
   def current_user
@@ -134,33 +146,6 @@ class MetasController < ApplicationController
       mensaje: "Has sido asignado como líder de la meta #{meta.nombre} para el proyecto #{meta.proyecto.nombre}",
       fecha_hora: Time.now
     )
-  end
-
-  def schedule_email_notifications(meta)
-    vencimiento_date = meta.fecha_vencimiento.to_date
-
-    # Notificar al gerente una semana antes del vencimiento
-    una_semana_antes = vencimiento_date - 1.week
-    enviar_notificacion_por_correo(una_semana_antes, meta.proyecto.gerente_id, meta)
-
-    # Notificar al gerente el día del vencimiento
-    enviar_notificacion_por_correo(vencimiento_date, meta.proyecto.gerente_id, meta)
-
-    # Notificar al líder una semana antes del vencimiento
-    enviar_notificacion_por_correo(una_semana_antes, meta.proyecto.lider_id, meta)
-
-    # Notificar al líder el día del vencimiento
-    enviar_notificacion_por_correo(vencimiento_date, meta.proyecto.lider_id, meta)
-  end
-
-  def enviar_notificacion_por_correo(fecha, usuario_id, meta)
-    if fecha == Date.today
-      usuario = Usuario.find(usuario_id)
-      UserMailer.meta_due_today_email(usuario, meta).deliver_now
-    elsif fecha == 1.week.from_now.to_date
-      usuario = Usuario.find(usuario_id)
-      UserMailer.meta_due_soon_email(usuario, meta).deliver_now
-    end
   end
 
   def send_meta_created_emails(meta)

@@ -131,8 +131,26 @@ class TareasController < ApplicationController
       obligatorio_id: @tarea.revisor_id,
       opcional_id: @tarea.integrante_id
     )
-
     redirect_to user_home_path
+  end
+
+
+  def enviar_notificacion_por_correo
+    Tarea.find_each do |tarea|
+      fecha = tarea.fecha_vencimiento.to_date
+      revisor = tarea.revisor
+      integrante = tarea.integrante
+      if fecha == Date.today
+        puts "Enviando correo de que vence hoy a #{revisor.nombre} y a #{integrante.nombre} para la tarea #{tarea.nombre}"
+        UserMailer.tarea_vence_hoy_email(revisor, tarea).deliver_now
+        UserMailer.tarea_vence_hoy_email(integrante, tarea).deliver_now
+      end
+      if fecha == 1.week.from_now.to_date
+        puts "Enviando correo de que vence en una semana a #{revisor.nombre} y a #{integrante.nombre} para la tarea #{tarea.nombre}"
+        UserMailer.tarea_vence_pronto_email(revisor, tarea).deliver_now
+        UserMailer.tarea_vence_pronto_email(integrante, tarea).deliver_now
+      end
+    end
   end
 
   private
@@ -187,8 +205,7 @@ class TareasController < ApplicationController
     UserMailer.tarea_created_email_lider(lider, tarea).deliver_now
     UserMailer.tarea_created_email_revisor(revisor, tarea).deliver_now
     UserMailer.tarea_created_email_integrante(integrante, tarea).deliver_now
-  end
-
+    end
 
   def current_user
     @current_user ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]
