@@ -1,25 +1,48 @@
 <h1>Mis Tareas</h1>
 <table class="table table-bordered mt-5">
   <thead>
-    <tr>
-      <th class="col-1">ID</th>
-      <th class="col-3">Tarea</th>
-      <th class="col-2">Fecha de entrega</th>
-      <th class="col-3">Proyecto</th>
-      <th class="col-2">Estado</th>
-      <th class="col-1">Revisor</th>
-    </tr>
+  <tr>
+    <th class="col-2">Tarea</th>
+    <th class="col-3">Descripción</th>
+    <th class="col-2">Fecha de entrega</th>
+    <th class="col-2">Meta</th>
+    <th class="col-3">Proyecto</th>
+    <th class="col-1">Estado</th>
+    <th class="col-1">Revisor</th>
+    <th class="col-1">Acciones</th>
+  </tr>
   </thead>
   <tbody>
-    <% @tareas.each do |tarea| %>
-      <tr>
-        <td><%= tarea.id %></td>
-        <td><%= tarea.nombre %></td>
-        <td><%= tarea.fecha_vencimiento %></td>
-        <td>Proyecto 1</td>
-        <td><%= tarea.estado %></td>
-        <td><%= tarea.revisor.nombre %></td>
-      </tr>
-    <% end %>
+  <% @tareas.each do |tarea| %>
+    <tr>
+      <td><%= tarea.nombre %></td>
+      <td><%= tarea.descripcion %></td>
+      <td><%= tarea.fecha_vencimiento %></td>
+      <td><%= tarea.meta.nombre %></td>
+      <td><%= tarea.meta.proyecto.nombre %></td>
+      <td><%= tarea.estado %></td>
+      <td><%= tarea.revisor.nombre %></td>
+      <td>
+        <% if @usuario.usuario_tipo == 'Integrante' %>
+          <% if tarea.estado == 'Completado' %>
+            <span class="completado">En revisión</span>
+          <% elsif tarea.estado == 'Finalizado' %>
+            <span class="completado">Finalizado</span>
+          <% else %>
+            <%= button_to 'Completar', { controller: 'tareas', action: 'completar', id: tarea.id }, method: :post, class: 'btn btn-primary', disabled: false %>
+          <% end %>
+        <% elsif @usuario.usuario_tipo == 'Revisor' %>
+          <% if tarea.estado == 'Finalizado' %>
+            <span class="completado">Finalizado</span>
+          <% elsif tarea.estado == 'Completado' %>
+            <%= button_to 'Finalizar', { controller: 'tareas', action: 'finalizar', id: tarea.id }, method: :post, class: 'btn btn-primary', disabled: false %>
+            <%= button_to 'Pendiente', { controller: 'tareas', action: 'pendiente', id: tarea.id }, method: :post, class: 'btn btn-primary', disabled: false %>
+          <% else %>
+            <span class="por-completar">Por completar</span>
+          <% end %>
+        <% end %>
+      </td>
+    </tr>
+  <% end %>
   </tbody>
 </table>

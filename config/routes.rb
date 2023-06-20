@@ -31,14 +31,18 @@ Rails.application.routes.draw do
   get '/stats/proyecto', to: 'stats#proyecto', as: 'proyecto_stats_view'
   get '/stats/usuario', to: 'stats#usuario', as: 'usuario_stats_view'
 
-
   # stat getters, info for other views.
   get '/stats/stat', to: 'stats#stats_for', as: 'stat_getter'
 
-
   resources :proyectos, only: %i[new create]
   resources :metas, only: %i[new create]
-  resources :tareas, only: %i[new create]
+  resources :tareas, only: %i[new create] do
+    member do
+      post 'completar'
+      post 'finalizar'
+      post 'pendiente'
+    end
+  end
   resources :logs, only: [:index]
   resources :notificaciones, only: [:index]
 

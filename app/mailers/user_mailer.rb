@@ -99,4 +99,74 @@ class UserMailer < ApplicationMailer
     Notificacion.create(usuario_id: @user.id, notificacion_tipo: 'Proyecto Vencimiento',
                         mensaje: 'Has recibido un correo de vencimiento próximo de proyecto', fecha_hora: DateTime.now)
   end
+
+  def tarea_completada_integrante_email(tarea)
+    @tarea = tarea
+    @integrante = tarea.integrante
+    mail(to: @integrante.email, subject: 'Tarea completada')
+
+    # Crear notificación para el integrante
+    Notificacion.create(
+      usuario_id: @integrante.id,
+      notificacion_tipo: 'Tarea Completada',
+      mensaje: 'La tarea ha sido marcada como completada',
+      fecha_hora: DateTime.now
+    )
+  end
+
+  def tarea_completada_revisor_email(tarea)
+    @tarea = tarea
+    @revisor = tarea.revisor
+    mail(to: @revisor.email, subject: 'Tarea completada por el integrante')
+
+    # Crear notificación para el revisor
+    Notificacion.create(
+      usuario_id: @tarea.revisor_id,
+      notificacion_tipo: 'Tarea Completada',
+      mensaje: 'La tarea ha sido marcada como completada por el integrante y está lista para revisión',
+      fecha_hora: DateTime.now
+    )
+  end
+
+  def tarea_finalizada_email(usuario, tarea)
+    @usuario = usuario
+    @tarea = tarea
+    mail(to: @usuario.email, subject: 'Tarea finalizada')
+
+    # Crear notificación
+    Notificacion.create(
+      usuario_id: @usuario.id,
+      notificacion_tipo: "Tarea Finalizada",
+      mensaje: "La tarea #{@tarea} ha sido marcada como finalizada",
+      fecha_hora: Time.now
+    )
+  end
+
+  def tarea_devuelta_pendiente_revisor_email(tarea)
+    @tarea = tarea
+    @revisor = tarea.revisor
+    mail(to: @revisor.email, subject: 'Tarea devuelta a pendiente')
+
+    # Crear notificación
+    Notificacion.create(
+      usuario_id: @tarea.revisor_id,
+      notificacion_tipo: "Tarea Devuelta a Pendiente",
+      mensaje: "Has devuelto la tarea #{@tarea} a estado Pendiente",
+      fecha_hora: Time.now
+    )
+  end
+
+  def tarea_devuelta_pendiente_integrante_email(tarea)
+    @tarea = tarea
+    @integrante = tarea.integrante
+    mail(to: @integrante.email, subject: 'Tarea devuelta a pendiente')
+
+    # Crear notificación para el integrante
+    Notificacion.create(
+      usuario_id: @integrante.id,
+      notificacion_tipo: 'Tarea Devuelta a Pendiente',
+      mensaje: "La tarea #{@tarea} ha sido devuelta a estado Pendiente. Vuelve a realizarla.",
+      fecha_hora: DateTime.now
+    )
+  end
 end

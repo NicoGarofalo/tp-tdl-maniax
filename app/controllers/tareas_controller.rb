@@ -38,6 +38,78 @@ class TareasController < ApplicationController
     @tarea = Tarea.find(params[:id])
   end
 
+  def completar
+    @tarea = Tarea.find(params[:id])
+    @tarea.estado = 'Completado'
+    @tarea.save
+
+    # Enviar correo electrónico al integrante
+    UserMailer.tarea_completada_integrante_email(@tarea).deliver_now
+
+    # Enviar correo electrónico al revisor
+    UserMailer.tarea_completada_revisor_email(@tarea).deliver_now
+
+    # Registrar en el log
+    Log.create(
+      tipo_log: "Tarea Completada",
+      subject_id: @tarea.id.to_s,
+      mensaje: 'La tarea ha sido marcada como completada',
+      obligatorio_id: @tarea.integrante_id,
+      opcional_id: @tarea.revisor_id
+    )
+
+    redirect_to user_home_path
+  end
+
+  def finalizar
+    @tarea = Tarea.find(params[:id])
+    @tarea.estado = 'Finalizado'
+    @tarea.save
+
+    # Enviar correo electrónico al líder
+    UserMailer.tarea_finalizada_email(@tarea.meta.proyecto.lider, @tarea).deliver_now
+
+    # Enviar correo electrónico al revisor
+    UserMailer.tarea_finalizada_email(@tarea.revisor, @tarea).deliver_now
+
+    # Enviar correo electrónico al integrante
+    UserMailer.tarea_finalizada_email(@tarea.integrante, @tarea).deliver_now
+
+    # Registrar en el log
+    Log.create(
+      tipo_log: "Tarea Finalizada",
+      subject_id: @tarea.id.to_s,
+      mensaje: "La tarea ha sido marcada como finalizada",
+      obligatorio_id: @tarea.revisor_id,
+      opcional_id: @tarea.integrante_id
+    )
+
+    redirect_to user_home_path
+  end
+
+  def pendiente
+    @tarea = Tarea.find(params[:id])
+    @tarea.estado = 'Pendiente'
+    @tarea.save
+
+    # Enviar correo electrónico al revisor
+    UserMailer.tarea_devuelta_pendiente_revisor_email(@tarea).deliver_now
+
+    # Enviar correo electrónico al integrante
+    UserMailer.tarea_devuelta_pendiente_integrante_email(@tarea).deliver_now
+
+    # Registrar en el log
+    Log.create(
+      tipo_log: "Tarea Devuelta a Pendiente",
+      subject_id: @tarea.id.to_s,
+      mensaje: "La tarea #{@tarea} ha sido devuelta a estado Pendiente",
+      obligatorio_id: @tarea.revisor_id,
+      opcional_id: @tarea.integrante_id
+    )
+
+    redirect_to user_home_path
+  end
+
   private
 
   def tarea_new_params

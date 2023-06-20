@@ -3,7 +3,6 @@
 class UsuariosController < ApplicationController
   layout 'layout_base_nav'
 
-
   def new
     @usuario = Usuario.new
 
@@ -78,8 +77,6 @@ class UsuariosController < ApplicationController
 
   def home
     @usuario = current_user
-
-
     if @usuario.usuario_tipo == 'Gerente' || @usuario.usuario_tipo == 'Líder'
       gerente_lider_home
     elsif @usuario.usuario_tipo == 'Revisor' || @usuario.usuario_tipo == 'Integrante'
