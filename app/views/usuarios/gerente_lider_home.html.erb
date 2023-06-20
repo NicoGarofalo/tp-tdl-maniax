@@ -1,8 +1,15 @@
 <% content_for :title do %>
   <title>Home <%= @usuario.nombre%></title>
 
+
 <% end %>
 
+<script type="module">
+	console.log("MODULE IN HTML");
+
+	const usuario_id = <%= @usuario.id%>;
+	suscribe("EnLinea", usuario_id);
+</script>
 
 <h1>Mis Proyectos</h1>
 
