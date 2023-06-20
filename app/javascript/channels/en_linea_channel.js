@@ -1,16 +1,16 @@
 import consumer from "channels/consumer"
 
-function suscribirseEnLinea(id){
-	consumer.subscriptions.create({channel: "EnLineaChannel", id: id},{
+function suscribirseEnLinea(id_user){
+	consumer.subscriptions.create({channel: "EnLineaChannel", id: id_user},{
 	  connected() {
 	  	console.log("CONNECTED EnLinea?");  	
 	    // Called when the subscription is ready for use on the server
-	    this.perform("appear", {nm: "Marcelo"});
+	    this.perform("appear", {id: id_user});
 	  },
 
 	  disconnected() {
 	  	console.log("DISCONNECTED EnLinea?");  	
-	    this.perform("away");
+	    this.perform("away", {id: id_user});
 	    // Called when the subscription has been terminated by the server
 	  },
 

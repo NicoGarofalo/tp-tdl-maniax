@@ -1,43 +1,49 @@
 class EnLineaChannel < ApplicationCable::Channel
   def subscribed
 
-  	if(@nombre.nil?)
-	  	@nombre = "Misaka"
+	@current_user = Usuario.find_by(params[:id].to_s);
+
+	if @current_user.nil?
+		puts "-------->Tira error no existe el usuario?"
 	end
 
-	current_user = Usuario.find_by(params[:id]);
-
-    puts "-----------------> SE SUBSCRIBIO ? "+@nombre
-    puts "USUARIO ES Y FUE "
-    puts current_user
-    puts "----------------------------"
-    #current_user.appear
+    puts "-----------------> SE SUBSCRIBIO ? "+@current_user.nombre
+    stream_for "online"
   end
 
   def unsubscribed
-  	puts "-----------------> SE DE SUBSCRIBIO ? "+@nombre
-    #current_user.disappear
+  	if @current_user.nil?
+  		puts "------> nunca debio existir esta conexion..."
+  	else
+  		puts "-----------------> SE DE SUBSCRIBIO ? "+@current_user.nombre
+		notificarCambio(@current_user.id, false)
+  	end
   end
 
   def appear(data)
-  	#ActionCable.server.broadcast("chat_#{params[:room]}", data)
 
-
-  	if(!@nombre.nil?)
-	  	puts "YA APARECIDO? "+@nombre
-	end
-
-  	puts data
-  	@nombre = data['nm']
-  	puts "--------->se conecto ... "+@nombre
-    #current_user.appear(on: data['appearing_on'])
-  	EnLineaChannel.broadcast_to("all", nuevo: @nombre, activo: true)
+  	if @current_user.nil?
+  		puts "----------------> nunca debio existir..."
+  		return;
+  	end
+  	puts "--------->se conecto ...? nm= "+data['id'].to_s
+	notificarCambio(data['id'].to_s, true)
 
   end
 
   def away
+  	if @current_user.nil?
+  		puts "----------------> nunca debio existir..."
+  		return;
+  	end
+
   	puts "------------------>se desconecto ... "+@nombre
-    #current_user.away
+	notificarCambio(data['id'].to_s, false)
+	
   end
 
+  private
+  	def notificarCambio(id, activo)  		
+		EnLineaChannel.broadcast_to("online", nuevo: @current_user, id_usuario: id, activo: activo)
+  	end
 end
