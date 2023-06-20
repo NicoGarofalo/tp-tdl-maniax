@@ -1,49 +1,34 @@
 class EnLineaChannel < ApplicationCable::Channel
   def subscribed
 
-	@current_user = Usuario.find_by(params[:id].to_s);
+    puts "Se Suscribio... "+current_user.to_s
 
-	if @current_user.nil?
-		puts "-------->Tira error no existe el usuario?"
-	end
-
-    puts "-----------------> SE SUBSCRIBIO ? "+@current_user.nombre
     stream_for "online"
   end
 
   def unsubscribed
-  	if @current_user.nil?
-  		puts "------> nunca debio existir esta conexion..."
-  	else
-  		puts "-----------------> SE DE SUBSCRIBIO ? "+@current_user.nombre
-		notificarCambio(@current_user.id, false)
-  	end
+    puts "Se desuscribio(desconecto)... "+current_user.to_s
+
+  	puts "-----------------> SE DE SUBSCRIBIO ? "+current_user.nombre
+	notificarCambio(false)  	
   end
 
   def appear(data)
-
-  	if @current_user.nil?
-  		puts "----------------> nunca debio existir..."
-  		return;
-  	end
-  	puts "--------->se conecto ...? nm= "+data['id'].to_s
-	notificarCambio(data['id'].to_s, true)
+  	puts "--------->se conecto ...? id?= "+data['id'].to_s
+  	puts "--------->id current user es ...id?= "+current_user.id.to_s
+	notificarCambio(true)
 
   end
 
   def away
-  	if @current_user.nil?
-  		puts "----------------> nunca debio existir..."
-  		return;
-  	end
+  	puts "--------->se desconecto ...? id?= "+data['id'].to_s
+  	puts "--------->id current user es ...id?= "+current_user.id.to_s
+	notificarCambio(false)
 
-  	puts "------------------>se desconecto ... "+@nombre
-	notificarCambio(data['id'].to_s, false)
-	
   end
 
   private
-  	def notificarCambio(id, activo)  		
-		EnLineaChannel.broadcast_to("online", nuevo: @current_user, id_usuario: id, activo: activo)
+  	def notificarCambio(activo)  		
+		EnLineaChannel.broadcast_to("online", nuevo: current_user.nombre, id_usuario: current_user.id, activo: activo)
   	end
 end
