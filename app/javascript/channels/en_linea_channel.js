@@ -1,6 +1,6 @@
 import consumer from "channels/consumer"
 
-function suscribirseEnLinea(id_user){
+function suscribirseEnLinea(id_user, listener){
 	consumer.subscriptions.create({channel: "EnLineaChannel", id: id_user},{
 	  connected() {
 	  	console.log("CONNECTED EnLinea?");  	
@@ -15,8 +15,11 @@ function suscribirseEnLinea(id_user){
 	  },
 
 	  received(data) {
+
 	    // Called when there's incoming data on the websocket for this channel
-	  	console.log("RCV data , ",data);  	
+	  	console.log("RCV data , ",data);
+	  	  	
+	  	listener(data["id_usuario"], data["activo"])
 	  }
 	});
 }
