@@ -1,6 +1,6 @@
 
 
-<%= render layout: "shared/base_item", locals: {title: proyecto.nombre, estado: "Pendiente"} do %>
+<%= render layout: "shared/base_item", locals: {title: proyecto.nombre, estado: proyecto.estado} do %>
 
 	<%= render layout: "shared/item_to_view", locals: {:progress => stats[:progress], verData: {controller: "proyectos", action: "view", id: proyecto.id}} do %>
 

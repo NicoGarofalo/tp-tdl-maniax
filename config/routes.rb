@@ -34,8 +34,20 @@ Rails.application.routes.draw do
   # stat getters, info for other views.
   get '/stats/stat', to: 'stats#stats_for', as: 'stat_getter'
 
-  resources :proyectos, only: %i[new create]
-  resources :metas, only: %i[new create]
+  resources :proyectos, only: %i[new create] do
+    member do
+      post 'completar'
+      post 'finalizar'
+      post 'pendiente'
+    end
+  end
+  resources :metas, only: %i[new create] do
+    member do
+      post 'completar'
+      post 'finalizar'
+      post 'pendiente'
+    end
+  end
   resources :tareas, only: %i[new create] do
     member do
       post 'completar'

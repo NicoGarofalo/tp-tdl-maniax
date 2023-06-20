@@ -14,12 +14,18 @@ class MetasController < ApplicationController
     @usuario = current_user
     puts meta_params
     @meta = Meta.new(meta_params)
-    @meta.estado = 'Pendiente' # Establecer el estado como "Pendiente"
+    @meta.estado = 'Pendiente'
+    @meta.proyecto.estado = 'Pendiente'
 
     if @meta.save
       flash[:notice] = 'Meta creada exitosamente.'
       puts 'Meta guardada exitosamente'
-      flash[:notice] = "Meta creada exitosamente."
+
+      # Actualizar el estado de la meta a 'Pendiente'
+      proyecto = Proyecto.find(@meta.proyecto_id)
+      proyecto.estado = 'Pendiente'
+      proyecto.save
+
       create_log_entry(@meta) # Llamada a la función create_log_entry para registrar la creación de la meta en el registro de logs
       create_notifications(@meta) # Llamada a la función create_notifications para crear notificaciones relacionadas con la creación de la meta
       schedule_email_notifications(@meta) # Llamada a la función schedule_email_notifications para programar notificaciones por correo relacionadas con la fecha de vencimiento de la meta
@@ -45,6 +51,47 @@ class MetasController < ApplicationController
     if @tareas.nil? || @tareas.empty?
       flash.now[:notice] = "Sin tareas"
     end
+  end
+
+  def finalizar
+    @meta = Meta.find(params[:id])
+    @meta.estado = 'Finalizado'
+    @meta.save
+
+    # Enviar correo electrónico al gerente
+    UserMailer.meta_finalizada_email(@meta.proyecto.gerente, @meta).deliver_now
+
+    # Enviar correo electrónico al líder
+    UserMailer.meta_finalizada_email(@meta.proyecto.lider, @meta).deliver_now
+
+    # Registrar en el log
+    Log.create(
+      tipo_log: "Meta Finalizada",
+      subject_id: @meta.id.to_s,
+      mensaje: "La meta ha sido marcada como finalizada",
+      obligatorio_id: @meta.proyecto.lider_id,
+      opcional_id: @meta.proyecto.gerente_id
+    )
+
+    # Verificar si quedan metas pendientes en el proyecto
+    proyecto = @meta.proyecto
+    if proyecto.metas.pendientes.empty?
+      proyecto.estado = 'Completado'
+      proyecto.save
+
+      # Enviar correo electrónico al gerente informando sobre el proyecto completado
+      UserMailer.proyecto_completado_email(proyecto).deliver_now
+
+      # Registrar en el log
+      Log.create(
+        tipo_log: 'Proyecto Completado',
+        subject_id: proyecto.id.to_s,
+        mensaje: 'El proyecto ha sido marcado como completado',
+        obligatorio_id: proyecto.gerente_id,
+        opcional_id: proyecto.lider_id
+      )
+    end
+    redirect_to user_home_path
   end
 
   private

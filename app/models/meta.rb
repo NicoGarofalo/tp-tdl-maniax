@@ -30,4 +30,6 @@ class Meta < ApplicationRecord
     progress
   end
   has_many :tareas
+
+  scope :pendientes, -> { where(estado: 'Pendiente') }
 end

@@ -8,7 +8,13 @@
     <th class="col-2">Meta</th>
     <th class="col-3">Proyecto</th>
     <th class="col-1">Estado</th>
-    <th class="col-1">Revisor</th>
+    <th class="col-1">
+      <% if @usuario.usuario_tipo == 'Integrante' %>
+        Revisor
+      <% else %>
+        Integrante
+      <% end %>
+    </th>
     <th class="col-1">Acciones</th>
   </tr>
   </thead>
@@ -21,7 +27,13 @@
       <td><%= tarea.meta.nombre %></td>
       <td><%= tarea.meta.proyecto.nombre %></td>
       <td><%= tarea.estado %></td>
-      <td><%= tarea.revisor.nombre %></td>
+      <td>
+        <% if @usuario.usuario_tipo == 'Integrante' %>
+          <%= tarea.revisor.nombre %>
+        <% else %>
+          <%= tarea.integrante.nombre %>
+        <% end %>
+      </td>
       <td>
         <% if @usuario.usuario_tipo == 'Integrante' %>
           <% if tarea.estado == 'Completado' %>

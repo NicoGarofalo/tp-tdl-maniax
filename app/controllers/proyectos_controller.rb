@@ -73,6 +73,40 @@ class ProyectosController < ApplicationController
     @metas = Meta.where(proyecto_id: idProyecto).map { |m| params_meta m }
   end
 
+  def schedule_email_notifications(proyecto)
+    vencimiento_date = proyecto.fecha_vencimiento.to_date
+
+    # Notificar al gerente una semana antes del vencimiento
+    una_semana_antes = vencimiento_date - 1.week
+    puts(una_semana_antes)
+    enviar_notificacion_por_correo(una_semana_antes, proyecto.gerente_id, proyecto)
+
+    # Notificar al gerente el día del vencimiento
+    enviar_notificacion_por_correo(vencimiento_date, proyecto.gerente_id, proyecto)
+  end
+
+  def finalizar
+    @proyecto = Proyecto.find(params[:id])
+    @proyecto.estado = 'Finalizado'
+    @proyecto.save
+
+    # Enviar correo electrónico al gerente
+    UserMailer.proyecto_finalizado_email(@proyecto.gerente, @proyecto).deliver_now
+
+    # Enviar correo electrónico al líder
+    UserMailer.proyecto_finalizado_email(@proyecto.lider, @proyecto).deliver_now
+
+    # Registrar en el log
+    Log.create(
+      tipo_log: "Proyecto Finalizado",
+      subject_id: @proyecto.id.to_s,
+      mensaje: "El proyecto ha sido marcado como finalizado",
+      obligatorio_id: @proyecto.gerente_id,
+      opcional_id: @proyecto.lider_id
+    )
+    redirect_to user_home_path
+  end
+
   private
 
   def create_log_entry(proyecto)
@@ -115,29 +149,15 @@ class ProyectosController < ApplicationController
     Usuario.find_by(id: session[:usuario_id])
   end
 
-  def schedule_email_notifications(proyecto)
-    vencimiento_date = proyecto.fecha_vencimiento.to_date
-
-    # Notificar al gerente una semana antes del vencimiento
-    una_semana_antes = vencimiento_date - 1.week
-    enviar_notificacion_por_correo(una_semana_antes, proyecto.gerente_id, proyecto)
-
-    # Notificar al gerente el día del vencimiento
-    enviar_notificacion_por_correo(vencimiento_date, proyecto.gerente_id, proyecto)
-
-    # Notificar al líder una semana antes del vencimiento
-    enviar_notificacion_por_correo(una_semana_antes, proyecto.lider_id, proyecto)
-
-    # Notificar al líder el día del vencimiento
-    enviar_notificacion_por_correo(vencimiento_date, proyecto.lider_id, proyecto)
-  end
-
   def enviar_notificacion_por_correo(fecha, usuario_id, proyecto)
     if fecha == Date.today
       usuario = Usuario.find(usuario_id)
+      puts "Enviando correo al usuario #{usuario.nombre} para el proyecto #{proyecto.nombre}"
       UserMailer.project_due_today_email(usuario, proyecto).deliver_now
     elsif fecha == 1.week.from_now.to_date
+      puts 1.week.from_now.to_date
       usuario = Usuario.find(usuario_id)
+      puts "Enviando correo al usuario #{usuario.nombre} para el proyecto #{proyecto.nombre}"
       UserMailer.project_due_soon_email(usuario, proyecto).deliver_now
     end
   end

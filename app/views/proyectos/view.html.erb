@@ -8,7 +8,14 @@
 
 
 <% if @usuario.id == @proyecto.gerente_id %>
-  <%= render template: "proyectos/add_meta", locals: {:idProyecto => @proyecto.id}, :class => 'btn btn-primary'%>
+  <% if @proyecto.estado != "Finalizado" %>
+    <%= render template: "proyectos/add_meta", locals: {:idProyecto => @proyecto.id}, :class => 'btn btn-primary'%>
+  <% end %>
+  <% if @proyecto.estado == "Completado" %>
+    <%= form_tag finalizar_proyecto_path(@proyecto), method: :post, class: "your-form-class" do %>
+      <%= submit_tag "Finalizar Proyecto", class: 'btn btn-primary' %>
+    <% end %>
+  <% end %>
 <% end %>
 
 
@@ -24,8 +31,6 @@
     </div>
   </div>
 </div>
-
-
 
 <h3>Metas</h3>
 <% if @metas == nil || @metas.size == 0%>

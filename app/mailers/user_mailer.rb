@@ -169,4 +169,60 @@ class UserMailer < ApplicationMailer
       fecha_hora: DateTime.now
     )
   end
+
+  def meta_completada_email(meta)
+    @meta = meta
+    @lider = meta.proyecto.lider
+    mail(to: @lider.email, subject: '¡Meta completada!')
+
+    # Crear notificación para el líder
+    Notificacion.create(
+      usuario_id: @lider.id,
+      notificacion_tipo: 'Meta Completada',
+      mensaje: "La meta #{@meta} ha sido marcada como completada.",
+      fecha_hora: DateTime.now
+    )
+  end
+
+  def meta_finalizada_email(usuario, meta)
+    @usuario = usuario
+    @meta = meta
+    mail(to: @usuario.email, subject: '¡Meta finalizada!')
+
+    # Create a notification for the user
+    Notificacion.create(
+      usuario_id: @usuario.id,
+      notificacion_tipo: 'Meta Finalizada',
+      mensaje: 'Has recibido un correo de finalización de meta',
+      fecha_hora: DateTime.now
+    )
+  end
+
+  def proyecto_completado_email(proyecto)
+    @proyecto = proyecto
+    @gerente = proyecto.gerente
+    mail(to: @gerente.email, subject: '¡Proyecto completado!')
+
+    # Crear notificación para el líder
+    Notificacion.create(
+      usuario_id: @gerente.id,
+      notificacion_tipo: 'Proyecto Completado',
+      mensaje: "El proyecto #{@proyecto} ha sido marcado como completado.",
+      fecha_hora: DateTime.now
+    )
+  end
+
+  def proyecto_finalizado_email(usuario, proyecto)
+    @usuario = usuario
+    @proyecto = proyecto
+    mail(to: @usuario.email, subject: '¡Proyecto finalizado!')
+
+    # Create a notification for the user
+    Notificacion.create(
+      usuario_id: @usuario.id,
+      notificacion_tipo: 'Proyecto Finalizado',
+      mensaje: 'Has recibido un correo de finalización del proyecto',
+      fecha_hora: DateTime.now
+    )
+  end
 end

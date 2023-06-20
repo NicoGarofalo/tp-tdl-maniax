@@ -26,4 +26,6 @@ class Tarea < ApplicationRecord
 
     true
   end
+
+  scope :pendientes, -> { where(estado: 'Pendiente') }
 end

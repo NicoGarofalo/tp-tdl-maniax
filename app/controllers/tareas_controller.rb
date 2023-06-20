@@ -22,15 +22,19 @@ class TareasController < ApplicationController
     if @tarea.save
       puts 'exitosamente creada la tarea'
       flash[:notice] = 'Tarea creada exitosamente.'
-      # redirect_to success_path
-      create_log_entry(@tarea) # Llamada a la función create_log_entry para registrar la creación de la tarea en el registro de logs"
-      create_notifications(@tarea) # Llamada a la función create_notifications para crear notificaciones relacionadas con la creación de la tarea
-      send_email_notifications(@tarea) # Llamada a la función send_email_notifications para enviar notificaciones por correo relacionadas con la tarea
+
+      # Actualizar el estado de la meta a 'Pendiente'
+      meta = Meta.find(@tarea.meta_id)
+      meta.estado = 'Pendiente'
+      meta.save
+
+      create_log_entry(@tarea)
+      create_notifications(@tarea)
+      send_email_notifications(@tarea)
       redirect_to meta_show_path(id: @tarea.meta_id)
     else
       flash[:notice] = 'Creacion Tarea fallo.'
-      puts @tarea.errors.full_messages # Imprimir los errores en la consola
-      # render :new
+      puts @tarea.errors.full_messages
     end
   end
 
@@ -84,6 +88,27 @@ class TareasController < ApplicationController
       opcional_id: @tarea.integrante_id
     )
 
+    # Verificar si quedan tareas pendientes en la meta
+    meta = @tarea.meta
+    if meta.tareas.pendientes.empty?
+      meta.estado = 'Completado'
+      meta.save
+
+      # Enviar correo electrónico al líder informando sobre la finalización de la meta
+      UserMailer.meta_completada_email(meta).deliver_now
+
+      # Obtener el usuario que marcó la última tarea como finalizada
+      usuario_finalizador = @tarea.integrante
+
+      # Registrar en el log
+      Log.create(
+        tipo_log: 'Meta Completada',
+        subject_id: meta.id.to_s,
+        mensaje: 'La meta ha sido marcada como completada',
+        obligatorio_id: meta.proyecto.lider_id,
+        opcional_id: usuario_finalizador.id
+      )
+    end
     redirect_to user_home_path
   end
 
