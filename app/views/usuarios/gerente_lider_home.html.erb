@@ -4,41 +4,6 @@
 
 <% end %>
 
-<ul id = "onlineUsers" style="list-style: none;">
-	<li>
-		<p style="float: inline-start;">id:7</p>
-		<p style="margin-left: 2rem;" name= "status" id_usuario="7">offline</p>
-	</li>
-
-	<li>
-		<p style="float: inline-start;">id:2</p>
-		<p style="margin-left: 2rem;" name= "status" id_usuario="2">offline</p>
-	</li>
-</ul>
-
-<script type="module">
-	console.log("MODULE IN HTML");
-
-	const usuario_id = <%= @usuario.id%>;
-
-	const onlineUsers = document.getElementById("onlineUsers");
-
-
-	function updateViewOnline(id_usuario, activo){
-		console.log("Deberia actualizar ",id_usuario," a valor: ",activo);
-		console.log(onlineUsers);
-		const nodes = onlineUsers.querySelectorAll('[id_usuario="'+id_usuario+'"]');
-
-		if(activo){
-			nodes[0].innerHTML = "online";
-		} else{
-			nodes[0].innerHTML = "offline";
-		}
-	}
-
-	suscribe("EnLinea", usuario_id,updateViewOnline);
-</script>
-
 <h1>Mis Proyectos</h1>
 
 <% if @usuario.esGerente %>

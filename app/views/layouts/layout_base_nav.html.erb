@@ -18,10 +18,6 @@
     window.suscribe = suscribirseA;
   </script>
 
-  <script type="module">
-    console.log("BASE NAV LOG");
-    //suscribidor.showHolaSuscriber();
-  </script>
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
   <style>
@@ -104,6 +100,25 @@
           <% end %>
         </li>
       </ul>
+    
+
+    <!-- En online ... -->
+
+    <ul id = "onlineUsers" style="list-style: none;">
+    
+    </ul>
+    
+    <script type="module">
+      import viewUpdater from "js_vista_online"
+
+      const lista = document.getElementById("onlineUsers");
+      function updater(data){
+        viewUpdater(data, lista);
+      }
+
+      suscribe("EnLinea", updater);
+    </script>
+
     </div>
 
       <!-- Aca va  el contenido  principal -->
