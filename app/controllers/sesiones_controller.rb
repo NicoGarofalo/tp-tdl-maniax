@@ -16,6 +16,7 @@ class SesionesController < ApplicationController
     if usuario&.authenticate(params[:password])
       # Autenticación exitosa
       session[:usuario_id] = usuario.id
+      cookies.encrypted[:usuario_id] = usuario.id
       session[:current_user] = usuario
       flash[:notice] = 'Inicio de sesión exitoso'
       redirect_to user_home_path
