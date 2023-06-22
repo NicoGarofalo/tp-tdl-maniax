@@ -54,6 +54,9 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <div class="row mr-2 align-items-center">
+          <div onclick="window.location.href='<%= url_for(controller: 'notificaciones', action: 'show') %>'" style="cursor: pointer; margin-right: 4rem;" class="d-flex flex-row btn btn-primary">
+            <i class="bi bi-bell-fill" style="color: white; font-size: 15pt;"></i>
+          </div>
           <div class="mr-3" style="margin-top:15px">
             <p style="color: white" class="text-right">¡Hola, <%= @usuario.nombre %>!<br/><%= @usuario.usuario_tipo %></p>
           </div>

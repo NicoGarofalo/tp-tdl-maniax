@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   get '/usuario_list', to: 'usuarios#user_list', as: 'user_list_view'
 
   get '/log_list', to: 'logs#view', as: 'logs_view'
+  get '/notificaciones', to: 'notificaciones#show', as: 'notificaciones_show'
   # stats
   # stat views
   get '/stats/week', to: 'stats#week', as: 'weekly_stats'

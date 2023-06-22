@@ -1,0 +1,20 @@
+<% content_for :title do %>
+	<title>Mis Notificaciones</title>
+<% end %>
+
+<h1 style="margin-bottom: 2rem">Mis Notificaciones</h1>
+
+
+<% if @notificaciones == nil || @notificaciones.size == 0%>
+  <p>No tenés notificaciones</p>
+<% else %>
+  <% @notificaciones.each do |notificacion| %>
+    <div class="card" style="max-width: 40%; margin-top: 1rem">
+        <div class="card-body" >
+            <h5 class="card-title"><span class="badge badge-primary"><%= notificacion.notificacion_tipo %></span></h5>
+            <p class="card-text"><%= notificacion.mensaje %></p>
+            <p class="card-text"><strong><%= notificacion.fecha_hora.strftime('%Y-%m-%d %H:%M') %></strong> <span class="fecha-hora"></span></p>
+        </div>
+    </div>
+  <% end %>
+<% end %>
