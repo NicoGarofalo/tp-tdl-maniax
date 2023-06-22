@@ -17,7 +17,11 @@ class TareasController < ApplicationController
 
   def create
     @tarea = Tarea.new(tarea_params)
-    @tarea.estado = 'Pendiente'
+    @tarea.estado = if @tarea.fecha_vencimiento < Date.today
+                      'Vencido'
+                    else
+                      'Pendiente'
+                    end
 
     if @tarea.save
       puts 'exitosamente creada la tarea'
@@ -25,7 +29,11 @@ class TareasController < ApplicationController
 
       # Actualizar el estado de la meta a 'Pendiente'
       meta = Meta.find(@tarea.meta_id)
-      meta.estado = 'Pendiente'
+      meta.estado = if meta.fecha_vencimiento < Date.today
+                      'Vencido'
+                    else
+                      'Pendiente'
+                    end
       meta.save
 
       create_log_entry(@tarea)
@@ -46,14 +54,8 @@ class TareasController < ApplicationController
     @tarea = Tarea.find(params[:id])
     @tarea.estado = 'Completado'
     @tarea.save
-
-    # Enviar correo electrónico al integrante
     UserMailer.tarea_completada_integrante_email(@tarea).deliver_now
-
-    # Enviar correo electrónico al revisor
     UserMailer.tarea_completada_revisor_email(@tarea).deliver_now
-
-    # Registrar en el log
     Log.create(
       tipo_log: "Tarea Completada",
       subject_id: @tarea.id.to_s,
@@ -61,7 +63,6 @@ class TareasController < ApplicationController
       obligatorio_id: @tarea.integrante_id,
       opcional_id: @tarea.revisor_id
     )
-
     redirect_to user_home_path
   end
 
@@ -69,38 +70,22 @@ class TareasController < ApplicationController
     @tarea = Tarea.find(params[:id])
     @tarea.estado = 'Finalizado'
     @tarea.save
-
-    # Enviar correo electrónico al líder
     UserMailer.tarea_finalizada_email(@tarea.meta.proyecto.lider, @tarea).deliver_now
-
-    # Enviar correo electrónico al revisor
     UserMailer.tarea_finalizada_email(@tarea.revisor, @tarea).deliver_now
-
-    # Enviar correo electrónico al integrante
     UserMailer.tarea_finalizada_email(@tarea.integrante, @tarea).deliver_now
-
-    # Registrar en el log
     Log.create(
-      tipo_log: "Tarea Finalizada",
+      tipo_log: 'Tarea Finalizada',
       subject_id: @tarea.id.to_s,
-      mensaje: "La tarea ha sido marcada como finalizada",
+      mensaje: 'La tarea ha sido marcada como finalizada',
       obligatorio_id: @tarea.revisor_id,
       opcional_id: @tarea.integrante_id
     )
-
-    # Verificar si quedan tareas pendientes en la meta
     meta = @tarea.meta
     if meta.tareas.pendientes.empty?
       meta.estado = 'Completado'
       meta.save
-
-      # Enviar correo electrónico al líder informando sobre la finalización de la meta
       UserMailer.meta_completada_email(meta).deliver_now
-
-      # Obtener el usuario que marcó la última tarea como finalizada
       usuario_finalizador = @tarea.integrante
-
-      # Registrar en el log
       Log.create(
         tipo_log: 'Meta Completada',
         subject_id: meta.id.to_s,
@@ -114,41 +99,54 @@ class TareasController < ApplicationController
 
   def pendiente
     @tarea = Tarea.find(params[:id])
-    @tarea.estado = 'Pendiente'
+    @tarea.estado = if @tarea.fecha_vencimiento < Date.today
+                      'Vencido'
+                    else
+                      'Pendiente'
+                    end
     @tarea.save
-
-    # Enviar correo electrónico al revisor
     UserMailer.tarea_devuelta_pendiente_revisor_email(@tarea).deliver_now
-
-    # Enviar correo electrónico al integrante
     UserMailer.tarea_devuelta_pendiente_integrante_email(@tarea).deliver_now
-
-    # Registrar en el log
     Log.create(
-      tipo_log: "Tarea Devuelta a Pendiente",
+      tipo_log: "Tarea Devuelta a #{@tarea.estado}",
       subject_id: @tarea.id.to_s,
-      mensaje: "La tarea #{@tarea} ha sido devuelta a estado Pendiente",
+      mensaje: "La tarea #{@tarea} ha sido devuelta a estado #{@tarea.estado}",
       obligatorio_id: @tarea.revisor_id,
       opcional_id: @tarea.integrante_id
     )
     redirect_to user_home_path
   end
 
-
   def enviar_notificacion_por_correo
     Tarea.find_each do |tarea|
       fecha = tarea.fecha_vencimiento.to_date
       revisor = tarea.revisor
       integrante = tarea.integrante
-      if fecha == Date.today
-        puts "Enviando correo de que vence hoy a #{revisor.nombre} y a #{integrante.nombre} para la tarea #{tarea.nombre}"
-        UserMailer.tarea_vence_hoy_email(revisor, tarea).deliver_now
-        UserMailer.tarea_vence_hoy_email(integrante, tarea).deliver_now
-      end
-      if fecha == 1.week.from_now.to_date
-        puts "Enviando correo de que vence en una semana a #{revisor.nombre} y a #{integrante.nombre} para la tarea #{tarea.nombre}"
-        UserMailer.tarea_vence_pronto_email(revisor, tarea).deliver_now
-        UserMailer.tarea_vence_pronto_email(integrante, tarea).deliver_now
+      if tarea.estado != 'Finalizado'
+        if fecha == Date.today
+          puts "Enviando correo de que vence hoy a #{revisor.nombre} y a #{integrante.nombre} para la tarea #{tarea.nombre}"
+          UserMailer.tarea_vence_hoy_email(revisor, tarea).deliver_now
+          UserMailer.tarea_vence_hoy_email(integrante, tarea).deliver_now
+        end
+        if fecha == 1.week.from_now.to_date
+          puts "Enviando correo de que vence en una semana a #{revisor.nombre} y a #{integrante.nombre} para la tarea #{tarea.nombre}"
+          UserMailer.tarea_vence_pronto_email(revisor, tarea).deliver_now
+          UserMailer.tarea_vence_pronto_email(integrante, tarea).deliver_now
+        end
+        if fecha < Date.today && tarea.estado == 'Pendiente'
+          tarea.estado = 'Vencido'
+          tarea.save
+          puts "Enviando correo de que venció a #{revisor.nombre} y a #{integrante.nombre} para la tarea #{tarea.nombre}"
+          UserMailer.tarea_vencio_email(revisor, tarea).deliver_now
+          UserMailer.tarea_vencio_email(integrante, tarea).deliver_now
+          Log.create(
+            tipo_log: 'Tarea Vencida',
+            subject_id: tarea.id.to_s,
+            mensaje: 'La tarea se ha pasado de la fecha de vencimiento.',
+            obligatorio_id: integrante.id,
+            opcional_id: revisor.id
+          )
+        end
       end
     end
   end
@@ -165,7 +163,7 @@ class TareasController < ApplicationController
 
   def create_log_entry(tarea)
     log = Log.create(
-      tipo_log: "Creación de Tarea",
+      tipo_log: 'Creación de Tarea',
       subject_id: tarea.id.to_s,
       mensaje: "#{current_user.nombre} creó la tarea #{tarea.nombre} para la meta #{Meta.find(tarea.meta_id).nombre}",
       obligatorio_id: tarea.meta.proyecto.lider_id,
@@ -176,21 +174,20 @@ class TareasController < ApplicationController
   def create_notifications(tarea)
     lider_notification = Notificacion.create(
       usuario_id: tarea.meta.proyecto.lider_id,
-      notificacion_tipo: "Tarea Asignada",
+      notificacion_tipo: 'Tarea Asignada',
       mensaje: "Has creado la tarea #{tarea.nombre} para la meta #{tarea.meta.nombre} del proyecto #{tarea.meta.proyecto.nombre}",
       fecha_hora: Time.now
     )
-
     revisor_notification = Notificacion.create(
       usuario_id: tarea.revisor_id,
-      notificacion_tipo: "Tarea Asignada",
+      notificacion_tipo: 'Tarea Asignada',
       mensaje: "Has sido asignado como revisor de la tarea #{tarea.nombre} para la meta #{tarea.meta.nombre} del proyecto #{tarea.meta.proyecto.nombre}",
       fecha_hora: Time.now
     )
 
     integrante_notification = Notificacion.create(
       usuario_id: tarea.integrante_id,
-      notificacion_tipo: "Tarea Asignada",
+      notificacion_tipo: 'Tarea Asignada',
       mensaje: "Has sido asignado como integrante de la tarea #{tarea.nombre} para la meta #{tarea.meta.nombre} del proyecto #{tarea.meta.proyecto.nombre}",
       fecha_hora: Time.now
     )
@@ -201,11 +198,10 @@ class TareasController < ApplicationController
     lider = proyecto.lider
     revisor = Usuario.find(tarea.revisor_id)
     integrante = Usuario.find(tarea.integrante_id)
-
     UserMailer.tarea_created_email_lider(lider, tarea).deliver_now
     UserMailer.tarea_created_email_revisor(revisor, tarea).deliver_now
     UserMailer.tarea_created_email_integrante(integrante, tarea).deliver_now
-    end
+  end
 
   def current_user
     @current_user ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]

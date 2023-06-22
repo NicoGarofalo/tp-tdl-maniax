@@ -16,7 +16,11 @@ class ProyectosController < ApplicationController
   def create
     @proyecto = Proyecto.new(proyecto_params)
     @proyecto.gerente_id = session[:usuario_id]
-    @proyecto.estado = 'Pendiente'
+    @proyecto.estado = if @proyecto.fecha_vencimiento < Date.today
+                         'Vencido'
+                       else
+                         'Pendiente'
+                       end
     authorize @proyecto
 
     if @proyecto.save
@@ -29,8 +33,6 @@ class ProyectosController < ApplicationController
 
       create_log_entry(@proyecto) # Crear entrada en la tabla "logs"
       create_notifications(@proyecto) # Crear notificaciones
-
-      schedule_email_notifications(@proyecto) # Programar notificaciones por correo electrónico
 
       flash[:notice] = 'Proyecto creado exitosamente'
       redirect_to controller: 'proyectos', action: 'view', id: @proyecto.id
@@ -86,9 +88,9 @@ class ProyectosController < ApplicationController
 
     # Registrar en el log
     Log.create(
-      tipo_log: "Proyecto Finalizado",
+      tipo_log: 'Proyecto Finalizado',
       subject_id: @proyecto.id.to_s,
-      mensaje: "El proyecto ha sido marcado como finalizado",
+      mensaje: 'El proyecto ha sido marcado como finalizado',
       obligatorio_id: @proyecto.gerente_id,
       opcional_id: @proyecto.lider_id
     )
@@ -99,13 +101,28 @@ class ProyectosController < ApplicationController
     Proyecto.find_each do |proyecto|
       fecha = proyecto.fecha_vencimiento.to_date
       gerente = proyecto.gerente
-      if fecha == Date.today
-        puts "Enviando correo de que vence hoy a #{gerente.nombre} para el proyecto #{proyecto.nombre}"
-        UserMailer.project_due_today_email(gerente, proyecto).deliver_now
-      end
-      if fecha == 1.week.from_now.to_date
-        puts "Enviando correo de que vence en una semana a #{gerente.nombre} para el proyecto #{proyecto.nombre}"
-        UserMailer.project_due_soon_email(gerente, proyecto).deliver_now
+      if proyecto.estado != 'Finalizado'
+        if fecha == Date.today
+          puts "Enviando correo de que vence hoy a #{gerente.nombre} para el proyecto #{proyecto.nombre}"
+          UserMailer.project_due_today_email(gerente, proyecto).deliver_now
+        end
+        if fecha == 1.week.from_now.to_date
+          puts "Enviando correo de que vence en una semana a #{gerente.nombre} para el proyecto #{proyecto.nombre}"
+          UserMailer.project_due_soon_email(gerente, proyecto).deliver_now
+        end
+        if fecha < Date.today && proyecto.estado == 'Ṕendiente'
+          proyecto.estado = 'Vencido'
+          proyecto.save
+          puts "Enviando correo de que el proyecto venció a #{gerente.nombre} para el proyecto #{proyecto.nombre}"
+          UserMailer.project_overdue_email(gerente, proyecto).deliver_now
+          Log.create(
+            tipo_log: 'Proyecto Vencido',
+            subject_id: proyecto.id.to_s,
+            mensaje: 'El proyecto se ha pasado de la fecha de vencimiento.',
+            obligatorio_id: gerente.id,
+            opcional_id: proyecto.lider_id
+          )
+        end
       end
     end
   end
@@ -148,6 +165,7 @@ class ProyectosController < ApplicationController
 
   def current_user
     return unless session[:usuario_id]
+
     Usuario.find_by(id: session[:usuario_id])
   end
 end

@@ -14,16 +14,27 @@ class MetasController < ApplicationController
     @usuario = current_user
     puts meta_params
     @meta = Meta.new(meta_params)
-    @meta.estado = 'Pendiente'
-    @meta.proyecto.estado = 'Pendiente'
+    @meta.estado = if @meta.fecha_vencimiento < Date.today
+                     'Vencido'
+                   else
+                     'Pendiente'
+                   end
 
     if @meta.save
+      @meta.proyecto.estado = if @meta.proyecto.fecha_vencimiento < Date.today
+                                'Vencido'
+                              else
+                                'Pendiente'
+                              end
       flash[:notice] = 'Meta creada exitosamente.'
       puts 'Meta guardada exitosamente'
 
-      # Actualizar el estado de la meta a 'Pendiente'
       proyecto = Proyecto.find(@meta.proyecto_id)
-      proyecto.estado = 'Pendiente'
+      proyecto.estado = if proyecto.fecha_vencimiento < Date.today
+                          'Vencido'
+                        else
+                          'Pendiente'
+                        end
       proyecto.save
 
       create_log_entry(@meta) # Llamada a la función create_log_entry para registrar la creación de la meta en el registro de logs
@@ -45,9 +56,9 @@ class MetasController < ApplicationController
     @usuario = current_user
     @lider_id = @meta.proyecto.lider.id
 
-    if @tareas.nil? || @tareas.empty?
-      flash.now[:notice] = "Sin tareas"
-    end
+    return unless @tareas.nil? || @tareas.empty?
+
+    flash.now[:notice] = 'Sin tareas'
   end
 
   def finalizar
@@ -75,11 +86,7 @@ class MetasController < ApplicationController
     if proyecto.metas.pendientes.empty?
       proyecto.estado = 'Completado'
       proyecto.save
-
-      # Enviar correo electrónico al gerente informando sobre el proyecto completado
       UserMailer.proyecto_completado_email(proyecto).deliver_now
-
-      # Registrar en el log
       Log.create(
         tipo_log: 'Proyecto Completado',
         subject_id: proyecto.id.to_s,
@@ -95,24 +102,33 @@ class MetasController < ApplicationController
     Meta.find_each do |meta|
       fecha = meta.fecha_vencimiento.to_date
       lider = meta.proyecto.lider
-      if fecha == Date.today
-        puts "Enviando correo de que vence hoy a #{lider.nombre} para la meta #{meta.nombre}"
-        UserMailer.meta_vence_hoy_email(lider, meta).deliver_now
-      end
-      if fecha == 1.week.from_now.to_date
-        puts "Enviando correo de que vence en una semana a #{lider.nombre} para la meta #{meta.nombre}"
-        UserMailer.meta_vence_pronto_email(lider, meta).deliver_now
+      if meta.estado != 'Finalizado'
+        if fecha == Date.today
+          puts "Enviando correo de que vence hoy a #{lider.nombre} para la meta #{meta.nombre}"
+          UserMailer.meta_vence_hoy_email(lider, meta).deliver_now
+        end
+        if fecha == 1.week.from_now.to_date
+          puts "Enviando correo de que vence en una semana a #{lider.nombre} para la meta #{meta.nombre}"
+          UserMailer.meta_vence_pronto_email(lider, meta).deliver_now
+        end
+        if fecha < Date.today && meta.estado == 'Pendiente'
+          meta.estado = 'Vencido'
+          meta.save
+          puts "Enviando correo de que venció a #{lider.nombre} para la meta #{meta.nombre}"
+          UserMailer.meta_vencio_email(lider, meta).deliver_now
+          Log.create(
+            tipo_log: 'Meta Vencida',
+            subject_id: meta.id.to_s,
+            mensaje: 'La meta se ha pasado de la fecha de vencimiento.',
+            obligatorio_id: lider.id,
+            opcional_id: meta.proyecto.gerente_id
+          )
+        end
       end
     end
   end
 
   private
-
-  def current_user
-    return unless session[:usuario_id]
-
-    Usuario.find_by(id: session[:usuario_id])
-  end
 
   def meta_show_params
     params.require(:id)
@@ -124,7 +140,7 @@ class MetasController < ApplicationController
 
   def create_log_entry(meta)
     log = Log.create(
-      tipo_log: "Creación de Meta",
+      tipo_log: 'Creación de Meta',
       subject_id: meta.id.to_s,
       mensaje: "#{current_user.nombre} creó la meta #{meta.nombre} para el proyecto #{Proyecto.find(meta.proyecto_id).nombre}",
       obligatorio_id: meta.proyecto.gerente_id,
@@ -135,14 +151,14 @@ class MetasController < ApplicationController
   def create_notifications(meta)
     gerente_notification = Notificacion.create(
       usuario_id: meta.proyecto.gerente_id,
-      notificacion_tipo: "Meta Creada",
+      notificacion_tipo: 'Meta Creada',
       mensaje: "Has creado la meta #{meta.nombre} para el proyecto #{meta.proyecto.nombre}",
       fecha_hora: Time.now
     )
 
     lider_notification = Notificacion.create(
       usuario_id: meta.proyecto.lider_id,
-      notificacion_tipo: "Meta Asignada",
+      notificacion_tipo: 'Meta Asignada',
       mensaje: "Has sido asignado como líder de la meta #{meta.nombre} para el proyecto #{meta.proyecto.nombre}",
       fecha_hora: Time.now
     )
@@ -151,7 +167,6 @@ class MetasController < ApplicationController
   def send_meta_created_emails(meta)
     gerente = Usuario.find(meta.proyecto.gerente_id)
     lider = Usuario.find(meta.proyecto.lider_id)
-
     UserMailer.meta_created_email(gerente, meta).deliver_now
     UserMailer.meta_created_email_lider(lider, meta).deliver_now
   end
