@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # app/channels/application_cable/connection.rb
 module ApplicationCable
   class Connection < ActionCable::Connection::Base
@@ -8,12 +10,13 @@ module ApplicationCable
     end
 
     private
-      def find_verified_user
-        if verified_user = Usuario.find_by(id: cookies.encrypted[:usuario_id])
-          verified_user
-        else
-          reject_unauthorized_connection
-        end
+
+    def find_verified_user
+      if (verified_user = Usuario.find_by(id: cookies.encrypted[:usuario_id]))
+        verified_user
+      else
+        reject_unauthorized_connection
       end
+    end
   end
 end

@@ -74,9 +74,9 @@ class MetasController < ApplicationController
 
     # Registrar en el log
     Log.create(
-      tipo_log: "Meta Finalizada",
+      tipo_log: 'Meta Finalizada',
       subject_id: @meta.id.to_s,
-      mensaje: "La meta ha sido marcada como finalizada",
+      mensaje: 'La meta ha sido marcada como finalizada',
       obligatorio_id: @meta.proyecto.lider_id,
       opcional_id: @meta.proyecto.gerente_id
     )
@@ -139,7 +139,7 @@ class MetasController < ApplicationController
   end
 
   def create_log_entry(meta)
-    log = Log.create(
+    Log.create(
       tipo_log: 'Creación de Meta',
       subject_id: meta.id.to_s,
       mensaje: "#{current_user.nombre} creó la meta #{meta.nombre} para el proyecto #{Proyecto.find(meta.proyecto_id).nombre}",
@@ -149,14 +149,14 @@ class MetasController < ApplicationController
   end
 
   def create_notifications(meta)
-    gerente_notification = Notificacion.create(
+    Notificacion.create(
       usuario_id: meta.proyecto.gerente_id,
       notificacion_tipo: 'Meta Creada',
       mensaje: "Has creado la meta #{meta.nombre} para el proyecto #{meta.proyecto.nombre}",
       fecha_hora: Time.now
     )
 
-    lider_notification = Notificacion.create(
+    Notificacion.create(
       usuario_id: meta.proyecto.lider_id,
       notificacion_tipo: 'Meta Asignada',
       mensaje: "Has sido asignado como líder de la meta #{meta.nombre} para el proyecto #{meta.proyecto.nombre}",
