@@ -7,25 +7,17 @@
     <thead>
       <tr>
         <th>Evento</th>
-        <th>Nombre</th>
+        <th>Nombre y Apellido</th>
         <th>Mensaje</th>
-        <%
-=begin%>
- <th>Fecha y Hora</th> 
-<%
-=end%>
         <th>Usuario Obigatorio</th>
         <th>Usuario Opcional</th>
         <th>Fecha y hora</th>
-        <%
-=begin%>
- <th>Updated At</th> 
-<%
-=end%>
       </tr>
     </thead>
     <tbody>
       <% @logs.each do |log| %>
+        <% usuario_obligatorio = Usuario.find(log.obligatorio_id) %>
+        <% usuario_opcional = Usuario.find(log.opcional_id) %>
         <tr>
           <td><%= log.tipo_log %></td>
           <td>
@@ -38,19 +30,9 @@
             <% end %>
           </td>
           <td><%= log.mensaje %></td>
-          <%
-=begin%>
- <td><%= log.fecha_hora %></td> 
-<%
-=end%>
-          <td><%= Usuario.find(log.obligatorio_id).nombre %></td>
-          <td><%= Usuario.find(log.opcional_id).nombre %></td>
+          <td><%= usuario_obligatorio.nombre %> <%= usuario_obligatorio.apellido %></td>
+          <td><%= usuario_opcional.nombre %> <%= usuario_opcional.apellido %></td>
           <td><%= log.created_at %></td>
-          <%
-=begin%>
- <td><%= log.updated_at %></td> 
-<%
-=end%>
         </tr>
       <% end %>
     </tbody>

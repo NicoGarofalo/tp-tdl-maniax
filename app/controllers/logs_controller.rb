@@ -12,7 +12,7 @@ class LogsController < ApplicationController
 
   def view
     @usuario = current_user
-    @logs = Log.all
+    @logs = policy_scope(Log)
     render :index
   end
 
@@ -22,9 +22,4 @@ class LogsController < ApplicationController
     params.require(:log).permit(:tipo_log, :subject_id, :mensaje, :obligatorio_id, :opcional_id)
   end
 
-  def current_user
-    return unless session[:usuario_id]
-
-    Usuario.find_by(id: session[:usuario_id])
-  end
 end

@@ -90,9 +90,4 @@ class UsuariosController < ApplicationController
     params.require(:usuario).permit(:usuario_tipo, :nombre, :apellido, :email, :password, :password_confirmation)
   end
 
-  def current_user
-    return unless session[:usuario_id]
-
-    Usuario.find_by(id: session[:usuario_id])
-  end
 end

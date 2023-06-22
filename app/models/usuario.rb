@@ -16,7 +16,7 @@ class Usuario < ApplicationRecord
   end
 
   def esLider
-    usuario_tipo == 'Lider'
+    usuario_tipo == 'Líder'
   end
 
   def esIntegrante

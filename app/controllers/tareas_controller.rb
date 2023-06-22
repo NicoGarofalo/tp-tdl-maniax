@@ -204,7 +204,4 @@ class TareasController < ApplicationController
     UserMailer.tarea_created_email_integrante(integrante, tarea).deliver_now
   end
 
-  def current_user
-    @current_user ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]
-  end
 end

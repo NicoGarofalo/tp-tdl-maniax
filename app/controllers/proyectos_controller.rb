@@ -162,9 +162,4 @@ class ProyectosController < ApplicationController
     params.require(:proyecto).permit(:gerente_id, :lider_id, :fecha_vencimiento, :nombre, :descripcion, :estado)
   end
 
-  def current_user
-    return unless session[:usuario_id]
-
-    Usuario.find_by(id: session[:usuario_id])
-  end
 end

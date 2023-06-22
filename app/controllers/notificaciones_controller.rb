@@ -22,10 +22,4 @@ class NotificacionesController < ApplicationController
   def notificacion_params
     params.require(:notificacion).permit(:usuario_id, :notificacion_tipo, :mensaje, :fecha_hora)
   end
-
-  def current_user
-    return unless session[:usuario_id]
-
-    Usuario.find_by(id: session[:usuario_id])
-  end
 end

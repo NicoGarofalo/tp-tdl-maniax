@@ -170,8 +170,4 @@ class MetasController < ApplicationController
     UserMailer.meta_created_email(gerente, meta).deliver_now
     UserMailer.meta_created_email_lider(lider, meta).deliver_now
   end
-
-  def current_user
-    @current_user ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]
-  end
 end
