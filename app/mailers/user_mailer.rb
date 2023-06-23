@@ -17,7 +17,7 @@ class UserMailer < ApplicationMailer
 
     # Crear notificación para el usuario
     Notificacion.create(usuario_id: @gerente.id, notificacion_tipo: 'Proyecto Creado',
-                        mensaje: "Has creado el proyecto #{@proyecto}", fecha_hora: DateTime.now)
+                        mensaje: "Has creado el proyecto #{@proyecto.nombre}", fecha_hora: DateTime.now)
   end
 
   def project_assigned_email(lider, proyecto)
@@ -27,7 +27,7 @@ class UserMailer < ApplicationMailer
 
     # Crear notificación para el usuario
     Notificacion.create(usuario_id: @lider.id, notificacion_tipo: 'Proyecto Asignado',
-                        mensaje: "Has sido asignado al proyecto #{@proyecto}", fecha_hora: DateTime.now)
+                        mensaje: "Has sido asignado al proyecto #{@proyecto.nombre}", fecha_hora: DateTime.now)
   end
 
   def meta_created_email(gerente, meta)
@@ -37,7 +37,7 @@ class UserMailer < ApplicationMailer
 
     # Crear notificación para el usuario
     Notificacion.create(usuario_id: @gerente.id, notificacion_tipo: 'Meta Creada',
-                        mensaje: "Has creado la meta #{@meta}", fecha_hora: DateTime.now)
+                        mensaje: "Has creado la meta #{@meta.nombre}", fecha_hora: DateTime.now)
   end
 
   def meta_created_email_lider(lider, meta)
@@ -47,7 +47,7 @@ class UserMailer < ApplicationMailer
 
     # Crear notificación para el usuario
     Notificacion.create(usuario_id: @lider.id, notificacion_tipo: 'Meta Creada',
-                        mensaje: "Se ha creado la meta #{@meta}", fecha_hora: DateTime.now)
+                        mensaje: "Se ha creado la meta #{@meta.nombre}", fecha_hora: DateTime.now)
   end
 
   def tarea_created_email_lider(lider, tarea)
@@ -57,7 +57,7 @@ class UserMailer < ApplicationMailer
 
     # Crear notificación para el líder
     Notificacion.create(usuario_id: @lider.id, notificacion_tipo: 'Tarea Creada',
-                        mensaje: "Has creado la tarea #{@tarea}", fecha_hora: DateTime.now)
+                        mensaje: "Has creado la tarea #{@tarea.nombre}", fecha_hora: DateTime.now)
   end
 
   def tarea_created_email_revisor(revisor, tarea)
@@ -67,7 +67,7 @@ class UserMailer < ApplicationMailer
 
     # Crear notificación para el revisor
     Notificacion.create(usuario_id: @revisor.id, notificacion_tipo: 'Tarea Creada',
-                        mensaje: "Se ha creado la tarea #{@tarea}", fecha_hora: DateTime.now)
+                        mensaje: "Se ha creado la tarea #{@tarea.nombre}", fecha_hora: DateTime.now)
   end
 
   def tarea_created_email_integrante(integrante, tarea)
@@ -87,7 +87,7 @@ class UserMailer < ApplicationMailer
 
     # Crear notificación para el usuario
     Notificacion.create(usuario_id: @user.id, notificacion_tipo: 'Proyecto Vencimiento',
-                        mensaje: "El proyecto #{@proyecto} vence hoy", fecha_hora: DateTime.now)
+                        mensaje: "El proyecto #{@proyecto.nombre} vence hoy", fecha_hora: DateTime.now)
   end
 
   def project_due_soon_email(user, project)
@@ -97,7 +97,7 @@ class UserMailer < ApplicationMailer
 
     # Crear notificación para el usuario
     Notificacion.create(usuario_id: @user.id, notificacion_tipo: 'Proyecto Vencimiento',
-                        mensaje: "El proyecto #{@proyecto} vence pronto", fecha_hora: DateTime.now)
+                        mensaje: "El proyecto #{@proyecto.nombre} vence pronto", fecha_hora: DateTime.now)
   end
 
   def tarea_completada_integrante_email(tarea)
