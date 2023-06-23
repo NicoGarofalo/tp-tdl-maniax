@@ -36,11 +36,7 @@ class UsuariosController < ApplicationController
   end
 
   def revisor_integrante_home
-    @tareas = if @usuario.usuario_tipo == 'Revisor'
-                Tarea.where(revisor_id: @usuario.id)
-              else
-                Tarea.where(integrante_id: @usuario.id)
-              end
+    @tareas = policy_scope(Tarea)
     render :revisor_integrante_home
   end
 

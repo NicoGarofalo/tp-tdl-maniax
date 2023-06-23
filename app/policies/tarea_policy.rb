@@ -1,6 +1,26 @@
 # frozen_string_literal: true
 
 class TareaPolicy
+  class Scope
+    def initialize(usuario, tarea)
+      @usuario  = usuario
+      @tarea = tarea
+    end
+
+    def resolve
+      if @usuario.esRevisor
+        Tarea.where(revisor_id: @usuario.id)
+      else
+        Tarea.where(integrante_id: @usuario.id)
+      end
+    end
+
+    private
+
+    attr_reader :usuario, :scope
+  end
+
+
   attr_reader :tarea, :usuario_act
 
   def initialize(usuario_act, tarea)

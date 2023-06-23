@@ -11,7 +11,7 @@ class LogPolicy
       if usuario.esGerente
         @log.all
       else
-        @log.where("obligatorio_id = ? OR opcional_id = ?", @usuario.id, @usuario.id)
+        @log.where("obligatorio_id = ? OR opcional_id = ?", @usuario.id, @usuario.id).order('created_at DESC')
       end
     end
 
@@ -27,8 +27,7 @@ class LogPolicy
     @usuario_act = usuario_act
   end
 
-  # Aca meter scopes para saber cuales logs traer en base a rol
-  def show?
-    @usuario_act.esLider || @usuario_act.esGerente
-  end
+  # def show?
+  #   @usuario_act.esLider || @usuario_act.esGerente
+  # end
 end

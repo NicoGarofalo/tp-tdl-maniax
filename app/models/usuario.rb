@@ -10,6 +10,9 @@ class Usuario < ApplicationRecord
   has_many :tareas, foreign_key: :integrante_id, dependent: :nullify
 
 
+  def nombre_completo
+    nombre + " " + apellido
+  end
 
   def esGerente
     usuario_tipo == 'Gerente'

@@ -1,36 +1,38 @@
 <%= form_for tarea, url: tareas_path, method: :post do |f| %>
-
-  <div>
-    <%= f.label :meta_id, style: 'display: none;' %>
-    <%= f.hidden_field :meta_id, value: @meta.id %>
+<div class="container">
+  <div class="form-group">
+    <%= f.label :meta_id, style: 'display: none;', class: 'd-none' %>
+    <%= f.hidden_field :meta_id, value: @meta.id, class: 'form-control' %>
   </div>
 
-  <div>
+  <div class="form-group">
     <%= f.label :revisor_id %>
-    <%= f.collection_select :revisor_id, Usuario.where(usuario_tipo: 'Revisor'), :id, :nombre %>
+    <%= f.collection_select :revisor_id, Usuario.where(usuario_tipo: 'Revisor'), :id, :nombre_completo, { prompt: 'Selecciona un revisor' }, class: 'form-control' %>
   </div>
 
-  <div>
+  <div class="form-group">
     <%= f.label :integrante_id %>
-    <%= f.collection_select :integrante_id, Usuario.where(usuario_tipo: 'Integrante'), :id, :nombre %>
+    <%= f.collection_select :integrante_id, Usuario.where(usuario_tipo: 'Integrante'), :id, :nombre_completo, { prompt: 'Selecciona un integrante' }, class: 'form-control' %>
   </div>
 
-  <div>
+  <div class="form-group">
     <%= f.label :fecha_vencimiento %>
-    <%= f.date_field :fecha_vencimiento %>
+    <%= f.date_field :fecha_vencimiento, class: 'form-control' %>
   </div>
 
-  <div>
+  <div class="form-group">
     <%= f.label :nombre %>
-    <%= f.text_field :nombre %>
+    <%= f.text_field :nombre, class: 'form-control' %>
   </div>
 
-  <div>
+  <div class="form-group">
     <%= f.label :descripcion %>
-    <%= f.text_area :descripcion %>
+    <%= f.text_area :descripcion, class: 'form-control' %>
   </div>
 
-  <div>
-    <%= f.submit "Crear Tarea" %>
+  <div class="form-group">
+    <%= f.submit "Crear Tarea", class: 'btn btn-primary' %>
   </div>
+</div>
+
 <% end %>

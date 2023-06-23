@@ -28,14 +28,14 @@
       <td><%= tarea.meta.proyecto.nombre %></td>
       <td><%= tarea.estado %></td>
       <td>
-        <% if @usuario.usuario_tipo == 'Integrante' %>
+        <% if @usuario.esIntegrante %>
           <%= tarea.revisor.nombre %>
         <% else %>
           <%= tarea.integrante.nombre %>
         <% end %>
       </td>
       <td>
-        <% if @usuario.usuario_tipo == 'Integrante' %>
+        <% if @usuario.esIntegrante %>
           <% if tarea.estado == 'Completado' %>
             <span class="completado">En revisión</span>
           <% elsif tarea.estado == 'Finalizado' %>
@@ -43,11 +43,11 @@
           <% else %>
             <%= button_to 'Completar', { controller: 'tareas', action: 'completar', id: tarea.id }, method: :post, class: 'btn btn-primary', disabled: false %>
           <% end %>
-        <% elsif @usuario.usuario_tipo == 'Revisor' %>
+        <% elsif @usuario.esRevisor %>
           <% if tarea.estado == 'Finalizado' %>
             <span class="completado">Finalizado</span>
           <% elsif tarea.estado == 'Completado' %>
-            <%= button_to 'Finalizar', { controller: 'tareas', action: 'finalizar', id: tarea.id }, method: :post, class: 'btn btn-primary', disabled: false %>
+            <%= button_to 'Finalizar', { controller: 'tareas', action: 'finalizar', id: tarea.id }, method: :post, class: 'btn btn-primary mb-3', disabled: false %>
             <%= button_to 'Pendiente', { controller: 'tareas', action: 'pendiente', id: tarea.id }, method: :post, class: 'btn btn-primary', disabled: false %>
           <% else %>
             <span class="por-completar">Por completar</span>
