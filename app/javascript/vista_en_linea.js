@@ -86,7 +86,7 @@ export function updateViewOnline(data, onlineUsers) {
 			elemento.remove()
 		}
 
-		usuariosActivos.delete(id_for(data["id_usuario"]));
+		delete usuariosActivos[id_for(data["id_usuario"])];
 	} else {
 		console.log("modificar activo ...", data);
 		modificarElemento(data["nuevo"], onlineUsers);

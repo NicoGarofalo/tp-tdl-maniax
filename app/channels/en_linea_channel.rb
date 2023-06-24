@@ -51,7 +51,8 @@ class EnLineaChannel < ApplicationCable::Channel
     end
 
     # ide_receiver = id[]
-    EnLineaChannel.broadcast_to('online', enLinea: connections_array, action: 'get')
+    EnLineaChannel.broadcast_to(current_user, enLinea: connections_array, action: 'get')
+    
   end
 
   def subscribed
@@ -77,6 +78,7 @@ class EnLineaChannel < ApplicationCable::Channel
     #p connections_array
     puts '------------------------------>Subscriptores'
     stream_for 'online'
+    stream_for current_user
   end
 
   def self.progress_of(id); end
