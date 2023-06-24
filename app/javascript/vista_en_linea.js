@@ -1,6 +1,7 @@
 
 //const onlineUsers = document.getElementById("onlineUsers");
 let inicalizado = false;
+const usuariosActivos= {};
 
 function id_for(id_user) {
 	return "usuario_" + id_user
@@ -11,47 +12,64 @@ function obtenerElemento(id_user) {
 }
 
 function modificarElemento(usuario, onlineUsers) {
-	const elemento = obtenerElemento(usuario.id);
-
-	if (elemento) {
-		console.log("MODIFICANDO");
-		const activo_msj = elemento.querySelectorAll("[name=\"status\"]");
-
-		console.log("activo", activo_msj);
-	} else {
-		console.log(" NO ESTABA?? ", usuario);
-		agregarElemento(usuario, onlineUsers);
+	//const elemento = obtenerElemento(usuario.id);
+	if(id_for(usuario.id) in usuariosActivos){
+		return;// por ahora si esta es por que estuvo activo.
 	}
+
+	onlineUsers.innerHTML+= buildElemento(usuario);
 }
 
-function agregarElemento(usuario, onlineUsers) {
-
-	console.log("AGREGANDO .... ", usuario);
+function buildElemento(usuario){
 	const elementoNuevo = `<li id="${id_for(usuario.id)}"  class="list-group-item d-flex justify-content-between align-items-center">
 		<span>${usuario.nombre + " " + usuario.apellido}</span>
 		<span  name= "status" class="badge bg-success d-flex">Online</p></li>`;
-
-	onlineUsers.innerHTML = onlineUsers.innerHTML + elementoNuevo;
-
+	usuariosActivos[id_for(usuario.id)] = elementoNuevo;
+	return elementoNuevo;
 }
 
-export default function updateViewOnline(data, onlineUsers) {
+
+export function initializeOn(onlineUsers){
+
+	if(Object.keys(usuariosActivos).length === 0){
+		return false;
+	}
+	// ya se habia inicializado. Por ende tambien se habia suscripto
+	console.log("Cargando elementos Anteriores",usuariosActivos);
+
+	let innerHTML= ""; 
+	Object.values(usuariosActivos).forEach( (elemento)=>{
+		innerHTML+= elemento;
+	});
+
+	if(innerHTML == ""){
+		return false;
+	}
+
+
+	onlineUsers.innerHTML = innerHTML;
+
+	return true;
+}
+
+export function updateViewOnline(data, onlineUsers) {
 	if (data["action"] == "get") {
 		if (inicalizado) {
 			return;
 		}
 
 
-		onlineUsers.innerHTML = "";
+		//onlineUsers.innerHTML = "";
 
 		console.log("activos inicio", data["enLinea"])
-
+		let innerHTML = "";
 		data["enLinea"].forEach(usuario => {
-			agregarElemento(usuario.current_user, onlineUsers)
-		})
+			innerHTML+= buildElemento(usuario.current_user);
+		});
 
 		inicalizado = true;
 
+		onlineUsers.innerHTML = innerHTML;
 		return;
 	}
 
@@ -67,6 +85,8 @@ export default function updateViewOnline(data, onlineUsers) {
 		if (elemento) {
 			elemento.remove()
 		}
+
+		usuariosActivos.delete(id_for(data["id_usuario"]));
 	} else {
 		console.log("modificar activo ...", data);
 		modificarElemento(data["nuevo"], onlineUsers);

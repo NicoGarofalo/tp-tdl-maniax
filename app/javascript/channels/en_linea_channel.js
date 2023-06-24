@@ -1,17 +1,24 @@
 import consumer from "channels/consumer"
 
+//let seSuscribio = false;
+
 function suscribirseEnLinea(listener){
+
+	//if(seSuscribio){
+		//console.log("NO HIZO NADA YA QUE YA SE HABIA SUSCRIPTO");
+		//return;
+	//}
+	//seSuscribio = true;
 
 
 	console.log("Consumer",consumer.connection);
-
 	console.log("Res: '", consumer.subscriptions.findAll("EnLineaChannel"),"'");
+
 	consumer.subscriptions.create({channel: "EnLineaChannel"},{
 	  connected(data) {
 	  	console.log("CONNECTED EnLinea? '",data,"'");  	
 	    // Called when the subscription is ready for use on the server
 	    this.perform("appear");
-
 	    this.perform("get_subs");
 
 	  },
