@@ -32,4 +32,5 @@ class Meta < ApplicationRecord
   has_many :tareas
 
   scope :pendientes, -> { where(estado: 'Pendiente') }
+  scope :con_estado_distinto_finalizado, -> { where.not(estado: 'Finalizado') }
 end

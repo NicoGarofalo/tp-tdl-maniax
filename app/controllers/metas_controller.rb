@@ -128,6 +128,32 @@ class MetasController < ApplicationController
     end
   end
 
+  def delete(meta = nil)
+    @meta = if meta.nil?
+              Meta.find(params[:id])
+            else
+              meta
+            end
+    # authorize @meta
+    Log.where(subject_id: @meta.id).destroy_all
+    Tarea.where(meta_id: @meta.id).find_each do |tarea|
+      TareasController.new.delete(tarea)
+    end
+    if @meta.destroy
+      proyecto = @meta.proyecto
+      proyecto.estado = if proyecto.metas.con_estado_distinto_finalizado.empty?
+                          'Completado'
+                        else
+                          'Pendiente'
+                        end
+      proyecto.save
+    end
+    return unless meta.nil?
+
+    flash[:notice] = 'Meta eliminada exitosamente'
+    redirect_to proyecto_view_path(id: proyecto.id)
+  end
+
   private
 
   def meta_show_params

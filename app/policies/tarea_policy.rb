@@ -16,6 +16,10 @@ class TareaPolicy
     @usuario_act.esRevisor || @usuario_act.esIntegrante
   end
 
+  def show?
+    @usuario_act.esGerente || @usuario_act.esLider
+  end
+
   def update?
     estado_es_de_revisor = @tarea.estado == 'Cumplido' || @tarea.estado == 'Pendiente'
     estado_es_de_integrante = @tarea.estado == 'Finalizado'

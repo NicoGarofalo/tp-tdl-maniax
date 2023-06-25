@@ -1,16 +1,8 @@
-
-
-<%= render layout: "shared/base_item", locals: {title: proyecto.nombre, estado: proyecto.estado} do %>
-
-	<%= render layout: "shared/item_to_view", locals: {:progress => stats[:progress], verData: {controller: "proyectos", action: "view", id: proyecto.id}} do %>
-
-		<%= render template: "shared/basic_descripcion", locals: {:descripcion => "Líder: "+nombre_lider,
-															:integrantes => stats[:countMembers],
-															:venc => proyecto.fecha_vencimiento}%>
-
-
+<%= render layout: "shared/base_item", locals: { title: proyecto.nombre, estado: proyecto.estado } do %>
+	<%= render layout: "shared/item_to_view", locals: { proyecto: proyecto, progress: stats[:progress], verData: { controller: "proyectos", action: "view", id: proyecto.id } } do %>
+		<%= render template: "shared/basic_descripcion", locals: { descripcion: "Líder: " + nombre_lider, integrantes: stats[:countMembers], venc: proyecto.fecha_vencimiento } %>
+	<% end %>
+	<%= form_with model: proyecto, url: proyecto_delete_path(proyecto.id), method: :delete, data: { confirm: '¿Estás seguro de que deseas eliminar este proyecto?' } do |form| %>
+		<%= form.submit "Eliminar", class: "btn btn-danger" %>
 	<% end %>
 <% end %>
-
-
-

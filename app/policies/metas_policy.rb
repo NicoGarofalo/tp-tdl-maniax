@@ -15,4 +15,8 @@ class MetasPolicy
   def update?
     @usuario_act.esGerente
   end
+
+  def delete?
+    @usuario_act.esGerente
+  end
 end

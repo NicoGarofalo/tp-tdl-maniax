@@ -2,9 +2,13 @@
 	<h4><%= item.nombre %></h4>
 	<p>revisor: <%= item.revisor.nombre%></p>
 	<p>integrante: <%= item.integrante.nombre%></p>
-
 	<p>estado <%= item.estado%></p>
-	
+
+	<% if @idUsuario == item.meta.proyecto.lider_id && !['Finalizado', 'Completado'].include?(item.meta.estado) %>
+		<%= form_with model: item, url: tarea_delete_path(item), method: :delete, data: { confirm: '¿Estás seguro de que deseas eliminar esta tarea?' } do |form| %>
+			<%= form.submit "Eliminar", class: "btn btn-danger" %>
+		<% end %>
+	<% end %>
 
 	<% if @idUsuario == item.integrante_id %>
 	
