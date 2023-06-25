@@ -5,6 +5,25 @@ class Proyecto < ApplicationRecord
   belongs_to :lider, class_name: 'Usuario'
   has_many :metas, class_name: 'Meta', dependent: :destroy
 
+  def cargar_gerente(gerente_id)
+    self.gerente_id = gerente_id
+  end
+
+  def chequear_fecha_vencimiento()
+    self.estado = if self.fecha_vencimiento < Date.today
+      'Vencido'
+    else
+      'Pendiente'
+    end  
+  end
+
+  def finalizo?
+    if self.metas.pendientes.empty?
+      self.estado = 'Completado'
+      return true
+    end
+    return false
+  end
 
   # count members
   def count_members

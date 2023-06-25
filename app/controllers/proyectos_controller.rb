@@ -14,12 +14,9 @@ class ProyectosController < ApplicationController
 
   def create
     @proyecto = Proyecto.new(proyecto_params)
-    @proyecto.gerente_id = session[:usuario_id]
-    @proyecto.estado = if @proyecto.fecha_vencimiento < Date.today
-                         'Vencido'
-                       else
-                         'Pendiente'
-                       end
+    @proyecto.cargar_gerente(session[:usuario_id])
+    @proyecto.chequear_fecha_vencimiento     
+
     authorize @proyecto
 
     if @proyecto.save

@@ -14,27 +14,15 @@ class MetasController < ApplicationController
     @usuario = current_user
     puts meta_params
     @meta = Meta.new(meta_params)
-    @meta.estado = if @meta.fecha_vencimiento < Date.today
-                     'Vencido'
-                   else
-                     'Pendiente'
-                   end
+    @meta.chequear_fecha_vencimiento
 
     if @meta.save
-      @meta.proyecto.estado = if @meta.proyecto.fecha_vencimiento < Date.today
-                                'Vencido'
-                              else
-                                'Pendiente'
-                              end
+      @meta.proyecto.chequear_fecha_vencimiento
       flash[:notice] = 'Meta creada exitosamente.'
       puts 'Meta guardada exitosamente'
 
       proyecto = Proyecto.find(@meta.proyecto_id)
-      proyecto.estado = if proyecto.fecha_vencimiento < Date.today
-                          'Vencido'
-                        else
-                          'Pendiente'
-                        end
+      proyecto.chequear_fecha_vencimiento
       proyecto.save
 
       create_log_entry(@meta) # Llamada a la función create_log_entry para registrar la creación de la meta en el registro de logs
@@ -63,7 +51,7 @@ class MetasController < ApplicationController
 
   def finalizar
     @meta = Meta.find(params[:id])
-    @meta.estado = 'Finalizado'
+    @meta.finalizar
     @meta.save
 
     # Enviar correo electrónico al gerente
@@ -83,8 +71,7 @@ class MetasController < ApplicationController
 
     # Verificar si quedan metas pendientes en el proyecto
     proyecto = @meta.proyecto
-    if proyecto.metas.pendientes.empty?
-      proyecto.estado = 'Completado'
+    if proyecto.finalizo?
       proyecto.save
       UserMailer.proyecto_completado_email(proyecto).deliver_now
       Log.create(
@@ -100,19 +87,20 @@ class MetasController < ApplicationController
 
   def enviar_notificacion_por_correo
     Meta.find_each do |meta|
-      fecha = meta.fecha_vencimiento.to_date
+      # fecha = meta.fecha_vencimiento.to_date
       lider = meta.proyecto.lider
-      if meta.estado != 'Finalizado'
-        if fecha == Date.today
+      puts 'entramos???'
+      p meta
+      if !meta.esta_finalizado?
+        if meta.vence_hoy?
           puts "Enviando correo de que vence hoy a #{lider.nombre} para la meta #{meta.nombre}"
           UserMailer.meta_vence_hoy_email(lider, meta).deliver_now
         end
-        if fecha == 1.week.from_now.to_date
+        if meta.vence_en_una_semana?
           puts "Enviando correo de que vence en una semana a #{lider.nombre} para la meta #{meta.nombre}"
           UserMailer.meta_vence_pronto_email(lider, meta).deliver_now
         end
-        if fecha < Date.today && meta.estado == 'Pendiente'
-          meta.estado = 'Vencido'
+        if meta.vencio?
           meta.save
           puts "Enviando correo de que venció a #{lider.nombre} para la meta #{meta.nombre}"
           UserMailer.meta_vencio_email(lider, meta).deliver_now

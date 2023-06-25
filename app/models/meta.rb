@@ -3,6 +3,37 @@
 class Meta < ApplicationRecord
   belongs_to :proyecto
 
+  def chequear_fecha_vencimiento()
+    self.estado = if self.fecha_vencimiento < Date.today
+      'Vencido'
+    else
+      'Pendiente'
+    end  
+  end
+
+  def finalizar
+    self.estado = 'Finalizado'
+  end
+
+  def esta_finalizado?
+    return self.estado == 'Finalizado'
+  end
+
+  def vencio?
+    if self.fecha_vencimiento.to_date < Date.today && self.estado == 'Pendiente'
+      self.estado = 'Vencido'
+      return true
+    end
+    return false
+  end
+
+  def vence_hoy?
+    return self.fecha_vencimiento.to_date == Date.today
+  end
+
+  def vence_en_una_semana?
+    return self.fecha_vencimiento.to_date == 1.week.from_now.to_date
+  end
 
   # member counting
   def count_members

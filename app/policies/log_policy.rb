@@ -27,7 +27,7 @@ class LogPolicy
     @usuario_act = usuario_act
   end
 
-  # def show?
-  #   @usuario_act.esLider || @usuario_act.esGerente
-  # end
+  def show?
+    @usuario_act.esLider || @usuario_act.esGerente
+  end
 end
