@@ -39,4 +39,8 @@ class ProyectoPolicy
   def show?
     @usuario.esGerente || @usuario.esLider
   end
+
+  def delete?
+    @usuario.esGerente
+  end
 end

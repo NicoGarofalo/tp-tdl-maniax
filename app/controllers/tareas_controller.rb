@@ -151,6 +151,28 @@ class TareasController < ApplicationController
     end
   end
 
+  def delete(tarea = nil)
+    @tarea = if tarea.nil?
+               Tarea.find(params[:id])
+             else
+               tarea
+             end
+    Log.where(subject_id: @tarea.id).destroy_all
+    if @tarea.destroy
+      meta = @tarea.meta
+      meta.estado = if meta.tareas.con_estado_distinto_finalizado.empty?
+                      'Completado'
+                    else
+                      'Pendiente'
+                    end
+      meta.save
+    end
+    return unless tarea.nil?
+
+    flash[:notice] = 'Tarea eliminada exitosamente'
+    redirect_to meta_show_path(id: meta.id)
+  end
+
   private
 
   def tarea_new_params

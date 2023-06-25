@@ -58,20 +58,15 @@ class ProyectosController < ApplicationController
 
   def view
     @proyecto = Proyecto.find_by(id: params[:id])
-    @nombreGerente = Usuario.find_by(id: @proyecto.gerente_id).nombre
-    @nombreLider = Usuario.find_by(id: @proyecto.lider_id).nombre
-    idProyecto = proyecto_view_id
-    @proyecto = Proyecto.find_by(id: idProyecto)
-    @usuario  = current_user
-
-    @idUsuario = session[:usuario_id]
+    @nombreGerente = Usuario.find_by(id: @proyecto.gerente_id)&.nombre
+    @nombreLider = Usuario.find_by(id: @proyecto.lider_id)&.nombre
+    @usuario = current_user
     @idProyecto = @proyecto.id
-
-    @metas = Meta.where(proyecto_id: @idProyecto)
-    @metas = Meta.where(proyecto_id: idProyecto).map { |m| params_meta m }
+    @metas = Meta.where(proyecto_id: @idProyecto).map { |m| params_meta(m) }
   end
 
   def finalizar
+
     @proyecto = Proyecto.find(params[:id])
     @proyecto.estado = 'Finalizado'
     @proyecto.save
@@ -121,6 +116,18 @@ class ProyectosController < ApplicationController
         end
       end
     end
+  end
+
+  def delete
+    @proyecto = Proyecto.find(params[:id])
+    authorize @proyecto
+    Log.where(subject_id: @proyecto.id).destroy_all
+    Meta.where(proyecto_id: @proyecto.id).find_each do |meta|
+      MetasController.new.delete(meta)
+    end
+    @proyecto.destroy
+    flash[:notice] = 'Proyecto eliminado exitosamente'
+    redirect_to user_home_path
   end
 
   private

@@ -2,10 +2,7 @@
   <title><%= @proyecto.nombre%></title>
 <% end %>
 
-
-
 <h1><%= @proyecto.nombre %></h1>
-
 
 <% if @usuario.id == @proyecto.gerente_id %>
   <% if @proyecto.estado != "Finalizado" %>
@@ -37,6 +34,6 @@
   <p>El proyecto aún no tiene metas</p>
 <% else %>
   <% @metas.each do |metaParams| %>
-  <%= render partial: "stats/meta", locals: metaParams %>
+    <%= render partial: "stats/meta", locals: metaParams %>
   <% end %>
 <% end %>

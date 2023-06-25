@@ -1,12 +1,12 @@
 <%= render layout: "shared/base_item", locals: {title: meta.nombre, estado: meta.estado} do %>
-
 	<%= render layout: "shared/item_to_view", locals: {:progress => stats[:progress], verData: {controller: "metas", action: "show", id: meta.id}} do %>
-
 		<%= render template: "shared/basic_descripcion", locals: {:descripcion => meta.descripcion,
 															:integrantes => stats[:countMembers],
 															:venc => meta.fecha_vencimiento}%>
-
+	<% end %>
+	<% if meta.estado != 'Finalizado' && meta.estado != 'Completado' %>
+		<%= form_with model: meta, url: meta_delete_path(meta), method: :delete, data: { confirm: '¿Estás seguro de que deseas eliminar esta meta?' } do |form| %>
+			<%= form.submit "Eliminar", class: "btn btn-danger" %>
+		<% end %>
 	<% end %>
 <% end %>
-
-
