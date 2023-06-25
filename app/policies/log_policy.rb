@@ -9,7 +9,7 @@ class LogPolicy
 
     def resolve
       if usuario.esGerente
-        @log.all
+        @log.all.order('created_at DESC')
       else
         @log.where("obligatorio_id = ? OR opcional_id = ?", @usuario.id, @usuario.id).order('created_at DESC')
       end
