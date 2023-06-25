@@ -8,9 +8,7 @@ function otraFuncion(listener){
 
 const channels = {
 	"EnLinea": susLinea,
-	"Otro": otraFuncion,
 };
-
 
 export function suscribirseA(channel, listener){
 
@@ -18,6 +16,7 @@ export function suscribirseA(channel, listener){
 		console.error("Error '"+channel+"' no era un canal existente para suscribirse");
 		return;
 	}
+
 	console.log("Se suscribira a '"+channel+"'");
 	channels[channel](listener);
 

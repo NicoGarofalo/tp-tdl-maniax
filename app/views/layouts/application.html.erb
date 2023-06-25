@@ -2,6 +2,7 @@
 <html>
 <head>
 
+
   <%= yield :title %>
 
   <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -9,7 +10,14 @@
   <%= csp_meta_tag %>
 
   <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
-  <%= javascript_importmap_tags %>
+
+  <%= javascript_importmap_tags%>
+
+  <script type="module">
+    import {suscribirseA} from "channels"
+    window.suscribe = suscribirseA;
+  </script>
+
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css">
   <style>
@@ -35,7 +43,6 @@
       width:100%
     }
   </style>
-    <%= javascript_importmap_tags %>
 </head>
 
 <body>
@@ -47,6 +54,9 @@
       </button>
       <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
         <div class="row mr-2 align-items-center">
+          <div onclick="window.location.href='<%= url_for(controller: 'notificaciones', action: 'show') %>'" style="cursor: pointer; margin-right: 4rem;" class="d-flex flex-row btn btn-primary">
+            <i class="bi bi-bell-fill" style="color: white; font-size: 15pt;"></i>
+          </div>
           <div class="mr-3" style="margin-top:15px">
             <p style="color: white" class="text-right">¡Hola, <%= @usuario.nombre %>!<br/><%= @usuario.usuario_tipo %></p>
           </div>
@@ -74,10 +84,14 @@
           <%= link_to 'Mis Proyectos', {controller: "usuarios", action: "home"},style:"padding-left:5px"%>
         </li>
       <% end %>
-      <% if policy(:log).show? %>
+      <li class="nav-item nav-link">
+        <i class="bi bi-clock-history"></i>
+        <%= link_to 'Registros', {controller: "logs", action: "view"}, style:"padding-left:10px"%>
+      </li>
+      <% if policy(:usuarios).show_all? %>
         <li class="nav-item nav-link">
-          <i class="bi bi-clock-history"></i>
-          <%= link_to 'Registros', {controller: "usuarios", action: "user_list"}, style:"padding-left:10px"%>
+          <i class="bi bi-person"></i>
+          <%= link_to 'Usuarios', {controller: "usuarios", action: "user_list"}, style:"padding-left:10px"%>
         </li>
       <% end %>
         <li class="nav-item nav-link">
@@ -87,6 +101,30 @@
           <% end %>
         </li>
       </ul>
+    
+
+    <!-- En online ... -->
+    <div>
+      <p class="justify-content-center d-flex mt-5">Usuarios online:</p>
+      <ul id = "onlineUsers" class="list-group" style="overflow-y: scroll;overflow-x: scroll; max-height: 350px; margin-top:1rem;">
+      </ul>
+    </div>
+    <script type="module">
+      import {initializeOn, updateViewOnline} from "js_vista_online"
+
+      const lista = document.getElementById("onlineUsers");
+
+      function updater(data){
+        updateViewOnline(data, lista);
+      }
+      
+      if(!initializeOn(lista)){
+        console.log("WAS NOT INITED ALREADY");
+        suscribe("EnLinea", updater);
+      }
+
+
+    </script>
     </div>
 
       <!-- Aca va  el contenido  principal -->

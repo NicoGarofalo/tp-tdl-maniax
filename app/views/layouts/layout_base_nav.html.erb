@@ -111,14 +111,18 @@
     </div>
     
     <script type="module">
-      import viewUpdater from "js_vista_online"
+      import {initializeOn, updateViewOnline} from "js_vista_online"
 
       const lista = document.getElementById("onlineUsers");
-      function updater(data){
-        viewUpdater(data, lista);
-      }
 
+      function updater(data){
+        updateViewOnline(data, lista);
+      }
+      initializeOn(lista);
+
+      //console.log("WAS NOT INITED ALREADY");
       suscribe("EnLinea", updater);
+
     </script>
 
     </div>
