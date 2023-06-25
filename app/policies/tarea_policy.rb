@@ -16,7 +16,7 @@ class TareaPolicy
     @usuario_act.esRevisor || @usuario_act.esIntegrante
   end
 
-  def show?
+  def delete?
     @usuario_act.esGerente || @usuario_act.esLider
   end
 
