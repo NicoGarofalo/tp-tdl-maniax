@@ -17,7 +17,7 @@ class TareaPolicy
 
     private
 
-    attr_reader :usuario, :scope
+    attr_reader :usuario, :tarea
   end
 
 

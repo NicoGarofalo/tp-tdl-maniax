@@ -17,7 +17,7 @@ class LogPolicy
 
     private
 
-    attr_reader :usuario, :scope
+    attr_reader :usuario, :log
   end
 
   attr_reader :log, :usuario_act

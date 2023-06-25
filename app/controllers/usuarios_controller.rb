@@ -60,12 +60,7 @@ class UsuariosController < ApplicationController
   end
 
   def gerente_lider_home
-    proyectosList = if @usuario.usuario_tipo == 'Gerente'
-                      Proyecto.where(gerente_id: @usuario.id)
-
-                    else
-                      Proyecto.where(lider_id: @usuario.id)
-                    end
+    proyectosList = policy_scope(Proyecto)
 
     @proyectos = proyectosList.map { |p| params_proyecto p }
     render :gerente_lider_home
@@ -73,9 +68,9 @@ class UsuariosController < ApplicationController
 
   def home
     @usuario = current_user
-    if @usuario.usuario_tipo == 'Gerente' || @usuario.usuario_tipo == 'Líder'
+    if @usuario.esGerente || @usuario.esLider
       gerente_lider_home
-    elsif @usuario.usuario_tipo == 'Revisor' || @usuario.usuario_tipo == 'Integrante'
+    elsif @usuario.esRevisor || @usuario.esIntegrante
       revisor_integrante_home
     end
   end

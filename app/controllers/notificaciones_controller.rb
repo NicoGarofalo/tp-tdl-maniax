@@ -13,7 +13,7 @@ class NotificacionesController < ApplicationController
 
   def show
     @usuario = current_user
-    @notificaciones = Notificacion.where(usuario_id: @usuario.id)
+    @notificaciones = Notificacion.where(usuario_id: @usuario.id).order(fecha_hora: :desc)
     render :show
   end
 
