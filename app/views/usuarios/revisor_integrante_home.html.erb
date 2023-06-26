@@ -9,7 +9,7 @@
     <th class="col-3">Proyecto</th>
     <th class="col-1">Estado</th>
     <th class="col-1">
-      <% if @usuario.usuario_tipo == 'Integrante' %>
+      <% if @usuario.esIntegrante %>
         Revisor
       <% else %>
         Integrante
@@ -36,17 +36,17 @@
       </td>
       <td>
         <% if @usuario.esIntegrante %>
-          <% if tarea.estado == 'Completado' %>
+          <% if tarea.completado? %>
             <span class="completado">En revisión</span>
-          <% elsif tarea.estado == 'Finalizado' %>
+          <% elsif tarea.finalizado? %>
             <span class="completado">Finalizado</span>
           <% else %>
             <%= button_to 'Completar', { controller: 'tareas', action: 'completar', id: tarea.id }, method: :post, class: 'btn btn-primary', disabled: false %>
           <% end %>
         <% elsif @usuario.esRevisor %>
-          <% if tarea.estado == 'Finalizado' %>
+          <% if tarea.finalizado? %>
             <span class="completado">Finalizado</span>
-          <% elsif tarea.estado == 'Completado' %>
+          <% elsif tarea.completado? %>
             <%= button_to 'Finalizar', { controller: 'tareas', action: 'finalizar', id: tarea.id }, method: :post, class: 'btn btn-primary mb-3', disabled: false %>
             <%= button_to 'Pendiente', { controller: 'tareas', action: 'pendiente', id: tarea.id }, method: :post, class: 'btn btn-primary', disabled: false %>
           <% else %>

@@ -1,11 +1,25 @@
-<% verData ||= {} %>
 <% progress ||= 0 %>
 <% verLabel ||= 'Ver detalles'%>
 
+<% puts 'progress' %>
+<% puts progress %>
+<% puts 'controller' %>
+<% puts controller %>
+<% puts 'item id' %>
+<% puts item %>
+
+
 <%= yield %>
+<% puts 'item id 2' %>
+<% p item %>
 
 <%= render partial: "shared/progress_bar", locals: { progress: progress } %>
 
-<div class="row">
-  <%= link_to verLabel, verData, class: "btn btn-info" %>
+<div class="row justify-content-between">
+
+  <%= link_to verLabel, { controller: controller, action: 'show', id: item.id }, method: :get, class: 'btn btn-info', disabled: false %> 
+  <% if !item.finalizado? && !item.completado? %>
+  <%= button_to 'Eliminar', { controller: controller, action: 'delete', id: item.id }, method: :delete, class: 'btn btn-danger', disabled: false %>
+  <% end %> 
+
 </div>

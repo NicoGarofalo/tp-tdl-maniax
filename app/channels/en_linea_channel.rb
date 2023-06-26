@@ -5,13 +5,13 @@ class EnLineaChannel < ApplicationCable::Channel
   def initialize(connection, identifier, params = {})
     super(connection,identifier,params)
 
-    puts "IDENTIFIER INITED WITH WAS "
-    p identifier
-    puts "-------"
-    p params
-    puts "-------"
-    p connection
-    puts "--------------------------------------------"
+    # puts "IDENTIFIER INITED WITH WAS "
+    # p identifier
+    # puts "-------"
+    # p params
+    # puts "-------"
+    # p connection
+    # puts "--------------------------------------------"
   end
 
   def self.conexiones
@@ -58,11 +58,11 @@ class EnLineaChannel < ApplicationCable::Channel
   def subscribed
     
 
-    puts "Se Suscribio... #{current_user}"
+    # puts "Se Suscribio... #{current_user}"
 
-    puts '--------------------------------CONECCTIONS ..........'
+    # puts '--------------------------------CONECCTIONS ..........'
 
-    puts '-----'
+    # puts '-----'
     connections_array = []
     #  conn_hash = {}
 
@@ -76,7 +76,7 @@ class EnLineaChannel < ApplicationCable::Channel
       # puts "##"
     #end
     #p connections_array
-    puts '------------------------------>Subscriptores'
+    # puts '------------------------------>Subscriptores'
     stream_for 'online'
     stream_for current_user
   end

@@ -9,5 +9,5 @@
 
 <%= form_with(model: @proyecto, url: proyecto_delete_path(@proyecto), method: :delete) do |form| %>
   <%= form.submit "Eliminar", class: "btn btn-danger" %>
-  <%= link_to "Cancelar", proyecto_view_path(@proyecto), class: "btn btn-secondary" %>
+  <%= link_to "Cancelar", proyecto_show_path(@proyecto), class: "btn btn-secondary" %>
 <% end %>

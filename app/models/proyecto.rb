@@ -25,6 +25,15 @@ class Proyecto < ApplicationRecord
     return false
   end
 
+  def finalizado?
+    return self.estado == 'Finalizado'
+  end
+  
+  def completado?
+    return self.estado == 'Completado'
+  end
+
+
   # count members
   def count_members
     tareas = Meta.where(proyecto_id: id).select(:id)

@@ -115,12 +115,12 @@
 
       const lista = document.getElementById("onlineUsers");
 
-      function updater(data){
+      function updater(data){ 
         updateViewOnline(data, lista);
       }
-      initializeOn(lista);
+      const inicializo = initializeOn(lista);
 
-      //console.log("WAS NOT INITED ALREADY");
+      console.log("WAS NOT INITED ALREADY",inicializo);
       suscribe("EnLinea", updater);
 
     </script>

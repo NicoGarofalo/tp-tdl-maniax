@@ -15,9 +15,14 @@ class Meta < ApplicationRecord
     self.estado = 'Finalizado'
   end
 
-  def esta_finalizado?
+  def finalizado?
     return self.estado == 'Finalizado'
   end
+
+  def completado?
+    return self.estado == 'Completado'
+  end
+
 
   def vencio?
     if self.fecha_vencimiento.to_date < Date.today && self.estado == 'Pendiente'

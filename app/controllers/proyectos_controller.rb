@@ -6,6 +6,8 @@ class ProyectosController < ApplicationController
 
   def new
     @usuario = current_user
+    puts 'user act es'
+    p @usuario
     redirect_to '/home' unless @usuario.esGerente
 
     @proyecto = Proyecto.new
@@ -31,7 +33,7 @@ class ProyectosController < ApplicationController
       create_notifications(@proyecto) # Crear notificaciones
 
       flash[:notice] = 'Proyecto creado exitosamente'
-      redirect_to controller: 'proyectos', action: 'view', id: @proyecto.id
+      redirect_to controller: 'proyectos', action: 'show', id: @proyecto.id
     else
       flash[:notice] = 'creacion proyecto fallo'
       render :new
@@ -56,7 +58,7 @@ class ProyectosController < ApplicationController
     param
   end
 
-  def view
+  def show
     @proyecto = Proyecto.find_by(id: params[:id])
     @nombreGerente = Usuario.find_by(id: @proyecto.gerente_id)&.nombre
     @nombreLider = Usuario.find_by(id: @proyecto.lider_id)&.nombre

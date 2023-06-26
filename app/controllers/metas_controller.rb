@@ -29,7 +29,7 @@ class MetasController < ApplicationController
       create_notifications(@meta) # Llamada a la función create_notifications para crear notificaciones relacionadas con la creación de la meta
       send_meta_created_emails(@meta) # Enviar correos electrónicos de creación al gerente y al líder
 
-      redirect_to proyecto_view_path(id: @meta.proyecto_id)
+      redirect_to proyecto_show_path(id: @meta.proyecto_id)
     else
       flash[:notice] = 'Meta fallo en creacion.'
       puts 'Meta fallo al guardarse'
@@ -43,6 +43,7 @@ class MetasController < ApplicationController
     @idUsuario = current_user.id
     @usuario = current_user
     @lider_id = @meta.proyecto.lider.id
+    @gerente_id = @meta.proyecto.gerente.id
 
     return unless @tareas.nil? || @tareas.empty?
 
@@ -89,9 +90,7 @@ class MetasController < ApplicationController
     Meta.find_each do |meta|
       # fecha = meta.fecha_vencimiento.to_date
       lider = meta.proyecto.lider
-      puts 'entramos???'
-      p meta
-      if !meta.esta_finalizado?
+      if !meta.finalizado?
         if meta.vence_hoy?
           puts "Enviando correo de que vence hoy a #{lider.nombre} para la meta #{meta.nombre}"
           UserMailer.meta_vence_hoy_email(lider, meta).deliver_now
@@ -139,7 +138,7 @@ class MetasController < ApplicationController
     return unless meta.nil?
 
     flash[:notice] = 'Meta eliminada exitosamente'
-    redirect_to proyecto_view_path(id: proyecto.id)
+    redirect_to proyecto_show_path(id: proyecto.id)
   end
 
   private
