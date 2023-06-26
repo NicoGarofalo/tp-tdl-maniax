@@ -1,2 +1,46 @@
-<h1>Stats#week</h1>
-<p>Find me in app/views/stats/week.html.erb</p>
+<% content_for :title do%>
+Stats
+<% end %>
+
+
+<%= form_with url: "/stats/stat", method: :get do |f|%>
+
+<%= hidden_field_tag "id" , "2" %>
+<%= hidden_field_tag "tipo" , "meta" %>
+
+
+<%= f.submit "get stats" %>
+
+<% end %>
+
+
+<h1>Stats#week( just playground for now)</h1>
+
+<input type="text" id="url" placeholder="type">
+<input type="text" id="id_edit" placeholder="id">
+
+
+<script type="text/javascript">
+	
+function send(){
+	let http = new XMLHttpRequest();
+	//const url = "/stats/"+ document.getElementById("url").value+"?"+document.getElementById("id").value;
+	//const url = "/stats/stat?stats_info[tipo]="+ document.getElementById("url").value+"&stats_info[id]="+document.getElementById("id").value;
+	const url = "/stats/"+ document.getElementById("url").value+"?id="+document.getElementById("id_edit").value;
+
+	http.open("GET", url);
+	http.send();
+	console.log("SENDING GET TO "+url);
+
+	http.onreadystatechange = (e) =>{
+		document.getElementById("stats_div").innerHTML = http.responseText;
+		//console.log(http);
+	}	
+}
+
+</script>
+
+<input type="button" value = "Test" onclick="send()">
+<div id="stats_div">
+	<p>No stats could be loaded</p>
+</div>

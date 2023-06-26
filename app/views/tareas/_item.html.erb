@@ -1,0 +1,20 @@
+<tr>
+	<td><%= item.nombre %></td>
+	<td><%= item.revisor.nombre %> <%= item.revisor.apellido %></td>
+	<td><%= item.integrante.nombre %> <%= item.integrante.apellido %></td>
+	<td><%= item.estado %></td>
+	<% if @idUsuario == item.meta.proyecto.lider_id && !['Finalizado', 'Completado'].include?(item.meta.estado) %>
+	<td>
+		<% if !item.finalizado? && !item.completado? %>
+			<%= form_with model: item, url: tarea_delete_path(item), method: :delete, data: { confirm: '¿Estás seguro de que deseas eliminar esta tarea?' } do |form| %>
+				<%= form.submit "Eliminar", class: "btn btn-danger" %>
+			<% end %>
+		<% end %>
+	</td>
+	<% end %>
+	<% if @idUsuario == item.integrante_id && (item.finalizado? || item.completado?) %>
+		<td>
+			<input type="button" value="Terminar" />
+		</td>
+	<% end %>
+</tr> 

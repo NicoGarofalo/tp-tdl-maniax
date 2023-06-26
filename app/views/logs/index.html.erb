@@ -1,0 +1,40 @@
+<h1>Registros del sistema</h1>
+
+<%  if @logs == nil || @logs.size == 0  %>
+  <h3 class='mt-5'>No hay registros en la plataforma.</h3>
+<% else %>
+  <table class="table table-bordered mt-5">
+    <thead>
+      <tr>
+        <th>Evento</th>
+        <th>Nombre y Apellido</th>
+        <th>Mensaje</th>
+        <th>Usuario Obigatorio</th>
+        <th>Usuario Opcional</th>
+        <th>Fecha y hora</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @logs.each do |log| %>
+        <% usuario_obligatorio = Usuario.find(log.obligatorio_id) %>
+        <% usuario_opcional = Usuario.find(log.opcional_id) %>
+        <tr>
+          <td><%= log.tipo_log %></td>
+          <td>
+            <% if log.tipo_log.include?('Proyecto') %>
+              <%= Proyecto.find(log.subject_id).nombre %>
+            <% elsif log.tipo_log.include?('Meta') %>
+              <%= Meta.find(log.subject_id).nombre %>
+            <% elsif log.tipo_log.include?('Tarea') %>
+              <%= Tarea.find(log.subject_id).nombre %>
+            <% end %>
+          </td>
+          <td><%= log.mensaje %></td>
+          <td><%= usuario_obligatorio.nombre %> <%= usuario_obligatorio.apellido %></td>
+          <td><%= usuario_opcional.nombre %> <%= usuario_opcional.apellido %></td>
+          <td><%= log.created_at %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

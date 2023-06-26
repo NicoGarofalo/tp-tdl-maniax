@@ -1,0 +1,30 @@
+	<div class='row align-items-center'>
+    <h1 style='margin-right: 2rem;'>Listado de usuarios</h1>
+    <%= link_to 'Crear usuario', registro_path, class: 'btn btn-primary' %>
+  </div>
+	<% if @usuarios == nil || @usuarios.size == 0 %>
+
+		<h3>No hay usuarios en la plataforma.</h3>
+
+	<% else %>
+		<table class="table table-bordered mt-5">
+      <thead>
+        <tr>
+          <th class="col-1">ID</th>
+          <th class="col-4">Nombre y Apellido</th>
+          <th class="col-2">Rol</th>
+          <th class="col-5">Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        <%  @usuarios.each do |usuario| %>
+          <tr>
+            <td><%= usuario.id %></td>
+            <td><%= usuario.nombre%> <%= usuario.apellido%></td>
+            <td><%= usuario.usuario_tipo %></td>
+            <td><%= usuario.email %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+	<% end %>

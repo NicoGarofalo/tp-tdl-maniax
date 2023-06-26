@@ -1,0 +1,45 @@
+<% content_for :title do %>
+  <title><%= @proyecto.nombre%></title>
+<% end %>
+
+<div class='d-flex align-items-center mb-3'>
+<h1><%= @proyecto.nombre %></h1>
+
+<% if @usuario.id == @proyecto.gerente_id %>
+  <% if @proyecto.estado == "Completado" %>
+    <%= form_tag finalizar_proyecto_path(@proyecto), method: :post, class: "your-form-class" do %>
+      <%= submit_tag "Finalizar Proyecto", class: 'btn btn-primary ml-3' %>
+    <% end %>
+  <% end %>
+<% end %>
+</div>
+
+
+<div class="container " style='margin-block:3vh'>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-body">
+          <p class="card-text" style="font-size: 16pt;"><b>Gerente</b>: <%= @proyecto.gerente.nombre + " " + @proyecto.gerente.apellido %></p>
+          <p class="card-text" style="font-size: 16pt;"><b>Líder</b>: <%= @proyecto.lider.nombre + " " + @proyecto.lider.apellido %></p>
+                    <p class="card-text" style="font-size: 16pt;"><b>Estado</b>: <%= @proyecto.estado %></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<% if @usuario.id == @proyecto.gerente_id %>
+  <% if @proyecto.estado != "Finalizado" %>
+    <%= render template: "proyectos/add_meta", locals: {:idProyecto => @proyecto.id}, :class => 'btn btn-primary'%>
+  <% end %>
+<% end %>
+
+<h3>Metas</h3>
+<% if @metas == nil || @metas.size == 0%>
+  <p>El proyecto aún no tiene metas</p>
+<% else %>
+  <% @metas.each do |metaParams| %>
+    <%= render partial: "stats/meta", locals: metaParams %>
+  <% end %>
+<% end %>
