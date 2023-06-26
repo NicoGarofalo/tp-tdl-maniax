@@ -2,5 +2,4 @@
 	<%= render layout: "shared/item_to_view", locals: { controller: "proyectos", item: proyecto, progress: stats[:progress]} do %>
 		<%= render template: "shared/basic_descripcion", locals: { descripcion: "Líder: " + nombre_lider, integrantes: stats[:countMembers], venc: proyecto.fecha_vencimiento } %>
 	<% end %>
-
 <% end %>

@@ -57,7 +57,7 @@ class Meta < ApplicationRecord
     qTasks = tasks.count
 
 
-    qFinished = tasks.where(estado: 'Finalizada').count
+    qFinished = tasks.where(estado: 'Finalizado').count
 
     progress = 0
 

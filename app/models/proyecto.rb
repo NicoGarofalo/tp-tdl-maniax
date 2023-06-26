@@ -58,14 +58,12 @@ class Proyecto < ApplicationRecord
     metas.select(:id)
 
     progress = 0
-
     metas.each do |meta|
       res = Meta.progress_of(meta.id)
       progress += res
     end
 
     progress = (progress / total).round(2) if total.positive?
-
     progress
   end
 end
