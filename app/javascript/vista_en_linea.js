@@ -1,7 +1,7 @@
 
 //const onlineUsers = document.getElementById("onlineUsers");
 let inicalizado = false;
-const usuariosActivos= {};
+let usuariosActivos= {};
 
 function id_for(id_user) {
 	return "usuario_" + id_user
@@ -63,13 +63,19 @@ export function updateViewOnline(data, onlineUsers) {
 
 		console.log("activos inicio", data["enLinea"])
 		let innerHTML = "";
-		data["enLinea"].forEach(usuario => {
-			innerHTML+= buildElemento(usuario.current_user);
+
+		Object.values(data["enLinea"]).forEach(usuario => {
+			innerHTML+= buildElemento(usuario);
 		});
 
 		inicalizado = true;
 
 		onlineUsers.innerHTML = innerHTML;
+		return;
+	} else if(data["action"] == "delete"){
+		console.log("DELETING CURRENT ACTIVOS ",usuariosActivos);
+		usuariosActivos= {};
+		//onlineUsers.innerHTML = "";
 		return;
 	}
 

@@ -35,24 +35,25 @@ class EnLineaChannel < ApplicationCable::Channel
     connections_array
   end
   def get_subs
-    connections_array = []
+    connections_array = {}
 
     connection.server.connections.each do |conn|
-      conn_hash = {}
-
-      conn_hash[:current_user] = conn.current_user
-      # conn_hash[:subscriptions_identifiers] = conn.subscriptions.identifiers.map {|k| JSON.parse k}
-
-      connections_array << conn_hash
-
-      # puts "--------------> CONEXION"
-      # p conn
-      # puts "##"
+      
+      if connections_array.key?(conn.current_user.id)
+        puts "-----------------> ya existia key??"
+        p conn.current_user
+        puts "------------------------------------"
+      else # solo agregas una vez
+        puts "------------> Agegando activo?... "
+        connections_array[conn.current_user.id.to_s] = conn.current_user
+      end
     end
+    puts "----------> Final activos ========"
+    p connections_array
+    puts "-------------------"
 
     # ide_receiver = id[]
     EnLineaChannel.broadcast_to(current_user, enLinea: connections_array, action: 'get')
-    
   end
 
   def subscribed
