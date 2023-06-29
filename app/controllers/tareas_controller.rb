@@ -57,7 +57,7 @@ class TareasController < ApplicationController
     UserMailer.tarea_completada_integrante_email(@tarea).deliver_now
     UserMailer.tarea_completada_revisor_email(@tarea).deliver_now
     Log.create(
-      tipo_log: "Tarea Completada",
+      tipo_log: 'Tarea Completada',
       subject_id: @tarea.id.to_s,
       mensaje: 'La tarea ha sido marcada como completada',
       obligatorio_id: @tarea.integrante_id,
@@ -180,11 +180,12 @@ class TareasController < ApplicationController
   end
 
   def tarea_params
-    params.require(:tarea).permit(:meta_id, :revisor_id, :integrante_id, :fecha_vencimiento, :nombre, :descripcion, :estado)
+    params.require(:tarea).permit(:meta_id, :revisor_id, :integrante_id, :fecha_vencimiento, :nombre, :descripcion,
+                                  :estado)
   end
 
   def create_log_entry(tarea)
-    log = Log.create(
+    Log.create(
       tipo_log: 'Creación de Tarea',
       subject_id: tarea.id.to_s,
       mensaje: "#{current_user.nombre} creó la tarea #{tarea.nombre} para la meta #{Meta.find(tarea.meta_id).nombre}",
@@ -194,20 +195,20 @@ class TareasController < ApplicationController
   end
 
   def create_notifications(tarea)
-    lider_notification = Notificacion.create(
+    Notificacion.create(
       usuario_id: tarea.meta.proyecto.lider_id,
       notificacion_tipo: 'Tarea Asignada',
       mensaje: "Has creado la tarea #{tarea.nombre} para la meta #{tarea.meta.nombre} del proyecto #{tarea.meta.proyecto.nombre}",
       fecha_hora: Time.now
     )
-    revisor_notification = Notificacion.create(
+    Notificacion.create(
       usuario_id: tarea.revisor_id,
       notificacion_tipo: 'Tarea Asignada',
       mensaje: "Has sido asignado como revisor de la tarea #{tarea.nombre} para la meta #{tarea.meta.nombre} del proyecto #{tarea.meta.proyecto.nombre}",
       fecha_hora: Time.now
     )
 
-    integrante_notification = Notificacion.create(
+    Notificacion.create(
       usuario_id: tarea.integrante_id,
       notificacion_tipo: 'Tarea Asignada',
       mensaje: "Has sido asignado como integrante de la tarea #{tarea.nombre} para la meta #{tarea.meta.nombre} del proyecto #{tarea.meta.proyecto.nombre}",
@@ -225,7 +226,4 @@ class TareasController < ApplicationController
     UserMailer.tarea_created_email_integrante(integrante, tarea).deliver_now
   end
 
-  def current_user
-    @current_user ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]
-  end
 end

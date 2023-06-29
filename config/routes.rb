@@ -11,7 +11,7 @@ Rails.application.routes.draw do
 
   # views...
   get '/home', to: 'usuarios#home', as: 'user_home'
-  get '/proyectos', to: 'proyectos#view', as: 'proyecto_view'
+  get '/proyectos', to: 'proyectos#show', as: 'proyecto_show'
   get '/meta', to: 'metas#show', as: 'meta_show'
   get '/usuario_list', to: 'usuarios#user_list', as: 'user_list_view'
   delete '/proyectos/:id', to: 'proyectos#delete', as: 'proyecto_delete'
@@ -19,6 +19,7 @@ Rails.application.routes.draw do
   delete '/tareas/:id', to: 'tareas#delete', as: 'tarea_delete'
 
   get '/log_list', to: 'logs#view', as: 'logs_view'
+  get '/notificaciones', to: 'notificaciones#show', as: 'notificaciones_show'
   # stats
   # stat views
   get '/stats/week', to: 'stats#week', as: 'weekly_stats'

@@ -6,21 +6,19 @@ class ProyectosController < ApplicationController
 
   def new
     @usuario = current_user
+    puts 'user act es'
+    p @usuario
     redirect_to '/home' unless @usuario.esGerente
 
     @proyecto = Proyecto.new
     @lideres = Usuario.where(usuario_tipo: 'Líder')
   end
 
-
   def create
     @proyecto = Proyecto.new(proyecto_params)
-    @proyecto.gerente_id = session[:usuario_id]
-    @proyecto.estado = if @proyecto.fecha_vencimiento < Date.today
-                         'Vencido'
-                       else
-                         'Pendiente'
-                       end
+    @proyecto.cargar_gerente(session[:usuario_id])
+    @proyecto.chequear_fecha_vencimiento     
+
     authorize @proyecto
 
     if @proyecto.save
@@ -35,7 +33,7 @@ class ProyectosController < ApplicationController
       create_notifications(@proyecto) # Crear notificaciones
 
       flash[:notice] = 'Proyecto creado exitosamente'
-      redirect_to controller: 'proyectos', action: 'view', id: @proyecto.id
+      redirect_to controller: 'proyectos', action: 'show', id: @proyecto.id
     else
       flash[:notice] = 'creacion proyecto fallo'
       render :new
@@ -60,7 +58,7 @@ class ProyectosController < ApplicationController
     param
   end
 
-  def view
+  def show
     @proyecto = Proyecto.find_by(id: params[:id])
     @nombreGerente = Usuario.find_by(id: @proyecto.gerente_id)&.nombre
     @nombreLider = Usuario.find_by(id: @proyecto.lider_id)&.nombre
@@ -147,14 +145,14 @@ class ProyectosController < ApplicationController
   end
 
   def create_notifications(proyecto)
-    gerente_notification = Notificacion.create(
+    Notificacion.create(
       usuario_id: proyecto.gerente_id,
       notificacion_tipo: 'Proyecto Creado',
       mensaje: "Has creado el proyecto #{proyecto.nombre}",
       fecha_hora: Time.now
     )
 
-    lider_notification = Notificacion.create(
+    Notificacion.create(
       usuario_id: proyecto.lider_id,
       notificacion_tipo: 'Proyecto Asignado',
       mensaje: "Has sido asignado como líder del proyecto #{proyecto.nombre}",
@@ -170,9 +168,4 @@ class ProyectosController < ApplicationController
     params.require(:proyecto).permit(:gerente_id, :lider_id, :fecha_vencimiento, :nombre, :descripcion, :estado)
   end
 
-  def current_user
-    return unless session[:usuario_id]
-
-    Usuario.find_by(id: session[:usuario_id])
-  end
 end

@@ -1,11 +1,12 @@
 <% content_for :title do %>
   <title>Home <%= @usuario.nombre%></title>
 
+
 <% end %>
 
 <h1>Mis Proyectos</h1>
 
-<% if @usuario.esGerente %>
+<% if policy(:proyecto).create? %>
 <%= link_to 'Crear Proyecto', new_proyecto_path, class: "btn btn-primary"  %>
 <% end %>
 

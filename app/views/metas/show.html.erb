@@ -4,20 +4,33 @@
 
 <h1>Meta: <%= @meta.nombre %></h1>
 <p><%= @meta.descripcion %></p>
-
-<% if @idUsuario == @lider_id %>
-	<% if @meta.estado != "Finalizado" %>
-		<%= render template: "metas/add_tarea", locals: { meta_id: @idMeta } %>
-	<% end %>
-	<% if @meta.estado == "Completado" %>
-		<%= form_tag finalizar_meta_path(@meta), method: :post, class: "your-form-class" do %>
-			<%= submit_tag "Finalizar Meta", class: 'btn btn-primary' %>
-		<% end %>
-	<% end %>
+<% if @idUsuario == @lider_id && !@meta.finalizado?  %>
+  <%= render template: "metas/add_tarea", locals: { meta_id: @idMeta } %>
+<% end %>
+<% if @idUsuario == @gerente_id && @meta.completado? %>
+  <%= form_tag finalizar_meta_path(@meta), method: :post, class: "your-form-class" do %>
+    <%= submit_tag "Finalizar Meta", class: 'btn btn-primary mb-3' %>
+  <% end %>
 <% end %>
 
 <% if @tareas.nil? || @tareas.size.zero? %>
 	<h3>Sin tareas</h3>
 <% else %>
-	<%= render partial: "tareas/item", collection: @tareas %>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>Tarea</th>
+      <th>Revisor</th>
+      <th>Integrante</th>
+      <th>Estado</th>
+	<% if !@usuario.esGerente %>
+      <th>Acciones</th>
+	<% end %>
+    </tr>
+  </thead>
+  <tbody>
+    <%= render partial: "tareas/item", collection: @tareas %>
+  </tbody>
+</table>
+	
 <% end %>

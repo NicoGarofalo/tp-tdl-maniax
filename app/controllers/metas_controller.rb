@@ -14,34 +14,22 @@ class MetasController < ApplicationController
     @usuario = current_user
     puts meta_params
     @meta = Meta.new(meta_params)
-    @meta.estado = if @meta.fecha_vencimiento < Date.today
-                     'Vencido'
-                   else
-                     'Pendiente'
-                   end
+    @meta.chequear_fecha_vencimiento
 
     if @meta.save
-      @meta.proyecto.estado = if @meta.proyecto.fecha_vencimiento < Date.today
-                                'Vencido'
-                              else
-                                'Pendiente'
-                              end
+      @meta.proyecto.chequear_fecha_vencimiento
       flash[:notice] = 'Meta creada exitosamente.'
       puts 'Meta guardada exitosamente'
 
       proyecto = Proyecto.find(@meta.proyecto_id)
-      proyecto.estado = if proyecto.fecha_vencimiento < Date.today
-                          'Vencido'
-                        else
-                          'Pendiente'
-                        end
+      proyecto.chequear_fecha_vencimiento
       proyecto.save
 
       create_log_entry(@meta) # Llamada a la función create_log_entry para registrar la creación de la meta en el registro de logs
       create_notifications(@meta) # Llamada a la función create_notifications para crear notificaciones relacionadas con la creación de la meta
       send_meta_created_emails(@meta) # Enviar correos electrónicos de creación al gerente y al líder
 
-      redirect_to proyecto_view_path(id: @meta.proyecto_id)
+      redirect_to proyecto_show_path(id: @meta.proyecto_id)
     else
       flash[:notice] = 'Meta fallo en creacion.'
       puts 'Meta fallo al guardarse'
@@ -55,6 +43,7 @@ class MetasController < ApplicationController
     @idUsuario = current_user.id
     @usuario = current_user
     @lider_id = @meta.proyecto.lider.id
+    @gerente_id = @meta.proyecto.gerente.id
 
     return unless @tareas.nil? || @tareas.empty?
 
@@ -63,7 +52,7 @@ class MetasController < ApplicationController
 
   def finalizar
     @meta = Meta.find(params[:id])
-    @meta.estado = 'Finalizado'
+    @meta.finalizar
     @meta.save
 
     # Enviar correo electrónico al gerente
@@ -74,17 +63,16 @@ class MetasController < ApplicationController
 
     # Registrar en el log
     Log.create(
-      tipo_log: "Meta Finalizada",
+      tipo_log: 'Meta Finalizada',
       subject_id: @meta.id.to_s,
-      mensaje: "La meta ha sido marcada como finalizada",
+      mensaje: 'La meta ha sido marcada como finalizada',
       obligatorio_id: @meta.proyecto.lider_id,
       opcional_id: @meta.proyecto.gerente_id
     )
 
     # Verificar si quedan metas pendientes en el proyecto
     proyecto = @meta.proyecto
-    if proyecto.metas.pendientes.empty?
-      proyecto.estado = 'Completado'
+    if proyecto.finalizo?
       proyecto.save
       UserMailer.proyecto_completado_email(proyecto).deliver_now
       Log.create(
@@ -100,19 +88,18 @@ class MetasController < ApplicationController
 
   def enviar_notificacion_por_correo
     Meta.find_each do |meta|
-      fecha = meta.fecha_vencimiento.to_date
+      # fecha = meta.fecha_vencimiento.to_date
       lider = meta.proyecto.lider
-      if meta.estado != 'Finalizado'
-        if fecha == Date.today
+      if !meta.finalizado?
+        if meta.vence_hoy?
           puts "Enviando correo de que vence hoy a #{lider.nombre} para la meta #{meta.nombre}"
           UserMailer.meta_vence_hoy_email(lider, meta).deliver_now
         end
-        if fecha == 1.week.from_now.to_date
+        if meta.vence_en_una_semana?
           puts "Enviando correo de que vence en una semana a #{lider.nombre} para la meta #{meta.nombre}"
           UserMailer.meta_vence_pronto_email(lider, meta).deliver_now
         end
-        if fecha < Date.today && meta.estado == 'Pendiente'
-          meta.estado = 'Vencido'
+        if meta.vencio?
           meta.save
           puts "Enviando correo de que venció a #{lider.nombre} para la meta #{meta.nombre}"
           UserMailer.meta_vencio_email(lider, meta).deliver_now
@@ -151,7 +138,7 @@ class MetasController < ApplicationController
     return unless meta.nil?
 
     flash[:notice] = 'Meta eliminada exitosamente'
-    redirect_to proyecto_view_path(id: proyecto.id)
+    redirect_to proyecto_show_path(id: proyecto.id)
   end
 
   private
@@ -165,7 +152,7 @@ class MetasController < ApplicationController
   end
 
   def create_log_entry(meta)
-    log = Log.create(
+    Log.create(
       tipo_log: 'Creación de Meta',
       subject_id: meta.id.to_s,
       mensaje: "#{current_user.nombre} creó la meta #{meta.nombre} para el proyecto #{Proyecto.find(meta.proyecto_id).nombre}",
@@ -175,14 +162,14 @@ class MetasController < ApplicationController
   end
 
   def create_notifications(meta)
-    gerente_notification = Notificacion.create(
+    Notificacion.create(
       usuario_id: meta.proyecto.gerente_id,
       notificacion_tipo: 'Meta Creada',
       mensaje: "Has creado la meta #{meta.nombre} para el proyecto #{meta.proyecto.nombre}",
       fecha_hora: Time.now
     )
 
-    lider_notification = Notificacion.create(
+    Notificacion.create(
       usuario_id: meta.proyecto.lider_id,
       notificacion_tipo: 'Meta Asignada',
       mensaje: "Has sido asignado como líder de la meta #{meta.nombre} para el proyecto #{meta.proyecto.nombre}",
@@ -195,9 +182,5 @@ class MetasController < ApplicationController
     lider = Usuario.find(meta.proyecto.lider_id)
     UserMailer.meta_created_email(gerente, meta).deliver_now
     UserMailer.meta_created_email_lider(lider, meta).deliver_now
-  end
-
-  def current_user
-    @current_user ||= Usuario.find_by(id: session[:usuario_id]) if session[:usuario_id]
   end
 end

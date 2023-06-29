@@ -1,17 +1,18 @@
 
 <% content_for :title do %>
-  <title>Registrarse</title>
+  <title>Alta de usuario</title>
 <% end %>
     
 
 
 
-<h3>Registro de Usuario</h3>
+<p><%= link_to 'Volver', user_list_view_path %></p>
+<h3  class="text-center mb-3">Registro de Usuario</h3>
 
 <%= form_for @usuario, url: registro_path, method: :post do |f| %>
-  <div>
-    <%= f.label :usuario_tipo %>
-    <%= f.select :usuario_tipo, options_for_select(['Gerente', 'Líder', 'Revisor', 'Integrante']) %>
+  <div class="form-group">
+    <%= f.label :usuario_tipo, class: "control-label" %>
+    <%= f.select :usuario_tipo, options_for_select(['Gerente', 'Líder', 'Revisor', 'Integrante']), class: "form-control" %>
   </div>
 
   <div class="form-group">
@@ -40,8 +41,7 @@
   </div>
 
   <div class="form-group d-flex justify-content-center">
-    <%= f.submit "Registrarse", class: 'btn btn-primary' %>
+    <%= f.submit "Crear usuario", class: 'btn btn-primary' %>
   </div>
 <% end %>
 
-<p class="text-center"><%= link_to 'Volver a iniciar sesión', iniciar_sesion_path %></p>

@@ -1,5 +1,7 @@
-	<h1>Listado de usuarios</h1>
-
+	<div class='row align-items-center'>
+    <h1 style='margin-right: 2rem;'>Listado de usuarios</h1>
+    <%= link_to 'Crear usuario', registro_path, class: 'btn btn-primary' %>
+  </div>
 	<% if @usuarios == nil || @usuarios.size == 0 %>
 
 		<h3>No hay usuarios en la plataforma.</h3>

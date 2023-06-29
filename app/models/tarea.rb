@@ -10,6 +10,14 @@ class Tarea < ApplicationRecord
     self.estado = 'Pendiente'
   end
 
+  def finalizado?
+    return self.estado == 'Finalizado'
+  end
+
+  def completado?
+    return self.estado == 'Completado'
+  end
+
   def cambiar_estado(nuevo_estado)
     return false unless estado_valido(nuevo_estado)
     return false if estado === 'Finalizado' || estado === 'Vencido'

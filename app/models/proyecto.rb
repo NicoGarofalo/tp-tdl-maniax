@@ -5,6 +5,34 @@ class Proyecto < ApplicationRecord
   belongs_to :lider, class_name: 'Usuario'
   has_many :metas, class_name: 'Meta', dependent: :destroy
 
+  def cargar_gerente(gerente_id)
+    self.gerente_id = gerente_id
+  end
+
+  def chequear_fecha_vencimiento()
+    self.estado = if self.fecha_vencimiento < Date.today
+      'Vencido'
+    else
+      'Pendiente'
+    end  
+  end
+
+  def finalizo?
+    if self.metas.pendientes.empty?
+      self.estado = 'Completado'
+      return true
+    end
+    return false
+  end
+
+  def finalizado?
+    return self.estado == 'Finalizado'
+  end
+  
+  def completado?
+    return self.estado == 'Completado'
+  end
+
 
   # count members
   def count_members
@@ -30,14 +58,12 @@ class Proyecto < ApplicationRecord
     metas.select(:id)
 
     progress = 0
-
     metas.each do |meta|
       res = Meta.progress_of(meta.id)
       progress += res
     end
 
     progress = (progress / total).round(2) if total.positive?
-
     progress
   end
 end
