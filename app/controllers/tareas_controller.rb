@@ -110,7 +110,7 @@ class TareasController < ApplicationController
     Log.create(
       tipo_log: "Tarea Devuelta a #{@tarea.estado}",
       subject_id: @tarea.id.to_s,
-      mensaje: "La tarea #{@tarea} ha sido devuelta a estado #{@tarea.estado}",
+      mensaje: "La tarea #{@tarea.nombre} ha sido devuelta a estado #{@tarea.estado}",
       obligatorio_id: @tarea.revisor_id,
       opcional_id: @tarea.integrante_id
     )

@@ -77,7 +77,7 @@ class UserMailer < ApplicationMailer
 
     # Crear notificación para el integrante
     Notificacion.create(usuario_id: @integrante.id, notificacion_tipo: 'Tarea Creada',
-                        mensaje: "Se ha creado la tarea #{@tarea}", fecha_hora: DateTime.now)
+                        mensaje: "Se ha creado la tarea #{@tarea.nombre}", fecha_hora: DateTime.now)
   end
 
   def project_due_today_email(user, project)
@@ -109,7 +109,7 @@ class UserMailer < ApplicationMailer
     Notificacion.create(
       usuario_id: @integrante.id,
       notificacion_tipo: 'Tarea Completada',
-      mensaje: "La tarea #{@tarea} ha sido marcada como completada",
+      mensaje: "La tarea #{@tarea.nombre} ha sido marcada como completada",
       fecha_hora: DateTime.now
     )
   end
@@ -123,7 +123,7 @@ class UserMailer < ApplicationMailer
     Notificacion.create(
       usuario_id: @tarea.revisor_id,
       notificacion_tipo: 'Tarea Completada',
-      mensaje: "La tarea #{@tarea} ha sido marcada como completada por el integrante y está lista para revisión",
+      mensaje: "La tarea #{@tarea.nombre} ha sido marcada como completada por el integrante y está lista para revisión",
       fecha_hora: DateTime.now
     )
   end
@@ -137,7 +137,7 @@ class UserMailer < ApplicationMailer
     Notificacion.create(
       usuario_id: @usuario.id,
       notificacion_tipo: 'Tarea Finalizada',
-      mensaje: "La tarea #{@tarea} ha sido marcada como finalizada",
+      mensaje: "La tarea #{@tarea.nombre} ha sido marcada como finalizada",
       fecha_hora: Time.now
     )
   end
@@ -151,7 +151,7 @@ class UserMailer < ApplicationMailer
     Notificacion.create(
       usuario_id: @tarea.revisor_id,
       notificacion_tipo: "Tarea Devuelta a #{@tarea.estado}",
-      mensaje: "Has devuelto la tarea #{@tarea} a estado #{@tarea.estado}",
+      mensaje: "Has devuelto la tarea #{@tarea.nombre} a estado #{@tarea.estado}",
       fecha_hora: Time.now
     )
   end
@@ -165,7 +165,7 @@ class UserMailer < ApplicationMailer
     Notificacion.create(
       usuario_id: @integrante.id,
       notificacion_tipo: 'Tarea Devuelta a Pendiente',
-      mensaje: "La tarea #{@tarea} ha sido devuelta a estado #{@tarea.estado}. Vuelve a realizarla.",
+      mensaje: "La tarea #{@tarea.nombre} ha sido devuelta a estado #{@tarea.estado}. Vuelve a realizarla.",
       fecha_hora: DateTime.now
     )
   end
@@ -179,7 +179,7 @@ class UserMailer < ApplicationMailer
     Notificacion.create(
       usuario_id: @lider.id,
       notificacion_tipo: 'Meta Completada',
-      mensaje: "La meta #{@meta} ha sido marcada como completada.",
+      mensaje: "La meta #{@meta.nombre} ha sido marcada como completada.",
       fecha_hora: DateTime.now
     )
   end
@@ -193,7 +193,7 @@ class UserMailer < ApplicationMailer
     Notificacion.create(
       usuario_id: @usuario.id,
       notificacion_tipo: 'Meta Finalizada',
-      mensaje: "La meta #{@meta} ha finalizado",
+      mensaje: "La meta #{@meta.nombre} ha finalizado",
       fecha_hora: DateTime.now
     )
   end
@@ -207,7 +207,7 @@ class UserMailer < ApplicationMailer
     Notificacion.create(
       usuario_id: @gerente.id,
       notificacion_tipo: 'Proyecto Completado',
-      mensaje: "El proyecto #{@proyecto} ha sido marcado como completado.",
+      mensaje: "El proyecto #{@proyecto.nombre} ha sido marcado como completado.",
       fecha_hora: DateTime.now
     )
   end
@@ -221,7 +221,7 @@ class UserMailer < ApplicationMailer
     Notificacion.create(
       usuario_id: @usuario.id,
       notificacion_tipo: 'Proyecto Finalizado',
-      mensaje: "El proyecto #{@proyecto} ha finalizado",
+      mensaje: "El proyecto #{@proyecto.nombre} ha finalizado",
       fecha_hora: DateTime.now
     )
   end
@@ -232,7 +232,7 @@ class UserMailer < ApplicationMailer
     mail(to: @lider.email, subject: '¡La meta vence pronto!')
 
     Notificacion.create(usuario_id: @lider.id, notificacion_tipo: 'Meta Vencimiento',
-                        mensaje: "La meta #{@meta} vence pronto", fecha_hora: DateTime.now)
+                        mensaje: "La meta #{@meta.nombre} vence pronto", fecha_hora: DateTime.now)
   end
 
   def meta_vence_hoy_email(lider, meta)
@@ -241,7 +241,7 @@ class UserMailer < ApplicationMailer
     mail(to: @lider.email, subject: '¡La meta vence hoy!')
 
     Notificacion.create(usuario_id: @lider.id, notificacion_tipo: 'Meta Vencimiento',
-                        mensaje: "La meta #{@meta} vence hoy", fecha_hora: DateTime.now)
+                        mensaje: "La meta #{@meta.nombre} vence hoy", fecha_hora: DateTime.now)
   end
 
   def tarea_vence_pronto_email(usuario, tarea)
@@ -250,7 +250,7 @@ class UserMailer < ApplicationMailer
     mail(to: @usuario.email, subject: '¡La tarea vence pronto!')
 
     Notificacion.create(usuario_id: @usuario.id, notificacion_tipo: 'Tarea Vencimiento',
-                        mensaje: "La tarea #{@tarea} vence pronto", fecha_hora: DateTime.now)
+                        mensaje: "La tarea #{@tarea.nombre} vence pronto", fecha_hora: DateTime.now)
   end
 
   def tarea_vence_hoy_email(usuario, tarea)
@@ -259,7 +259,7 @@ class UserMailer < ApplicationMailer
     mail(to: @usuario.email, subject: '¡La tarea vence hoy!')
 
     Notificacion.create(usuario_id: @usuario.id, notificacion_tipo: 'Tarea Vencimiento',
-                        mensaje: "La tarea #{@tarea} vence hoy", fecha_hora: DateTime.now)
+                        mensaje: "La tarea #{@tarea.nombre} vence hoy", fecha_hora: DateTime.now)
   end
 
   def project_overdue_email(gerente, proyecto)
@@ -271,7 +271,7 @@ class UserMailer < ApplicationMailer
     Notificacion.create(
       usuario_id: @gerente.id,
       notificacion_tipo: 'Proyecto Vencido',
-      mensaje: "El proyecto #{@proyecto} se ha pasado de la fecha de vencimiento",
+      mensaje: "El proyecto #{@proyecto.nombre} se ha pasado de la fecha de vencimiento",
       fecha_hora: DateTime.now
     )
   end
@@ -285,7 +285,7 @@ class UserMailer < ApplicationMailer
     Notificacion.create(
       usuario_id: @lider.id,
       notificacion_tipo: 'Meta Vencida',
-      mensaje: "La meta #{@meta} se ha pasado de la fecha de vencimiento",
+      mensaje: "La meta #{@meta.nombre} se ha pasado de la fecha de vencimiento",
       fecha_hora: DateTime.now
     )
   end
@@ -296,6 +296,6 @@ class UserMailer < ApplicationMailer
     mail(to: @usuario.email, subject: 'Tarea vencida')
 
     Notificacion.create(usuario_id: @usuario.id, notificacion_tipo: 'Tarea Vencimiento',
-                        mensaje: "La tarea #{@tarea} se ha pasado de la fecha de vencimiento", fecha_hora: DateTime.now)
+                        mensaje: "La tarea #{@tarea.nombre} se ha pasado de la fecha de vencimiento", fecha_hora: DateTime.now)
   end
 end

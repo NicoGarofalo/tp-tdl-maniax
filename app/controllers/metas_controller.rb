@@ -90,7 +90,7 @@ class MetasController < ApplicationController
     Meta.find_each do |meta|
       # fecha = meta.fecha_vencimiento.to_date
       lider = meta.proyecto.lider
-      if !meta.finalizado?
+      unless meta.finalizado?
         if meta.vence_hoy?
           puts "Enviando correo de que vence hoy a #{lider.nombre} para la meta #{meta.nombre}"
           UserMailer.meta_vence_hoy_email(lider, meta).deliver_now
