@@ -298,4 +298,20 @@ class UserMailer < ApplicationMailer
     Notificacion.create(usuario_id: @usuario.id, notificacion_tipo: 'Tarea Vencimiento',
                         mensaje: "La tarea #{@tarea.nombre} se ha pasado de la fecha de vencimiento", fecha_hora: DateTime.now)
   end
+
+  def revisor_cambiado_a_integrante(usuario)
+    @usuario = usuario
+    mail(to:@usuario.email, subject: 'Cambio de rol')
+
+    Notificacion.create(usuario_id: @usuario.id, notificacion_tipo: 'Cambio de rol',
+                        mensaje: 'Has sido reasignado al rol de integrante', fecha_hora: DateTime.now)
+  end
+
+  def integrante_cambiado_a_revisor(usuario)
+    @usuario = usuario
+    mail(to:@usuario.email, subject: 'Cambio de rol')
+
+    Notificacion.create(usuario_id: @usuario.id, notificacion_tipo: 'Cambio de rol',
+                        mensaje: 'Has sido reasignado al rol de revisor', fecha_hora: DateTime.now)
+  end
 end
