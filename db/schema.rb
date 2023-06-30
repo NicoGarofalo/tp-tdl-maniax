@@ -10,12 +10,12 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_06_08_023236) do
+ActiveRecord::Schema[7.0].define(version: 2023_06_30_130718) do
   create_table "logs", force: :cascade do |t|
     t.string "tipo_log"
-    t.integer "subject_id"
+    t.string "subject_id"
     t.string "mensaje"
-    t.date "fecha_hora"
+    t.string "fecha_hora"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "obligatorio_id"
@@ -32,6 +32,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_08_023236) do
     t.string "estado"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "borrado", default: false, null: false
     t.index ["proyecto_id"], name: "index_meta_on_proyecto_id"
   end
 
@@ -43,6 +44,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_08_023236) do
     t.string "estado"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "borrado", default: false, null: false
     t.index ["proyecto_id"], name: "index_metas_on_proyecto_id"
   end
 
@@ -65,6 +67,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_08_023236) do
     t.string "estado"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "borrado", default: false, null: false
     t.index ["gerente_id"], name: "index_proyectos_on_gerente_id"
     t.index ["lider_id"], name: "index_proyectos_on_lider_id"
   end
@@ -79,6 +82,7 @@ ActiveRecord::Schema[7.0].define(version: 2023_06_08_023236) do
     t.string "estado"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "borrado", default: false, null: false
     t.index ["integrante_id"], name: "index_tareas_on_integrante_id"
     t.index ["meta_id"], name: "index_tareas_on_meta_id"
     t.index ["revisor_id"], name: "index_tareas_on_revisor_id"
