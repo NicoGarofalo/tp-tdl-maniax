@@ -11,11 +11,11 @@ class Tarea < ApplicationRecord
   end
 
   def finalizado?
-    return self.estado == 'Finalizado'
+    estado == 'Finalizado' && borrado == false
   end
 
   def completado?
-    return self.estado == 'Completado'
+    estado == 'Completado' && borrado == false
   end
 
   def cambiar_estado(nuevo_estado)
@@ -35,6 +35,7 @@ class Tarea < ApplicationRecord
     true
   end
 
-  scope :pendientes, -> { where(estado: 'Pendiente') }
-  scope :con_estado_distinto_finalizado, -> { where.not(estado: 'Finalizado') }
+  scope :pendientes, -> { where(estado: 'Pendiente', borrado: false) }
+  scope :con_estado_distinto_finalizado, -> { where.not(estado: 'Finalizado', borrado: true) }
+  scope :no_borradas, -> { where(borrado: false) }
 end

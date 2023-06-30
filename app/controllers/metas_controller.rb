@@ -121,14 +121,14 @@ class MetasController < ApplicationController
             else
               meta
             end
-    # authorize @meta
-    Log.where(subject_id: @meta.id).destroy_all
     Tarea.where(meta_id: @meta.id).find_each do |tarea|
       TareasController.new.delete(tarea)
     end
-    if @meta.destroy
+    if @meta.update(borrado: true)
       proyecto = @meta.proyecto
-      proyecto.estado = if proyecto.metas.con_estado_distinto_finalizado.empty?
+      metas = proyecto.metas
+      metas_filtradas = metas.select { |meta| meta.estado != 'Finalizado' && !meta.borrado }
+      proyecto.estado = if metas_filtradas.empty?
                           'Completado'
                         else
                           'Pendiente'

@@ -157,10 +157,11 @@ class TareasController < ApplicationController
              else
                tarea
              end
-    Log.where(subject_id: @tarea.id).destroy_all
-    if @tarea.destroy
+    if @tarea.update(borrado: true)
       meta = @tarea.meta
-      meta.estado = if meta.tareas.con_estado_distinto_finalizado.empty?
+      tareas = meta.tareas
+      tareas_filtradas = tareas.select { |tarea| tarea.estado != 'Finalizado' && !tarea.borrado }
+      meta.estado = if tareas_filtradas.empty?
                       'Completado'
                     else
                       'Pendiente'

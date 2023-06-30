@@ -7,13 +7,13 @@
 <% if @idUsuario == @lider_id && !@meta.finalizado?  %>
   <%= render template: "metas/add_tarea", locals: { meta_id: @idMeta } %>
 <% end %>
-<% if @idUsuario == @gerente_id && @meta.completado? %>
+<% if @idUsuario == @lider_id && @meta.completado? %>
   <%= form_tag finalizar_meta_path(@meta), method: :post, class: "your-form-class" do %>
     <%= submit_tag "Finalizar Meta", class: 'btn btn-primary mb-3' %>
   <% end %>
 <% end %>
 
-<% if @tareas.nil? || @tareas.size.zero? %>
+<% if @tareas.nil? || @tareas.size.zero? ||  @tareas.no_borradas.empty? %>
 	<h3>Sin tareas</h3>
 <% else %>
 <table class="table table-bordered">
@@ -29,7 +29,7 @@
     </tr>
   </thead>
   <tbody>
-    <%= render partial: "tareas/item", collection: @tareas %>
+    <%= render partial: "tareas/item", collection: @tareas.select{|tarea| !tarea.borrado} %>
   </tbody>
 </table>
 	

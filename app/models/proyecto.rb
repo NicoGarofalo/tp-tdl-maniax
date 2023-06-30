@@ -9,34 +9,33 @@ class Proyecto < ApplicationRecord
     self.gerente_id = gerente_id
   end
 
-  def chequear_fecha_vencimiento()
-    self.estado = if self.fecha_vencimiento < Date.today
-      'Vencido'
-    else
-      'Pendiente'
-    end  
+  def chequear_fecha_vencimiento
+    self.estado = if fecha_vencimiento < Date.today
+                    'Vencido'
+                  else
+                    'Pendiente'
+                  end
   end
 
   def finalizo?
-    if self.metas.pendientes.empty?
+    if metas.pendientes.empty?
       self.estado = 'Completado'
       return true
     end
-    return false
+    false
   end
 
   def finalizado?
-    return self.estado == 'Finalizado'
-  end
-  
-  def completado?
-    return self.estado == 'Completado'
+    estado == 'Finalizado' && borrado == false
   end
 
+  def completado?
+    estado == 'Completado' && borrado == false
+  end
 
   # count members
   def count_members
-    tareas = Meta.where(proyecto_id: id).select(:id)
+    tareas = Meta.where(proyecto_id: id, borrado: false).select(:id)
                  .joins('INNER JOIN tareas ON tareas.meta_id == meta.id')
                  .joins('INNER JOIN usuarios ON usuarios.id == tareas.integrante_id OR usuarios.id == tareas.revisor_id')
 
@@ -44,7 +43,7 @@ class Proyecto < ApplicationRecord
   end
 
   def self.member_count(id)
-    tareas = Meta.where(proyecto_id: id).select(:id)
+    tareas = Meta.where(proyecto_id: id, borrado: false).select(:id)
                  .joins('INNER JOIN tareas ON tareas.meta_id == meta.id')
                  .joins('INNER JOIN usuarios ON usuarios.id == tareas.integrante_id OR usuarios.id == tareas.revisor_id')
 
@@ -53,7 +52,7 @@ class Proyecto < ApplicationRecord
 
   # progress
   def self.progress_of(id)
-    metas = Meta.where(proyecto_id: id)
+    metas = Meta.where(proyecto_id: id, borrado: false)
     total = metas.count
     metas.select(:id)
 
@@ -66,4 +65,6 @@ class Proyecto < ApplicationRecord
     progress = (progress / total).round(2) if total.positive?
     progress
   end
+
+  scope :no_borradas, -> { where(borrado: false) }
 end
