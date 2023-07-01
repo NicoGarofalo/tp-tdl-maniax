@@ -1,5 +1,9 @@
 <% content_for :title do %>
-  <title>Lista usuarios</title>
+  <title>Home <%= @usuario.nombre%></title>
 <% end %>
+
+
+
+<h1>Manager home</h1>
 
 <%= render partial: "usuarios/lista_usuarios", locals: {usuarios: @usuarios} %>

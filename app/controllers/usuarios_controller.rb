@@ -66,16 +66,56 @@ class UsuariosController < ApplicationController
     render :gerente_lider_home
   end
 
+  def manager_home
+    @usuarios = Usuario.all
+    render :manager_home
+  end
+
+
+  def cambiar_rol
+
+    usuarioId = usuario_cambiar_rol
+    rol_nuevo = params.require(:rol_nuevo)
+
+    usuario = Usuario.find_by(id: usuarioId)
+    puts "-------------> cambiar ROL a "+rol_nuevo
+
+    if ((usuario.esIntegrante && rol_nuevo == "Revisor") ||
+     (usuario.esRevisor && rol_nuevo == "Integrante"))
+      
+      usuario.tareas.each do |tarea|
+        if !tarea.finalizado?
+          puts "-------> Usuario tenia tareas sin finalizar"
+          return;
+        end
+      end
+
+      usuario.usuario_tipo = rol_nuevo 
+      usuario.save
+    end
+
+  end
+
+
   def home
     @usuario = current_user
     if @usuario.esGerente || @usuario.esLider
       gerente_lider_home
     elsif @usuario.esRevisor || @usuario.esIntegrante
       revisor_integrante_home
+    elsif @usuario.esManager
+      manager_home
     end
+
+
   end
 
   private
+
+  def usuario_cambiar_rol
+    params.require(:id)
+  end
+
 
   def usuario_params
     params.require(:usuario).permit(:usuario_tipo, :nombre, :apellido, :email, :password, :password_confirmation)
