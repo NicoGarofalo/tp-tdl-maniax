@@ -35,8 +35,10 @@ class ProyectosController < ApplicationController
       flash[:notice] = 'Proyecto creado exitosamente'
       redirect_to controller: 'proyectos', action: 'show', id: @proyecto.id
     else
-      flash[:notice] = 'creacion proyecto fallo'
-      render :new
+      flash[:error] = @proyecto.errors.full_messages
+      @lideres = Usuario.where(usuario_tipo: 'Líder')
+      @usuario = current_user
+      redirect_to controller: 'proyectos', action: 'new'
     end
   end
 
