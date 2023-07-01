@@ -18,7 +18,7 @@
 <div class="row justify-content-between">
 
   <%= link_to verLabel, { controller: controller, action: 'show', id: item.id }, method: :get, class: 'btn btn-info', disabled: false %> 
-  <% if !item.finalizado? && !item.completado? %>
+  <% if @usuario.esGerente && !item.finalizado? && !item.completado? %>
   <%= button_to 'Eliminar', { controller: controller, action: 'delete', id: item.id }, method: :delete, class: 'btn btn-danger', disabled: false %>
   <% end %> 
 
