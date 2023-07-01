@@ -16,7 +16,8 @@ class UsuariosController < ApplicationController
       redirect_to iniciar_sesion_path, notice: '¡Registro exitoso! Inicia sesión con tu cuenta.'
     else
       puts @usuario.errors.full_messages
-      render :new
+      flash[:error] = @usuario.errors.full_messages
+      redirect_to registro_path
     end
   end
 
