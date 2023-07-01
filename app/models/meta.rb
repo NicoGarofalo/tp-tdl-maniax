@@ -4,11 +4,11 @@ class Meta < ApplicationRecord
   belongs_to :proyecto
 
   def chequear_fecha_vencimiento()
-    self.estado = if self.fecha_vencimiento < Date.today
-      'Vencido'
-    else
-      'Pendiente'
-    end  
+    self.estado = if fecha_vencimiento < Date.today
+                    'Vencido'
+                  else
+                    'Pendiente'
+                  end
   end
 
   def finalizar
@@ -16,28 +16,27 @@ class Meta < ApplicationRecord
   end
 
   def finalizado?
-    return self.estado == 'Finalizado'
+    estado == 'Finalizado' && borrado == false
   end
 
   def completado?
-    return self.estado == 'Completado'
+    estado == 'Completado' && borrado == false
   end
 
-
   def vencio?
-    if self.fecha_vencimiento.to_date < Date.today && self.estado == 'Pendiente'
+    if fecha_vencimiento.to_date < Date.today && estado == 'Pendiente' && borrado == false
       self.estado = 'Vencido'
       return true
     end
-    return false
+    false
   end
 
   def vence_hoy?
-    return self.fecha_vencimiento.to_date == Date.today
+    fecha_vencimiento.to_date == Date.today && borrado == false
   end
 
   def vence_en_una_semana?
-    return self.fecha_vencimiento.to_date == 1.week.from_now.to_date
+    fecha_vencimiento.to_date == 1.week.from_now.to_date && borrado == false
   end
 
   # member counting
@@ -46,16 +45,15 @@ class Meta < ApplicationRecord
   end
 
   def self.member_count(id)
-    tareas = Tarea.where(meta_id: id).select(:id)
+    tareas = Tarea.where(meta_id: id, borrado: false).select(:id)
                   .joins('INNER JOIN usuarios ON usuarios.id == tareas.integrante_id OR usuarios.id == tareas.revisor_id')
 
     tareas.distinct.count('usuarios.id')
   end
 
   def self.progress_of(id)
-    tasks = Tarea.where(meta_id: id)
+    tasks = Tarea.where(meta_id: id, borrado: false)
     qTasks = tasks.count
-
 
     qFinished = tasks.where(estado: 'Finalizado').count
 
@@ -67,7 +65,8 @@ class Meta < ApplicationRecord
   end
   has_many :tareas
 
-  scope :pendientes, -> { where(estado: 'Pendiente') }
-  scope :con_estado_distinto_finalizado, -> { where.not(estado: 'Finalizado') }
+  scope :pendientes, -> { where(estado: 'Pendiente', borrado: false)}
+  scope :con_estado_distinto_finalizado, -> { where.not(estado: 'Finalizado', borrado: true)}
+  scope :no_borradas, -> { where(borrado: false) }
 end
 

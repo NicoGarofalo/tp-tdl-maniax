@@ -90,7 +90,7 @@ class MetasController < ApplicationController
     Meta.find_each do |meta|
       # fecha = meta.fecha_vencimiento.to_date
       lider = meta.proyecto.lider
-      if !meta.finalizado?
+      unless meta.finalizado?
         if meta.vence_hoy?
           puts "Enviando correo de que vence hoy a #{lider.nombre} para la meta #{meta.nombre}"
           UserMailer.meta_vence_hoy_email(lider, meta).deliver_now
@@ -121,14 +121,14 @@ class MetasController < ApplicationController
             else
               meta
             end
-    # authorize @meta
-    Log.where(subject_id: @meta.id).destroy_all
     Tarea.where(meta_id: @meta.id).find_each do |tarea|
       TareasController.new.delete(tarea)
     end
-    if @meta.destroy
+    if @meta.update(borrado: true)
       proyecto = @meta.proyecto
-      proyecto.estado = if proyecto.metas.con_estado_distinto_finalizado.empty?
+      metas = proyecto.metas
+      metas_filtradas = metas.select { |meta| meta.estado != 'Finalizado' && !meta.borrado }
+      proyecto.estado = if metas_filtradas.empty?
                           'Completado'
                         else
                           'Pendiente'

@@ -36,10 +36,10 @@
 <% end %>
 
 <h3>Metas</h3>
-<% if @metas == nil || @metas.size == 0%>
+<% if @metas.nil? || @metas.empty? || @metas.all? { |meta| meta[:meta].borrado} %>
   <p>El proyecto aún no tiene metas</p>
 <% else %>
-  <% @metas.each do |metaParams| %>
+  <% @metas.select{|metaParams| metaParams[:meta][:borrado] == false}.each do |metaParams| %>
     <%= render partial: "stats/meta", locals: metaParams %>
   <% end %>
 <% end %>

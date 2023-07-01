@@ -28,4 +28,8 @@ class Usuario < ApplicationRecord
   def esRevisor
     usuario_tipo == 'Revisor'
   end
+
+  def esManager
+    usuario_tipo == 'Manager'
+  end
 end
