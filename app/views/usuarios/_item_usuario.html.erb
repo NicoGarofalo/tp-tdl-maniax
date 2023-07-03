@@ -1,0 +1,31 @@
+          <tr>
+            <td><%= item_usuario.id %></td>
+            <td><%= item_usuario.nombre%> <%= item_usuario.apellido%></td>
+            <td><%= item_usuario.usuario_tipo %></td>
+            <td><%= item_usuario.email %></td>
+            <td>
+
+            <% if item_usuario.esRevisor %>
+            
+	            <%= form_with model: item_usuario, url: {controller: "usuarios", action: "cambiar_rol"}, method: :post do |form| %>
+				
+					<%= hidden_field_tag "id", item_usuario.id %>
+					<%= hidden_field_tag "rol_nuevo", "Integrante" %>
+
+					<%= form.submit "Cambiar a Integrante", class: "btn btn-danger" %>
+				<% end %>
+            <% elsif item_usuario.esIntegrante %>
+            
+	            <%= form_with model: item_usuario, url: {controller: "usuarios", action: "cambiar_rol"}, method: :post do |form| %>
+
+					<%= hidden_field_tag "id", item_usuario.id %>
+					<%= hidden_field_tag "rol_nuevo", "Revisor" %>
+
+					<%= form.submit "Cambiar a Revisor", class: "btn btn-danger" %>
+				<% end %>
+            <% else %>
+            	<p>Sin acciones</p>
+			<% end %>
+
+            </td>
+          </tr>

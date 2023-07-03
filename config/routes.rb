@@ -3,6 +3,8 @@
 Rails.application.routes.draw do
   get '/registro', to: 'usuarios#new', as: 'registro'
   post '/registro', to: 'usuarios#create'
+
+
   get '/iniciar_sesion', to: 'sesiones#new', as: 'iniciar_sesion'
   post '/iniciar_sesion', to: 'sesiones#create'
   delete '/cerrar_sesion', to: 'sesiones#destroy', as: 'cerrar_sesion'
@@ -29,6 +31,8 @@ Rails.application.routes.draw do
 
   # stat getters, info for other views.
   get '/stats/stat', to: 'stats#stats_for', as: 'stat_getter'
+
+  post '/cambiar_rol', to: 'usuarios#cambiar_rol', as:"cambio_rol"
 
   resources :proyectos, only: %i[new create delete] do
     member do
