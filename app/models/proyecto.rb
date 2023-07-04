@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Proyecto < ApplicationRecord
+  validates :nombre, :fecha_vencimiento, presence: {message: 'es obligatorio'}
   belongs_to :gerente, class_name: 'Usuario'
   belongs_to :lider, class_name: 'Usuario'
   has_many :metas, class_name: 'Meta', dependent: :destroy
@@ -9,12 +10,12 @@ class Proyecto < ApplicationRecord
     self.gerente_id = gerente_id
   end
 
-  def chequear_fecha_vencimiento
-    self.estado = if fecha_vencimiento < Date.today
-                    'Vencido'
-                  else
-                    'Pendiente'
-                  end
+  def chequear_fecha_vencimiento()
+    self.estado = if self.fecha_vencimiento && self.fecha_vencimiento < Date.today
+      'Vencido'
+    else
+      'Pendiente'
+    end  
   end
 
   def finalizo?
