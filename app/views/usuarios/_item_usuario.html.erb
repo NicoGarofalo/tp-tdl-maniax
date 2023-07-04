@@ -3,6 +3,7 @@
             <td><%= item_usuario.nombre%> <%= item_usuario.apellido%></td>
             <td><%= item_usuario.usuario_tipo %></td>
             <td><%= item_usuario.email %></td>
+			<%if policy(:usuarios).cambiar_rol?%>
             <td>
 
             <% if item_usuario.esRevisor %>
@@ -10,7 +11,6 @@
 	            <%= form_with model: item_usuario, url: {controller: "usuarios", action: "cambiar_rol"}, method: :post do |form| %>
 				
 					<%= hidden_field_tag "id", item_usuario.id %>
-					<%= hidden_field_tag "rol_nuevo", "Integrante" %>
 
 					<%= form.submit "Cambiar a Integrante", class: "btn btn-danger" %>
 				<% end %>
@@ -19,7 +19,6 @@
 	            <%= form_with model: item_usuario, url: {controller: "usuarios", action: "cambiar_rol"}, method: :post do |form| %>
 
 					<%= hidden_field_tag "id", item_usuario.id %>
-					<%= hidden_field_tag "rol_nuevo", "Revisor" %>
 
 					<%= form.submit "Cambiar a Revisor", class: "btn btn-danger" %>
 				<% end %>
@@ -28,4 +27,5 @@
 			<% end %>
 
             </td>
+			<%end%>
           </tr>

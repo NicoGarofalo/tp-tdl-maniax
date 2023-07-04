@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require_relative '../models/exceptions/TareasPendientesException'
+require_relative '../models/exceptions/CambioRolInvalidoException'
 
 class UsuariosController < ApplicationController
   layout 'layout_base_nav'
@@ -74,27 +76,28 @@ class UsuariosController < ApplicationController
 
 
   def cambiar_rol
-
     usuarioId = usuario_cambiar_rol
-    rol_nuevo = params.require(:rol_nuevo)
-
     usuario = Usuario.find_by(id: usuarioId)
-    puts "-------------> cambiar ROL a "+rol_nuevo
 
-    if ((usuario.esIntegrante && rol_nuevo == "Revisor") ||
-     (usuario.esRevisor && rol_nuevo == "Integrante"))
-      
-      usuario.tareas.each do |tarea|
-        if !tarea.finalizado?
-          puts "-------> Usuario tenia tareas sin finalizar"
-          return;
+    begin
+      usuario.cambiar_rol
+      if usuario.save
+        if usuario.esRevisor
+          # Cambio de integrante -> revisor
+          UserMailer.integrante_cambiado_a_revisor(usuario).deliver_now
+        else
+          # Cambio de revisor -> ntegrante
+          UserMailer.revisor_cambiado_a_integrante(usuario).deliver_now
         end
+        flash[:notice] = "Cambio de rol exitoso"
+      else
+        flash[:error] = usuario.errors.full_messages
       end
-
-      usuario.usuario_tipo = rol_nuevo 
-      usuario.save
+    rescue CambioRolInvalido, TareasPendientesError => e
+      flash[:error] = e.message
     end
 
+    redirect_to controller: 'usuarios', action: 'home'
   end
 
 
