@@ -113,15 +113,11 @@
     <script type="module">
       import {initializeOn, updateViewOnline} from "js_vista_online"
 
-      const lista = document.getElementById("onlineUsers");
-
       function updater(data){ 
-        updateViewOnline(data, lista);
+        updateViewOnline(data, document.getElementById("onlineUsers"));
       }
-      const inicializo = initializeOn(lista);
-
-      console.log("WAS NOT INITED ALREADY",inicializo);
-      suscribe("EnLinea", updater);
+      console.log("SUSCRIBIENDO A EN LINEA ");
+      suscribe("EnLinea", updater, !initializeOn(document.getElementById("onlineUsers")));
 
     </script>
 

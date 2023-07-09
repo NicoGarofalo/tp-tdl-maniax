@@ -10,10 +10,10 @@
 <%= link_to 'Crear Proyecto', new_proyecto_path, class: "btn btn-primary"  %>
 <% end %>
 
-<% if @proyectos == nil || @proyectos.size == 0%>
+<% if @proyectos == nil || @proyectos.size == 0 || @proyectos.all? { |proyecto| proyecto[:proyecto].borrado}  %>
   <h3>No participas de ningún proyecto</h3>
 <% else %>
-  <% @proyectos.each do |proyectoParams| %>
+  <% @proyectos.select{|proyectoParams| proyectoParams[:proyecto][:borrado] == false}.each do |proyectoParams| %>
     <%= render partial: "stats/proyecto", locals: proyectoParams %>
   <% end %>
 <% end %>

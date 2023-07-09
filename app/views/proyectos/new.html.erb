@@ -2,6 +2,20 @@
   <title>Nuevo proyecto</title>
 <% end %>
 
+<% if flash[:notice] %>
+  <div class="alert alert-info" role="alert">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
+
+<% if flash[:error] %>
+  <div class="alert alert-danger" role="alert">
+    <% for error in flash[:error] do %>
+      - <%= error %> <br/>
+    <% end %>
+  </div>
+<% end %>
+
 <h1>Crear Proyecto</h1>
 
 <%= form_for @proyecto, url: proyectos_path, method: :post do |f| %>

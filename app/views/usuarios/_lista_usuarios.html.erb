@@ -1,0 +1,41 @@
+<% if flash[:notice] %>
+  <div class="alert alert-info" role="alert">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
+
+<% if flash[:error] %>
+  <div class="alert alert-danger" role="alert">
+    <%=flash[:error]%>
+  </div>
+<% end %>
+  
+  <div class='row align-items-center'>
+    <h1 style='margin-right: 2rem;'>Listado de usuarios</h1>
+    <% if policy(:usuarios).create? %>
+      <%= link_to 'Crear usuario', registro_path, class: 'btn btn-primary' %>
+    <% end %>
+  </div>
+	<% if usuarios == nil || usuarios.size == 0 %>
+
+		<h3>No hay usuarios en la plataforma.</h3>
+
+	<% else %>
+		<table class="table table-bordered mt-5">
+      <thead>
+        <tr>
+          <th class="col-1">ID</th>
+          <th class="col-4">Nombre y Apellido</th>
+          <th class="col-2">Rol</th>
+          <th class="col-5">Email</th>
+          <%if policy(:usuarios).cambiar_rol?%>
+          <th class="col-5">Acciones</th>
+          <%end%>
+        </tr>
+      </thead>
+      
+      <tbody>
+        <%= render partial:"usuarios/item_usuario", collection: usuarios %>
+      </tbody>
+    </table>
+	<% end %>

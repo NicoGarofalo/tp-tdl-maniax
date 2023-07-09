@@ -1,4 +1,6 @@
 # frozen_string_literal: true
+require_relative '../models/exceptions/TareasPendientesException'
+require_relative '../models/exceptions/CambioRolInvalidoException'
 
 class UsuariosController < ApplicationController
   layout 'layout_base_nav'
@@ -16,7 +18,8 @@ class UsuariosController < ApplicationController
       redirect_to iniciar_sesion_path, notice: '¡Registro exitoso! Inicia sesión con tu cuenta.'
     else
       puts @usuario.errors.full_messages
-      render :new
+      flash[:error] = @usuario.errors.full_messages
+      redirect_to registro_path
     end
   end
 
@@ -66,16 +69,57 @@ class UsuariosController < ApplicationController
     render :gerente_lider_home
   end
 
+  def manager_home
+    @usuarios = Usuario.all
+    render :manager_home
+  end
+
+
+  def cambiar_rol
+    usuarioId = usuario_cambiar_rol
+    usuario = Usuario.find_by(id: usuarioId)
+
+    begin
+      usuario.cambiar_rol
+      if usuario.save
+        if usuario.esRevisor
+          # Cambio de integrante -> revisor
+          UserMailer.integrante_cambiado_a_revisor(usuario).deliver_now
+        else
+          # Cambio de revisor -> ntegrante
+          UserMailer.revisor_cambiado_a_integrante(usuario).deliver_now
+        end
+        flash[:notice] = "Cambio de rol exitoso"
+      else
+        flash[:error] = usuario.errors.full_messages
+      end
+    rescue CambioRolInvalido, TareasPendientesError => e
+      flash[:error] = e.message
+    end
+
+    redirect_to controller: 'usuarios', action: 'home'
+  end
+
+
   def home
     @usuario = current_user
     if @usuario.esGerente || @usuario.esLider
       gerente_lider_home
     elsif @usuario.esRevisor || @usuario.esIntegrante
       revisor_integrante_home
+    elsif @usuario.esManager
+      manager_home
     end
+
+
   end
 
   private
+
+  def usuario_cambiar_rol
+    params.require(:id)
+  end
+
 
   def usuario_params
     params.require(:usuario).permit(:usuario_tipo, :nombre, :apellido, :email, :password, :password_confirmation)

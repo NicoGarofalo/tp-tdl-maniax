@@ -17,7 +17,7 @@ class ProyectosController < ApplicationController
   def create
     @proyecto = Proyecto.new(proyecto_params)
     @proyecto.cargar_gerente(session[:usuario_id])
-    @proyecto.chequear_fecha_vencimiento     
+    @proyecto.chequear_fecha_vencimiento
 
     authorize @proyecto
 
@@ -35,8 +35,10 @@ class ProyectosController < ApplicationController
       flash[:notice] = 'Proyecto creado exitosamente'
       redirect_to controller: 'proyectos', action: 'show', id: @proyecto.id
     else
-      flash[:notice] = 'creacion proyecto fallo'
-      render :new
+      flash[:error] = @proyecto.errors.full_messages
+      @lideres = Usuario.where(usuario_tipo: 'Líder')
+      @usuario = current_user
+      redirect_to controller: 'proyectos', action: 'new'
     end
   end
 
@@ -68,7 +70,6 @@ class ProyectosController < ApplicationController
   end
 
   def finalizar
-
     @proyecto = Proyecto.find(params[:id])
     @proyecto.estado = 'Finalizado'
     @proyecto.save
@@ -123,11 +124,10 @@ class ProyectosController < ApplicationController
   def delete
     @proyecto = Proyecto.find(params[:id])
     authorize @proyecto
-    Log.where(subject_id: @proyecto.id).destroy_all
     Meta.where(proyecto_id: @proyecto.id).find_each do |meta|
       MetasController.new.delete(meta)
     end
-    @proyecto.destroy
+    @proyecto.update(borrado: true)
     flash[:notice] = 'Proyecto eliminado exitosamente'
     redirect_to user_home_path
   end
@@ -167,5 +167,4 @@ class ProyectosController < ApplicationController
   def proyecto_params
     params.require(:proyecto).permit(:gerente_id, :lider_id, :fecha_vencimiento, :nombre, :descripcion, :estado)
   end
-
 end

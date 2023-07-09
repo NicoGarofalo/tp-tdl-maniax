@@ -19,7 +19,7 @@
   </tr>
   </thead>
   <tbody>
-  <% @tareas.each do |tarea| %>
+  <% @tareas.select{|tarea| tarea.borrado == false}.each do |tarea| %>
     <tr>
       <td><%= tarea.nombre %></td>
       <td><%= tarea.descripcion %></td>

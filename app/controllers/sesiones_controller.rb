@@ -31,6 +31,11 @@ class SesionesController < ApplicationController
   end
 
   def destroy
+
+    puts "----------------- curr user at cerrar"
+    p current_user
+    ActionCable.server.remote_connections.where(current_user: current_user).disconnect
+    puts "--------------------------------------"
     session[:usuario_id] = nil
     session[:current_user] = nil
     flash[:notice] = 'Sesión cerrada correctamente'
