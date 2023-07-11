@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-require_relative '../models/exceptions/TareasPendientesException'
-require_relative '../models/exceptions/CambioRolInvalidoException'
+require_relative '../models/exceptions/TareasPendientesError'
+require_relative '../models/exceptions/CambioRolInvalidoError'
 
 class UsuariosController < ApplicationController
   layout 'layout_base_nav'

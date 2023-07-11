@@ -1,9 +1,11 @@
+<% policyUser ||= policy(:usuarios) %>
+
           <tr>
             <td><%= item_usuario.id %></td>
             <td><%= item_usuario.nombre%> <%= item_usuario.apellido%></td>
             <td><%= item_usuario.usuario_tipo %></td>
             <td><%= item_usuario.email %></td>
-			<%if policy(:usuarios).cambiar_rol?%>
+			<%if policyUser.cambiar_rol?%>
             <td>
 
             <% if item_usuario.esRevisor %>

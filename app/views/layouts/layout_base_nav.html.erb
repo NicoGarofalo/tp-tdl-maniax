@@ -14,8 +14,10 @@
   <%= javascript_importmap_tags%>
 
   <script type="module">
-    import {suscribirseA} from "channels"
+    import {suscribirseA, deSuscribirseA} from "channels"
+    
     window.suscribe = suscribirseA;
+    window.unsuscribe = deSuscribirseA;
   </script>
 
 

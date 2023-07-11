@@ -16,12 +16,7 @@
       <%= link_to 'Crear usuario', registro_path, class: 'btn btn-primary' %>
     <% end %>
   </div>
-	<% if usuarios == nil || usuarios.size == 0 %>
-
-		<h3>No hay usuarios en la plataforma.</h3>
-
-	<% else %>
-		<table class="table table-bordered mt-5">
+	<table id="tablaUsuarios" class="table table-bordered mt-5">
       <thead>
         <tr>
           <th class="col-1">ID</th>
@@ -34,8 +29,31 @@
         </tr>
       </thead>
       
-      <tbody>
-        <%= render partial:"usuarios/item_usuario", collection: usuarios %>
+      <tbody id="elementosUsuarios">
       </tbody>
     </table>
-	<% end %>
+
+
+<script type="module">
+  const tabla = document.getElementById("tablaUsuarios");
+  const elementos = document.getElementById("elementosUsuarios");
+
+  function agregarUsuario(datos){
+      if(datos["action"] == "get_start"){
+        if (datos["count"] === 0){
+          tabla.innerHTML = "<h3>No hay usuarios en la plataforma.</h3>";
+        }
+        return;
+      }
+
+      elementos.innerHTML+= datos["view_usuario"];
+  }
+
+  function desuscribirseUsuarios(){
+    unsuscribe("Usuarios");
+    window.removeEventListener("turbo:visit", desuscribirseUsuarios);
+  }
+  window.addEventListener("turbo:visit", desuscribirseUsuarios);
+  suscribe("Usuarios", agregarUsuario, true);
+
+</script>

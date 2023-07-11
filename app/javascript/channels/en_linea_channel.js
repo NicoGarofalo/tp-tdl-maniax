@@ -3,7 +3,7 @@ import consumer from "channels/consumer"
 
 function suscribirseEnLinea(listener, cargar_datos){
 
-	consumer.subscriptions.create({channel: "EnLineaChannel"},{
+	return consumer.subscriptions.create({channel: "EnLineaChannel"},{
 	  connected(data) {
 
 	    document.addEventListener("turbo:load", ()=>{
